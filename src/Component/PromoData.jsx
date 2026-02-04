@@ -1,4 +1,4 @@
-import whatsapp from '../assets/ExplorePictures/whatsapp.jpg'
+import whatsapp from '../assets/ExplorePictures/Whatsapp.jpg'
 import order from '../assets/ExplorePictures/order.jpg'
 import brandlogo from '../assets/ExplorePictures/brandlogo.jpg'
 import instagram from '../assets/ExplorePictures/instagram.jpg'

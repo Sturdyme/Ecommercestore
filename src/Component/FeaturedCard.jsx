@@ -1,5 +1,4 @@
 import React from 'react'
-import image from '../assets/FeaturedPictures/Russel.jpg'
 
 
 const FeaturedCard = ({image, title }) => {
