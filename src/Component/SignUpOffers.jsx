@@ -1,0 +1,17 @@
+import React from 'react'
+
+const SignUpOffers = () => {
+  return (
+    <section>
+      <div className='bg-[#ded5d0] h-32 '> 
+      <div className='flex justify-center '>
+        <button className='px-4 py-3 border border-black mt-10 bg-gray-200 items-center hover:bg-purple-300 hover:text-white transition ease-in-out
+         duration-400 font-semibold text-sm
+       text-black rounded-full'> Sign up for deals and offers!</button>
+      </div>
+      </div>
+    </section>
+  )
+}
+
+export default SignUpOffers
