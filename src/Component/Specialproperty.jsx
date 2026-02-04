@@ -6,7 +6,7 @@ import dining from '../assets/specialOfferImages/dining.png'
 import canon from '../assets/specialOfferImages/canon.png'
 import knives from '../assets/specialOfferImages/Knives.png'
 import scissors from '../assets/specialOfferImages/scissors.png'
-import cutlery from '../assets/specialOfferImages/cutlery.png'
+import cutlery from '../assets/specialOfferImages/Cutlery.png'
 import mug from '../assets/specialOfferImages/mug.png'
 const Specialproperty = ({scrollRef}) => {
   return (
