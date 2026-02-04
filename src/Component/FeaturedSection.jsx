@@ -66,8 +66,9 @@ const FeaturedSection = () => {
     <section> 
     <div className='mt-4 mb-4 flex items-center justify-center flex-wrap gap-4'>
       {
-        FeaturedCards.map((card) => (
+        FeaturedCards.map((card, index) => (
             <FeaturedCard
+            key={index}
             title={card.title}
             image={card.image}/>
         ))
@@ -76,8 +77,9 @@ const FeaturedSection = () => {
 
     {
         isExpanded && (
-            <div className='mt-4 mb-4 flex items-center justify-center flex-wrap gap-4'> {extraItems.map(item => (
+            <div className='mt-4 mb-4 flex items-center justify-center flex-wrap gap-4'> {extraItems.map((item, index) => (
                 <FeaturedCard
+                key={index}
                 title={item.title}
                 image={item.image}
                 />
