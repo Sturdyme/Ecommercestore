@@ -3,7 +3,7 @@ import { FaUser, FaYoast, FaBars, FaTimes } from "react-icons/fa";
 import { GiWorld, GiHamburgerMenu } from "react-icons/gi";
 import { IoCart } from "react-icons/io5";
 import { IoIosArrowDropup } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -18,12 +18,19 @@ const Navbar = () => {
     navigate("/loading-to-page"); // go to spinner loading page
   };
 
+  const handleNavigateToLoginWithSpinner = () => {
+    setOpen(false); // close mobile menu
+    navigate("/loading-to-login"); // go to spinner loading page
+  }
+
   return (
     <section className="relative max-sm:sticky top-0 z-50 bg-white shadow-md px-4 py-4 flex justify-between items-center border-b">
       {/* Logo */}
+     
       <div className="flex gap-1 items-center">
         <FaYoast className="text-3xl text-purple-400" />
-        <h2 className="text-2xl text-purple-400 font-semibold">YossyVogue.com</h2>
+         <Link to="/"> 
+        <h2  className="text-2xl text-purple-400 font-semibold">YossyVogue.com</h2> </Link>
       </div>
 
       {/* Desktop Search */}
@@ -41,12 +48,14 @@ const Navbar = () => {
           <GiWorld className="text-2xl" />
           <span className="text-sm">EN-USD</span>
         </li>
+        <Link to="/cart"> 
         <li>
           <IoCart className="text-2xl text-purple-400" />
         </li>
+        </Link>
         <li className="flex gap-1 items-center">
           <FaUser className="text-2xl text-purple-400" />
-          <span>Sign in</span>
+          <button onClick={handleNavigateToLoginWithSpinner} className="text-sm">Sign in</button>
         </li>
         <li>
           <button
@@ -121,11 +130,14 @@ const Navbar = () => {
               <li className="flex gap-3 items-center p-4 border-b">
                 <GiWorld className="text-xl" /> English-USD
               </li>
+              <Link to="/cart"> 
               <li className="flex gap-3 items-center p-4 border-b">
                 <IoCart className="text-xl text-purple-400" /> Cart
               </li>
+              </Link>
               <li className="flex gap-3 items-center p-4 border-b">
-                <FaUser className="text-xl text-purple-400" /> Sign in
+                <button onClick={handleNavigateToLoginWithSpinner} className="flex items-center gap-2">
+                <FaUser className="text-xl text-purple-400" /> Sign in  </button> 
               </li>
 
               {/* Mobile Create Account */}
