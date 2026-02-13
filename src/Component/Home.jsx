@@ -30,7 +30,7 @@ const Home = () => {
        <FeaturedProducts/>
        <FeaturedSection/>
        <SignUpOffers/>
-       <Footer/>
+     
        
     </div>
   )

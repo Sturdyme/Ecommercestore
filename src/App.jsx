@@ -9,6 +9,8 @@ import LoadingToLogin from './Pages/LoadingToLogin'
 import Cart from './Pages/Cart'
 import Test from './Component/Test'
 import Chat from './Component/Chat'
+import ContactUs from './Pages/ContactUs'
+import Footer from './Component/Footer'
 
 function App() {
 
@@ -26,7 +28,9 @@ function App() {
     <Route path='/loading-to-page' element={<LoadingToPage />} />
     <Route path='/cart' element={<Cart />} />
     <Route path='/chat' element={<Chat room="general" />} />
+    <Route path='/contact' element={<ContactUs />} />
     </Routes>
+    <Footer/>
      </BrowserRouter>
     </div>
   )
