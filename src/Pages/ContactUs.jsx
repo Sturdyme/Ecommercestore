@@ -7,10 +7,11 @@ import ContactForm from "../Component/ContactForm";
 const ContactUs = () => {
   return (
     <section>
-      <div className="flex h-[500px] shadow-md overflow-hidden">
-        
+      {/* Hero Section */}
+      <div className="flex flex-col md:flex-row h-auto md:h-[500px] shadow-md overflow-hidden">
+
         {/* Image Section */}
-        <div className="w-1/2 h-full">
+        <div className="w-full md:w-1/2 h-64 md:h-full">
           <img
             src={teamPic}
             alt="support-team"
@@ -19,20 +20,19 @@ const ContactUs = () => {
         </div>
 
         {/* Purple Content Section */}
-        <div className="w-1/2 h-full bg-purple-500 flex items-start">
-          
-          <div className="px-16 mt-24">
+        <div className="w-full md:w-1/2 bg-purple-500 flex items-start md:items-center">
+          <div className="px-8 sm:px-12 md:px-16 py-8 md:py-0 mt-8 md:mt-0">
             
             {/* Heading */}
-            <p className="text-2xl font-thin text-white">
+            <p className="text-xl sm:text-2xl font-thin text-white">
               We are Here To Help
             </p>
 
-            <p className="text-white text-4xl mt-3">
+            <p className="text-2xl sm:text-4xl mt-3 text-white font-semibold">
               Have A Question About YossyVogue?
             </p>
 
-            <p className="text-white mt-3">
+            <p className="text-white mt-3 text-sm sm:text-base">
               Can’t find what you are looking for? We’ll do our very best to help you.
             </p>
 
@@ -47,12 +47,17 @@ const ContactUs = () => {
             </div>
 
           </div>
-
         </div>
-
       </div>
-      <div className="mt-10">  <ContactHeroSection/>  </div>
-      <div className="mt-10"> <ContactForm/> </div>
+
+      {/* Additional Sections */}
+      <div className="mt-10 px-4 sm:px-6 md:px-16">
+        <ContactHeroSection />
+      </div>
+
+      <div className="mt-10 px-4 sm:px-6 md:px-16">
+        <ContactForm />
+      </div>
       
     </section>
   );
