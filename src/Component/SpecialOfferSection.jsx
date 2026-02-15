@@ -25,8 +25,7 @@ const SpecialOfferSection = () => {
   };
   return (
 
-    <div  data-aos="fade-up 
-    data-aos-duration='3000' ">
+    <div className="bg-white dark:bg-gray-900" data-aos="fade-up" data-aos-duration="3000">
       <SpecialOfferHeader onLeft={scrollLeft} onRight={scrollRight} />
       <Specialproperty scrollRef={scrollRef}/>
     </div>

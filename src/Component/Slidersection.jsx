@@ -28,7 +28,7 @@ const Slidersection = ({ sliders }) => {
           />
 
           {/* Overlay (opacity stays here) */}
-          <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white bg-black/50">
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-center theme-text-white bg-black/50">
             <h2 className="text-2xl md:text-4xl font-bold">{slide.title}</h2>
             <p className="mt-2 text-lg md:text-xl">{slide.subtitle}</p>
             <button className="mt-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg shadow-lg">

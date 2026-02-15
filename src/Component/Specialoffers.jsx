@@ -29,10 +29,10 @@ function Specialoffers({productName,productImage, oldPrice, newPrice}) {
         className='h-80 object-cover rounded-md shadow-md'
       />
 
-      <p className='mt-1 font-mono'>{productName}</p> 
+      <p className='mt-1 font-mono theme-text-black'>{productName}</p> 
 
       <div className='flex gap-4 font-thin'>
-        <p>{newPrice}</p> 
+        <p className='theme-text-black'>{newPrice}</p> 
         <p className='line-through text-gray-500'>{oldPrice}</p> 
       </div> 
 

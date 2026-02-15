@@ -73,7 +73,7 @@ const ContactHeroSection = () => {
 
           {/* CARD 1 */}
           <div className="bg-white rounded-2xl shadow-md p-8 text-center hover:shadow-xl transition duration-300">
-            <div className="flex justify-center text-black mb-6">
+            <div className="flex justify-center theme-text-black mb-6">
               <BiChat size={42} />
             </div>
 
@@ -87,7 +87,7 @@ const ContactHeroSection = () => {
 
             <button
               onClick={() => setIsChatOpen(true)}
-              className="inline-block mt-6 text-black font-medium underline underline-offset-4 hover:text-gray-700 transition"
+              className="inline-block mt-6 theme-text-black font-medium underline underline-offset-4 hover:text-gray-700 transition"
             >
               Open Live Chat
             </button>
@@ -95,7 +95,7 @@ const ContactHeroSection = () => {
 
           {/* CARD 2 */}
           <div className="bg-white rounded-2xl shadow-md p-8 text-center hover:shadow-xl transition duration-300">
-            <div className="flex justify-center text-black mb-6">
+            <div className="flex justify-center theme-text-black mb-6">
               <IoNewspaperOutline size={42} />
             </div>
 
@@ -107,12 +107,12 @@ const ContactHeroSection = () => {
               Have a presale question? Chat live with our team for a faster response.
             </p>
 
-            <button className="inline-block mt-6 text-black font-medium underline underline-offset-4 hover:text-gray-700 transition"> Explore Help Center</button>
+            <button className="inline-block mt-6 theme-text-black font-medium underline underline-offset-4 hover:text-gray-700 transition"> Explore Help Center</button>
           </div>
 
           {/* CARD 3 */}
           <div className="bg-white rounded-2xl shadow-md p-8 text-center hover:shadow-xl transition duration-300">
-            <div className="flex justify-center text-black mb-6">
+            <div className="flex justify-center theme-text-black mb-6">
               <BsNewspaper size={42} />
             </div>
 
@@ -124,7 +124,7 @@ const ContactHeroSection = () => {
               Have a presale question? Chat live with our team for a faster response.
             </p>
 
-            <button className="inline-block mt-6 text-black font-medium underline underline-offset-4 hover:text-gray-700 transition">Manage Account </button>
+            <button className="inline-block mt-6 theme-text-black font-medium underline underline-offset-4 hover:text-gray-700 transition">Manage Account </button>
           </div>
 
         </div>

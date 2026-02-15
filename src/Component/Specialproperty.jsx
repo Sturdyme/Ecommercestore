@@ -13,7 +13,7 @@ const Specialproperty = ({scrollRef}) => {
 
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto scroll-smooth gap-2 items-stretch bg-gray-100 snap-x snap-mandatory scrollbar-hide"
+        className="flex overflow-x-auto scroll-smooth gap-2 items-stretch bg-white dark:bg-gray-900 snap-x snap-mandatory scrollbar-hide"
       >
   <div className="min-w-[200px]  flex-shrink-0 snap-start">
           <Specialoffers 

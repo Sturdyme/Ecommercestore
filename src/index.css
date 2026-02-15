@@ -1,3 +1,26 @@
+/* Theme-based text color utilities */
+.theme-text-black {
+	@apply text-black;
+}
+html.dark .theme-text-black {
+	@apply text-white;
+}
+
+.theme-text-white {
+	@apply text-white;
+}
+html.dark .theme-text-white {
+	@apply text-black;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Global background color for light and dark themes */
+html {
+	@apply bg-white;
+}
+
+html.dark {
+	@apply bg-gray-900;
+}

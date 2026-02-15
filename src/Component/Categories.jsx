@@ -38,7 +38,7 @@ const [moreCategories, setMoreCategories] = useState(false);
           className={`absolute left-0 top-full mt-2 w-56
   z-[9999]  /* 🔥 important */
   overflow-hidden rounded-lg shadow-lg border
-  text-black font-semibold bg-white
+  theme-text-black font-semibold bg-white
   transition-all divide-y divide-gray-400 duration-500 ${
     categories
       ? "max-h-[40rem] opacity-100"
@@ -88,20 +88,20 @@ const [moreCategories, setMoreCategories] = useState(false);
         </li>
 
         <li>
-          <span className="text-white">Yossy's Business</span>
+          <span className="theme-text-white">Yossy's Business</span>
         </li>
 
         <li>
-          <span className="text-white">Home Appliances</span>
+          <span className="theme-text-white">Home Appliances</span>
         </li>
 
         <li>
-          <span className="text-white">Hair Extensions & Wigs</span>
+          <span className="theme-text-white">Hair Extensions & Wigs</span>
         </li>
 
         <li className="flex gap-2 items-center sm:gap-1">
-          <span className="text-white">More</span>
-          <IoIosArrowDropdown className="text-white" />
+          <span className="theme-text-white">More</span>
+          <IoIosArrowDropdown className="theme-text-white" />
         </li>
       </ul>
       </div>

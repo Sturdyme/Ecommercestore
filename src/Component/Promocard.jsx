@@ -6,13 +6,13 @@ const Promocard = ({title, whatsapp, order, brandlogo, button}) => {
     <section className="h-full"> {/* Force section to fill grid height */}
        
       <div className="mb-4 h-full"> {/* Removed ml-4 to prevent grid misalignment */}
-        <div className="flex flex-col h-full w-full max-w-md bg-white border rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
+        <div className="flex flex-col h-full w-full max-w-md bg-white dark:bg-gray-900 border rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden">
           
           {/* Header - Fixed height or line-clamping prevents one card from being taller than others */}
-          <div className="p-4 bg-slate-100 hover:bg-purple-50 transition-colors min-h-[80px] flex items-center">
+          <div className="p-4 bg-slate-100 dark:bg-gray-800 hover:bg-purple-50 transition-colors min-h-[80px] flex items-center">
             <a
               href="#"
-              className="block text-sm md:text-base font-semibold text-gray-800 hover:text-purple-600 leading-tight line-clamp-2"
+              className="block text-sm md:text-base font-semibold theme-text-black dark:theme-text-white hover:text-purple-600 leading-tight line-clamp-2"
             >
               {title}
             </a>
@@ -49,7 +49,7 @@ const Promocard = ({title, whatsapp, order, brandlogo, button}) => {
 
             {/* CTA Button - mt-auto pushes this to the bottom regardless of text above */}
             <button className="w-full mt-auto pt-4">
-              <div className="bg-purple-600 text-white py-2 rounded-lg font-medium hover:bg-purple-700 transition text-center text-sm">
+              <div className="bg-purple-600 theme-text-white py-2 rounded-lg font-medium hover:bg-purple-700 transition text-center text-sm">
                 {button}
               </div>
             </button>

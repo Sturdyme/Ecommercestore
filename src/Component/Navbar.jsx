@@ -4,6 +4,7 @@ import { GiWorld, GiHamburgerMenu } from "react-icons/gi";
 import { IoCart } from "react-icons/io5";
 import { IoIosArrowDropup } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -24,7 +25,7 @@ const Navbar = () => {
   }
 
   return (
-    <section className="relative max-sm:sticky top-0 z-50 bg-white shadow-md px-4 py-4 flex justify-between items-center border-b">
+    <section className="relative max-sm:sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-md px-4 py-4 flex justify-between items-center border-b">
       {/* Logo */}
      
       <div className="flex gap-1 items-center">
@@ -43,24 +44,25 @@ const Navbar = () => {
       </div>
 
       {/* Desktop Menu */}
-      <ul className="hidden lg:flex gap-6 text-gray-600 items-center">
+      <ul className="hidden lg:flex gap-6 theme-text-black items-center">
         <li className="flex gap-1 items-center">
           <GiWorld className="text-2xl" />
-          <span className="text-sm">EN-USD</span>
+          <span className="text-sm theme-text-black">EN-USD</span>
         </li>
         <Link to="/cart"> 
         <li>
           <IoCart className="text-2xl text-purple-400" />
         </li>
         </Link>
+        <li> <ThemeToggle/></li>
         <li className="flex gap-1 items-center">
           <FaUser className="text-2xl text-purple-400" />
-          <button onClick={handleNavigateToLoginWithSpinner} className="text-sm">Sign in</button>
+          <button onClick={handleNavigateToLoginWithSpinner} className="text-sm theme-text-black">Sign in</button>
         </li>
         <li>
           <button
             onClick={handleNavigateWithSpinner}
-            className="bg-purple-400 rounded-xl font-semibold text-white p-2 px-4"
+            className="bg-purple-400 rounded-xl font-semibold theme-text-white p-2 px-4"
           >
             Create Account
           </button>
@@ -79,7 +81,7 @@ const Navbar = () => {
       {open && (
         <div className="absolute top-full left-0 w-full bg-white shadow-xl z-[999] lg:hidden border-t border-gray-100">
           <div className="max-h-[85vh] overflow-y-auto">
-            <ul className="flex flex-col text-gray-600 font-medium">
+            <ul className="flex flex-col theme-text-black font-medium">
               {/* Categories */}
               <li
                 className="flex items-center justify-between p-4 bg-gray-50 border-b cursor-pointer"
@@ -87,7 +89,7 @@ const Navbar = () => {
               >
                 <div className="flex items-center gap-3">
                   <GiHamburgerMenu className="text-purple-500" />
-                  <span className="font-bold text-black">All Categories</span>
+                  <span className="font-bold theme-text-black">All Categories</span>
                 </div>
                 <IoIosArrowDropup
                   className={`transition-transform duration-300 ${
@@ -144,7 +146,7 @@ const Navbar = () => {
               <li className="p-4">
                 <button
                   onClick={handleNavigateWithSpinner}
-                  className="w-full bg-purple-400 text-white py-3 rounded-xl hover:bg-purple-500 transition"
+                  className="w-full bg-purple-400 theme-text-white py-3 rounded-xl hover:bg-purple-500 transition"
                 >
                   Create Account
                 </button>

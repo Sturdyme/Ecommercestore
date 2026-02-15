@@ -3,9 +3,9 @@ import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 
 const SpecialOfferHeader = ({onLeft, onRight}) => {
   return (
-    <section>
+    <section className="bg-white dark:bg-gray-900">
           <div className='flex items-center justify-between px-10 mt-10'>
-        <h1 className='text-1xl'>SPECIAL OFFERS</h1>
+        <h1 className='text-1xl theme-text-black'>SPECIAL OFFERS</h1>
        <div> 
         <button onClick={onLeft}> <BiLeftArrow className='hover:text-gray-400'/></button>
         <button onClick={onRight}> <BiRightArrow className='hover:text-gray-400' /> </button>

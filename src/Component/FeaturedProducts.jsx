@@ -4,7 +4,7 @@ const FeaturedProducts = () => {
   return (
     <section>
       <div className='flex justify-center mt-8'> 
-        <h1 className='text-2xl font-sans'> Featured Products</h1>
+        <h1 className='text-2xl font-sans theme-text-black'> Featured Products</h1>
       </div>
 
         <div className='w-full h-[6px] border mb-2 mt-4'> 
