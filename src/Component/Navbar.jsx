@@ -84,12 +84,12 @@ const Navbar = () => {
             <ul className="flex flex-col theme-text-black dark:theme-text-white font-medium">
               {/* Categories */}
               <li
-                className="flex items-center justify-between p-4 bg-gray-50 border-b cursor-pointer"
+                className="flex items-center dark:bg-black justify-between p-4 bg-gray-50 border-b cursor-pointer"
                 onClick={() => setCategories(!categories)}
               >
-                <div className="flex items-center gap-3">
-                  <GiHamburgerMenu className="text-purple-500" />
-                  <span className="font-bold theme-text-black">All Categories</span>
+                <div className="flex dark:bg-black items-center gap-3">
+                  <GiHamburgerMenu className="text-purple-500 " />
+                  <span className="font-bold dark:bg-black theme-text-black">All Categories</span>
                 </div>
                 <IoIosArrowDropup
                   className={`transition-transform duration-300 ${
@@ -99,30 +99,30 @@ const Navbar = () => {
               </li>
 
               {categories && (
-                <div className="bg-white flex flex-col transition-all">
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50">
+                <div className="bg-white dark:bg-gray-900 flex flex-col transition-all">
+                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
                     Clothings
                   </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50">
+                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
                     Mobiles
                   </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50">
+                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
                     Electronics
                   </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50">
+                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
                     Cameras
                   </li>
                   <li
-                    className="p-3 pl-10 text-purple-500 flex items-center justify-between bg-purple-50/50"
+                    className="p-3 pl-10 text-purple-500 flex items-center justify-between bg-purple-50/50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white"
                     onClick={() => setMoreCategories(!moreCategories)}
                   >
                     <span>{moreCategories ? "Show Less" : "More Categories..."}</span>
                   </li>
                   {moreCategories && (
-                    <div className="bg-gray-50">
-                      <li className="p-3 pl-14 border-b border-white">Sports</li>
-                      <li className="p-3 pl-14 border-b border-white">Groceries</li>
-                      <li className="p-3 pl-14 border-b border-white">Books</li>
+                    <div className="bg-gray-50 dark:bg-gray-900">
+                      <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Sports</li>
+                      <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Groceries</li>
+                      <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Books</li>
                     </div>
                   )}
                 </div>
