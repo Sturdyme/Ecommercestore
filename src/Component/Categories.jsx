@@ -38,24 +38,24 @@ const [moreCategories, setMoreCategories] = useState(false);
           className={`absolute left-0 top-full mt-2 w-56
   z-[9999]  /* 🔥 important */
   overflow-hidden rounded-lg shadow-lg border
-  theme-text-black font-semibold bg-white
+  theme-text-black dark:theme-text-white font-semibold bg-white dark:bg-gray-900
   transition-all divide-y divide-gray-400 duration-500 ${
     categories
       ? "max-h-[40rem] opacity-100"
       : "max-h-0 opacity-0"
   }`}
           >
-            <li className="py-2 px-4">Clothings</li>
-            <li className="py-2 px-4">Mobiles</li>
-            <li className="py-2 px-4">Electronics</li>
-            <li className="py-2 px-4">Cameras</li>
-            <li className="py-2 px-4">Chiars</li>
-            <li className="py-2 px-4">Furnitures</li>
-            <li className="py-2 px-4">Home Theaters</li>
-            <li className="py-2 px-4">Accessories</li>
-            <li className="py-2 px-4">Lightings</li>
+            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Clothings</li>
+            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Mobiles</li>
+            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Electronics</li>
+            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Cameras</li>
+            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Chiars</li>
+            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Furnitures</li>
+            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Home Theaters</li>
+            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Accessories</li>
+            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Lightings</li>
           <li
-              className="flex items-center  py-2 px-4 justify-between cursor-pointer"
+              className="flex items-center py-2 px-4 justify-between cursor-pointer theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800"
               onClick={(e) => {
                 e.stopPropagation(); // prevent closing parent
                 setMoreCategories(!moreCategories);
@@ -71,11 +71,11 @@ const [moreCategories, setMoreCategories] = useState(false);
 
             {/* Extra categories */}
             {moreCategories && (
-              <ul className=" space-y-1  divide-y divide-gray-400 font-normal mt-2">
-                <li className="py-2 px-4">Sports</li>
-                <li className="py-2 px-4">Groceries</li>
-                <li className="py-2 px-4">Books</li>
-                <li className="py-2 px-4">Toys</li>
+              <ul className="space-y-1 divide-y divide-gray-400 font-normal mt-2 bg-white dark:bg-gray-900">
+                <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Sports</li>
+                <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Groceries</li>
+                <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Books</li>
+                <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Toys</li>
               </ul>
             )}
 
