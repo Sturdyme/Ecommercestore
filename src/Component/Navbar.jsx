@@ -79,9 +79,9 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="absolute top-full left-0 w-full bg-white shadow-xl z-[999] lg:hidden border-t border-gray-100">
+        <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 shadow-xl z-[999] lg:hidden border-t border-gray-100">
           <div className="max-h-[85vh] overflow-y-auto">
-            <ul className="flex flex-col theme-text-black font-medium">
+            <ul className="flex flex-col theme-text-black dark:theme-text-white font-medium">
               {/* Categories */}
               <li
                 className="flex items-center justify-between p-4 bg-gray-50 border-b cursor-pointer"
@@ -137,9 +137,15 @@ const Navbar = () => {
                 <IoCart className="text-xl text-purple-400" /> Cart
               </li>
               </Link>
+
               <li className="flex gap-3 items-center p-4 border-b">
                 <button onClick={handleNavigateToLoginWithSpinner} className="flex items-center gap-2">
                 <FaUser className="text-xl text-purple-400" /> Sign in  </button> 
+              </li>
+
+              {/* Theme Toggle for Mobile */}
+              <li className="flex gap-3 items-center p-4 border-b justify-center">
+                <ThemeToggle />
               </li>
 
               {/* Mobile Create Account */}
