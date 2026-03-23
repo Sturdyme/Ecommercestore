@@ -19,9 +19,9 @@ const items = [
     icon: <FaCheck size={12} />,
     label: 'CUSTOMER CARE',
     links: [
-      { name: 'Contact Us', path: '/contact' }, // ✅ HERE
+      { name: 'Contact Us', path: '/contact' }, 
       { name: 'Site Map', path: '/sitemap' },
-      { name: 'Top Sales & BestSellers', path: '/top-sales' },
+      { name: 'Help & Support', path: '/help-support' },
       { name: 'Gift Voucher', path: '/gift-voucher' },
       { name: 'Best Sellers', path: '/best-sellers' }
     ]
@@ -29,25 +29,25 @@ const items = [
 
    {
     icon: <FaCheck size={12} />,
-    label: 'CUSTOMER CARE',
+    label: 'COLLECTIONS',
     links: [
-      { name: 'Contact Us', path: '/contact' }, // ✅ HERE
-      { name: 'Site Map', path: '/sitemap' },
-      { name: 'Top Sales & BestSellers', path: '/top-sales' },
-      { name: 'Gift Voucher', path: '/gift-voucher' },
-      { name: 'Best Sellers', path: '/best-sellers' }
+      { name: 'New Arrivals', path: '/new-arrivals' },
+      { name: 'New Offers', path: '/new-offers' },
+      { name: 'Top Picks', path: '/top-picks' },
+      { name: 'Super Deals', path: '/super-deals' },
+      { name: 'Best Selling', path: '/best-selling' }
     ]
   },
 
    {
     icon: <FaCheck size={12} />,
-    label: 'CUSTOMER CARE',
+    label: 'USEFUL LINKS',
     links: [
-      { name: 'Contact Us', path: '/contact' }, // ✅ HERE
-      { name: 'Site Map', path: '/sitemap' },
-      { name: 'Top Sales & BestSellers', path: '/top-sales' },
-      { name: 'Gift Voucher', path: '/gift-voucher' },
-      { name: 'Best Sellers', path: '/best-sellers' }
+      { name: 'Service center', path: '/service-center'},
+      { name: 'Report a product', path: '/sitemap' },
+      { name: 'How To shop', path: '/gift-voucher' },
+      { name: 'Return policy', path: '/top-sales' },
+      { name: 'How to return a product', path: '/best-sellers' }
     ]
   },
 
@@ -55,7 +55,7 @@ const items = [
 
 export default function FeaturedBanners() {
   return (
-    <div className="flex justify-center items-start gap-10 flex-wrap">
+    <div className="flex justify-center items-start gap-16 flex-wrap">
       {items.map((item, i) => (
         <TriangleWithBar
           key={i}

@@ -49,7 +49,7 @@ const Promocard = ({title, whatsapp, order, brandlogo, button}) => {
 
             {/* CTA Button - mt-auto pushes this to the bottom regardless of text above */}
             <button className="w-full mt-auto pt-4">
-              <div className="bg-purple-600 theme-text-white py-2 rounded-lg font-medium hover:bg-purple-700 transition text-center text-sm">
+              <div className="bg-purple-600 py-2 text-black dark:text-white rounded-lg font-medium hover:bg-purple-700 transition text-center text-sm">
                 {button}
               </div>
             </button>

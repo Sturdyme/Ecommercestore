@@ -37,17 +37,17 @@ const Products = () => {
   loading='lazy'
   className='h-40 w-full object-cover'/>
 
-  <div className='p-3 flex-1 flex flex-col'>
-  <h3 className='font-semibold line-clamp-2'>{p.title}</h3>
-  <p className='text-sm text-gray-500 mt-1'>{p.brand}</p>
+  <div className='p-3 flex-1  flex flex-col'>
+  <h3 className='font-semibold text-black dark:text-white line-clamp-2'>{p.title}</h3>
+  <p className='text-sm text-black dark:text-white mt-1'>{p.brand}</p>
 
   <div className='mt-auto'>
  <div className='flex items-center justify-between mt-3'> 
-  <span>{p.price}</span>
-  <span>⭐{p.rating}</span>
-  <span>{p.stock}</span>
+  <span className='text-black dark:text-white'>{p.price}</span>
+  <span className='text-black dark:text-white'>⭐{p.rating}</span>
+  <span className='text-black dark:text-white'>{p.stock}</span>
  </div>
-  <button className="mt-3 w-full bg-purple-400 border rounded py-2 hover:bg-purple-900 transition duration-500 ease-in-out">
+  <button className="mt-3 w-full text-black dark:text-white bg-purple-400 border rounded py-2 hover:bg-purple-900 transition duration-500 ease-in-out">
               Add to cart
             </button>
   </div>

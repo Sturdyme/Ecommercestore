@@ -1,28 +1,26 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
+import { getAnalytics, isSupported } from "firebase/analytics"; // Added isSupported
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBImFnqwTbzZ9xPT9g-7Lw7_F1QVM9Q6vQ",
-  authDomain: "chat-database-46f99.firebaseapp.com",
-  projectId: "chat-database-46f99",
-  storageBucket: "chat-database-46f99.appspot.com",
-  messagingSenderId: "259765787507",
-  appId: "1:259765787507:web:daa3346d5f0166104e0306",
-  measurementId: "G-DZCP178EGK",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Firestore
+// Initialize Services
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-// Analytics (safe)
-let analytics;
-if (typeof window !== "undefined") {
-  analytics = getAnalytics(app);
-}
-
-export { analytics };
+// Analytics (Improved check)
+export const analytics = typeof window !== "undefined" 
+  ? isSupported().then(yes => yes ? getAnalytics(app) : null) 
+  : null;
