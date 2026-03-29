@@ -16,7 +16,7 @@ const Slideprops = () => {
      {
         image: slider2,
         alt: "Slider 1",
-        title: "Welcome to YossyVogue, the leading B2B ecommerce platform for global trade",
+        title: "Empower your supply chain through YossyVogue, source high-performance home appliances and smart living solutions",
         subtitle: "Get the best deals on top brands",
         button: "Shop Now",
     },
@@ -24,7 +24,7 @@ const Slideprops = () => {
      {
         image: slider3,
         alt: "Slider 1",
-        title: "Welcome to YossyVogue, the leading B2B ecommerce platform for global trade",
+        title: "Scale your business with YossyVogue, and gain a competitive edge with bulk access to cutting-edge electronics and next-generation digital accessories.",
         subtitle: "Home appliances at your fingertips",
         button: "Shop Now",
     }

@@ -17,58 +17,64 @@ const Specialproperty = ({scrollRef}) => {
       >
   <div className="min-w-[200px]  flex-shrink-0 snap-start">
           <Specialoffers 
+            id="sp-1"
             productName="Balack Pro Camera"
-            oldPrice="$1151.00"
-            newPrice="999.99"
+            oldPrice={1151.99}
+            newPrice={999.00}
             productImage={camera}
           />
         </div>
   <div className="min-w-[200px] flex-shrink-0 snap-start">
           <Specialoffers 
+            id="sp-2"
             productName="Single Stand Chair"
-            oldPrice="$470.00"
-            newPrice="$399.99
-            "
+            oldPrice={470.00}
+            newPrice={399.}
             productImage={chair}
           />
         </div>
   <div className="min-w-[200px]  flex-shrink-0 snap-start">
           <Specialoffers 
+            id="sp-3"
             productName="Dining Chair"
-            oldPrice="$559.00"
-            newPrice="$499.99"
+            oldPrice={559.00}
+            newPrice={499.}
             productImage={dining}
           />
         </div>
   <div className="min-w-[320px]  flex-shrink-0 snap-start">
           <Specialoffers 
+            id="sp-4"
             productName=" Knives Set"
-            oldPrice="$599.00"
-            newPrice="$399.99"
+            oldPrice={599.00}
+            newPrice={399.00}
             productImage={knives}
           />
         </div>
   <div className="min-w-[200px]  flex-shrink-0 snap-start">
           <Specialoffers 
+            id="sp-5"
             productName="Scissors Set"
-            oldPrice="$180.00"
-            newPrice="99.99"
+            oldPrice={180.00}
+            newPrice={99.00}
             productImage={scissors}
           />
         </div>
   <div className="min-w-[200px]  flex-shrink-0 snap-start">
           <Specialoffers 
+            id="sp-6"
             productName="Advanced Cutlery"
-            oldPrice="$312.00"
-            newPrice="$229.99"
+            oldPrice={312.00}
+            newPrice={229.00}
             productImage={cutlery}
           />
         </div>
   <div className="min-w-[200px] flex-shrink-0 snap-start">
           <Specialoffers 
+            id="sp-7"
             productName="Imported kitchen Utensils"
-            oldPrice="$102.00"
-            newPrice="$88.99"
+            oldPrice={102.00}
+            newPrice={88.00}
             productImage={mug}
           />
         </div>

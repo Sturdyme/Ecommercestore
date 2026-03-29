@@ -15,7 +15,7 @@ const LoadingToLogin = () => {
   }, [navigate]);
 
   return (
-   <div className="w-screen h-screen flex items-center justify-center bg-purple-400 ">
+   <div className="flex-1 flex items-center justify-center bg-purple-400">
       <Spinner size="8xl" className="text-purple-500" />
     </div>
   )

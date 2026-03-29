@@ -1,14 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaUser, FaYoast, FaBars, FaTimes } from "react-icons/fa";
 import { GiWorld, GiHamburgerMenu } from "react-icons/gi";
 import { IoCart } from "react-icons/io5";
 import { IoIosArrowDropup } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import { useCart } from "./CartContext";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
   const navigate = useNavigate();
+  const { cart } = useCart();
+
+  useEffect(() => {
+    const controlNavbar = () => {
+      if (typeof window !== 'undefined') {
+        // If scrolling down, hide it. If scrolling up, show it.
+        if (window.scrollY > lastScrollY && window.scrollY > 100) { 
+          setIsVisible(false); // Scrolling down
+        } else {
+          setIsVisible(true); // Scrolling up
+        }
+        // Update last scroll position
+        setLastScrollY(window.scrollY);
+      }
+    };
+
+    window.addEventListener('scroll', controlNavbar);
+
+    // Clean up listener on unmount
+    return () => {
+      window.removeEventListener('scroll', controlNavbar);
+    };
+  }, [lastScrollY]);
+
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
   const [categories, setCategories] = useState(false);
   const [moreCategories, setMoreCategories] = useState(false);
@@ -25,7 +54,9 @@ const Navbar = () => {
   }
 
   return (
-    <section className="relative max-sm:sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-md px-4 py-4 flex justify-between items-center border-b">
+    <section className={`fixed top-0 left-0 w-full h-[72px] z-[100] bg-white dark:bg-gray-900 shadow-md px-4 py-4 flex justify-between items-center border-b transition-transform duration-300 ${
+    isVisible ? "translate-y-0" : "-translate-y-full"
+  }`}>
       {/* Logo */}
      
       <div className="flex gap-1 items-center">
@@ -50,8 +81,14 @@ const Navbar = () => {
           <span className="text-sm theme-text-black">EN-USD</span>
         </li>
         <Link to="/cart"> 
-        <li>
-          <IoCart className="text-2xl text-purple-400" />
+        <li className="relative group">
+          <IoCart className="text-2xl text-purple-400 group-hover:scale-110 transition-transform" />
+          {/* The Badge */}
+          {totalItems > 0 && (
+            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in duration-300">
+              {totalItems}
+            </span>
+          )}
         </li>
         </Link>
         <li> <ThemeToggle/></li>
@@ -62,7 +99,7 @@ const Navbar = () => {
         <li>
           <button
             onClick={handleNavigateWithSpinner}
-            className="bg-purple-400 rounded-xl font-semibold theme-text-white p-2 px-4"
+            className="bg-purple-400 rounded-xl font-semibold text-black dark:text-white p-2 px-4"
           >
             Create Account
           </button>
@@ -79,7 +116,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 shadow-xl z-[999] lg:hidden border-t border-gray-100">
+        <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 shadow-xl z-[110] lg:hidden border-t border-gray-100">
           <div className="max-h-[85vh] overflow-y-auto">
             <ul className="flex flex-col theme-text-black dark:theme-text-white font-medium">
               {/* Categories */}
@@ -133,10 +170,20 @@ const Navbar = () => {
                 <GiWorld className="text-xl" /> English-USD
               </li>
               <Link to="/cart"> 
-              <li className="flex gap-3 items-center p-4 border-b">
-                <IoCart className="text-xl text-purple-400" /> Cart
-              </li>
-              </Link>
+        <li className="flex gap-3 items-center p-4 border-b relative group">
+          <div className="relative">
+            <IoCart className="text-2xl text-purple-400 group-hover:scale-110 transition-transform" />
+            
+            {/* The Badge */}
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-black dark:text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in duration-300">
+                {totalItems}
+              </span>
+            )}
+          </div>
+          <span className="font-medium">Cart</span>
+        </li>
+      </Link>
 
               <li className="flex gap-3 items-center p-4 border-b">
                 <button onClick={handleNavigateToLoginWithSpinner} className="flex items-center gap-2">

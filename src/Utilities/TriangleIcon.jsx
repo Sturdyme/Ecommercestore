@@ -6,7 +6,7 @@ const TriangleIcon = ({ size = 20, color = '#7c3aed', children}) => {
     
 
   return (
-   <div className='relative flex items-center justify-center'
+   <div className='relative text-black dark:text-white flex items-center justify-center'
    style={{
     width: size * 2,
     height: size * 2,
@@ -25,7 +25,7 @@ const TriangleIcon = ({ size = 20, color = '#7c3aed', children}) => {
       }}
     />
   
-  <div className='relative z-10 text-white text-xs font-semibold'> 
+  <div className='relative z-10 text-black dark:text-whitetext-xs font-semibold'> 
     {children}
   </div>
 

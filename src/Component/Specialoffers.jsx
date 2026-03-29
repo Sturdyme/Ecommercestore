@@ -7,14 +7,16 @@ import { FaCartArrowDown, FaEye } from 'react-icons/fa'
 import { FaBurger } from 'react-icons/fa6'
 
 import { useEffect, useState } from 'react';
+import { useCart } from './CartContext';
 
 
-function Specialoffers({productName,productImage, oldPrice, newPrice}) {
+function Specialoffers({id, productName,productImage, oldPrice, newPrice}) {
 
 
     const [quickView, setQuickView] = useState(false);
     const [compare, setCompare] = useState(false);
     const [addCart, setAddCart] = useState(false);
+    const { addToCart } = useCart();
    
     
   return (
@@ -29,30 +31,30 @@ function Specialoffers({productName,productImage, oldPrice, newPrice}) {
         className='h-80 object-cover rounded-md shadow-md'
       />
 
-      <p className='mt-1 font-mono theme-text-black'>{productName}</p> 
+      <p className='mt-1 font-mono text-black dark:text-white'>{productName}</p> 
 
       <div className='flex gap-4 font-thin'>
-        <p className='theme-text-black'>{newPrice}</p> 
-        <p className='line-through text-gray-500'>{oldPrice}</p> 
+        <p className='text-black dark:text-white'>${newPrice}</p> 
+        <p className='line-through text-black dark:text-white'>${oldPrice}</p> 
       </div> 
 
       {/* Hidden until hover */}
       <ul className="flex gap-3 mt-2 opacity-0 translate-y-2 
                group-hover:opacity-100 group-hover:translate-y-0 
                transition-all duration-500 ease-in-out">
-         <li className="border w-8 h-8 flex items-center justify-center rounded-full bg-gray-400 
+         <li className="border w-8 h-8 flex items-center justify-center text-black dark:text-white rounded-full bg-gray-400 
                  cursor-pointer hover:bg-purple-600 relative group"
    onClick= {() => setQuickView(!quickView)}>
   <FaEye size={20} className="transition-transform duration-500 group-hover:rotate-[360deg]"/>
 
   {/* Tooltip text to the right */}
-{ quickView && <span className=" absolute left-2 top-8 bg-gray-500 text-white text-xs rounded
+{ quickView && <span className=" absolute left-2 top-8 bg-gray-500 text-black dark:text-white text-xs rounded
                      transition-opacity duration-300 whitespace-nowrap">
     Quick View
   </span>}
 </li>
          <li
-      className="border w-8 h-8 flex items-center justify-center rounded-full bg-gray-400 
+      className="border w-8 h-8 flex items-center text-black dark:text-white justify-center rounded-full bg-gray-400 
                  cursor-pointer hover:bg-purple-600 relative"
       onClick={() => setCompare(!compare)}
     >
@@ -65,7 +67,7 @@ function Specialoffers({productName,productImage, oldPrice, newPrice}) {
       {/* Tooltip shows only on click */}
       {compare && (
         <span
-          className="absolute left-2 top-8 bg-gray-500 text-white text-xs rounded
+          className="absolute  left-2 top-8 bg-gray-500 text-black dark:text-white text-xs rounded
                      transition-opacity duration-300 whitespace-nowrap"
         >
           Compare
@@ -73,7 +75,7 @@ function Specialoffers({productName,productImage, oldPrice, newPrice}) {
       )}
     </li>
    <li
-      className="border w-8 h-8 flex items-center justify-center rounded-full bg-gray-400 
+      className="border w-8 h-8 flex items-center text-black dark:text-white justify-center rounded-full bg-gray-400 
                  cursor-pointer hover:bg-purple-600 relative group"
       onClick={() => setAddCart(!addCart)}
     >
@@ -85,12 +87,12 @@ function Specialoffers({productName,productImage, oldPrice, newPrice}) {
 
       {/* Tooltip shows only on click */}
       {addCart && (
-        <span
-          className="absolute left-2 top-8 bg-gray-500 text-white text-xs rounded
+        <button onClick={() => addToCart({ id, title: productName, price: newPrice, image: productImage })}
+          className="absolute left-2 top-8  bg-gray-500 text-black dark:text-white text-xs rounded
                      transition-opacity duration-300 whitespace-nowrap"
         >
           Add to Cart
-        </span>
+        </button>
       )}
     </li>
 
@@ -104,4 +106,3 @@ function Specialoffers({productName,productImage, oldPrice, newPrice}) {
 }
 
 export default Specialoffers;
-

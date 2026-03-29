@@ -11,15 +11,39 @@ import Test from './Component/Test'
 import Chat from './Component/Chat'
 import ContactUs from './Pages/ContactUs'
 import Footer from './Component/Footer'
+import SuperDeals from './Pages/SuperDeals'
+import toast, { Toaster } from 'react-hot-toast'
+import { useEffect } from 'react'
+import HomeAppliances from './Pages/HomeAppliances'
+import Categories from './Component/Categories'
+import SiteMap from './Pages/SiteMap'
+import HelpSupport from './Pages/HelpSupport'
+import { CartProvider } from './Component/CartContext'
 
 function App() {
+ useEffect(() => {
+    toast("🚧 Unfortunately, this site is still under construction", {
+      duration: 8000, // 5 seconds
+      position: "top-right",
+      style: {
+        background: "#7e22ce", // purple
+        color: "#fff",
+        fontWeight: "bold",
+      },
+      icon: "⚠️",
+    });
+  }, []);
 
 
   return (
+
     <div>
-      
+      <CartProvider> 
+        <Toaster position='top-right' reverseOrder={false} />
     <BrowserRouter>
     <Navbar/>
+    <Categories/>
+    <main className="pt-[72px] lg:pt-[120px] min-h-screen flex flex-col">
     <Routes> 
     <Route path='/' element={<Home />} />
     <Route path='/signup' element={<SignUp />} />
@@ -29,9 +53,16 @@ function App() {
     <Route path='/cart' element={<Cart />} />
     <Route path='/chat' element={<Chat room="general" />} />
     <Route path='/contact' element={<ContactUs />} />
+    <Route path='superdeals' element={<SuperDeals />}/>
+    <Route path='/homeappliances' element={<HomeAppliances />}/>
+    <Route path='/sitemap' element={<SiteMap/>}/>
+    <Route path='/helpsupport' element={<HelpSupport/>}/>
     </Routes>
+    </main>
     <Footer/>
      </BrowserRouter>
+     </CartProvider>
+     
     </div>
   )
 }

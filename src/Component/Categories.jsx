@@ -1,14 +1,39 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io'
+import { Link } from 'react-router-dom';
+import SuperDeals from '../Pages/SuperDeals';
 
 const Categories = () => {
+  const [open, setOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
 const [categories, setCategories] = useState(false);
 const [moreCategories, setMoreCategories] = useState(false);
 
+  useEffect(() => {
+    const controlNavbar = () => {
+      if (typeof window !== 'undefined') {
+        if (window.scrollY > lastScrollY && window.scrollY > 100) { 
+          setIsVisible(false);
+        } else {
+          setIsVisible(true);
+        }
+        setLastScrollY(window.scrollY);
+      }
+    };
+
+    window.addEventListener('scroll', controlNavbar);
+    return () => window.removeEventListener('scroll', controlNavbar);
+  }, [lastScrollY]);
+
   return (
-      <section className="sticky top-0 bg-purple-400 z-50 shadow">
+      <section 
+        className={`fixed left-0 w-full top-[72px] bg-purple-400 z-[90] shadow transition-transform duration-300 ${
+          isVisible ? "translate-y-0" : "-translate-y-[72px]"
+        }`}
+      >
      <div className=' lg:overflow-visible' >  
       <ul className="flex items-center
   justify-start md:justify-center
@@ -24,7 +49,7 @@ const [moreCategories, setMoreCategories] = useState(false);
           onClick={() => setCategories(!categories)}
         >
           <GiHamburgerMenu />
-          <span>All Categories</span>
+          <span className='text-black dark:text-black hover:text-purple-500 dark:hover:text-purple-500' >All Categories</span>
 
           {/* Arrow rotates when categories is open */}
           <IoIosArrowDropup
@@ -45,15 +70,15 @@ const [moreCategories, setMoreCategories] = useState(false);
       : "max-h-0 opacity-0"
   }`}
           >
-            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Clothings</li>
-            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Mobiles</li>
-            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Electronics</li>
-            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Cameras</li>
-            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Chiars</li>
-            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Furnitures</li>
-            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Home Theaters</li>
-            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Accessories</li>
-            <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Lightings</li>
+            <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800">Clothings</li>
+            <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800">Mobiles</li>
+            <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800">Electronics</li>
+            <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800">Cameras</li>
+            <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800">Chiars</li>
+            <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800">Furnitures</li>
+            <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800">Home Theaters</li>
+            <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800">Accessories</li>
+            <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800">Lightings</li>
           <li
               className="flex items-center py-2 px-4 justify-between cursor-pointer theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800"
               onClick={(e) => {
@@ -61,7 +86,7 @@ const [moreCategories, setMoreCategories] = useState(false);
                 setMoreCategories(!moreCategories);
               }}
             >
-              <span >More Categories</span>
+              <span className='text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500'>More Categories</span>
               {moreCategories ? (
                 <IoIosArrowDropdown className="text-md" />
               ) : (
@@ -72,10 +97,10 @@ const [moreCategories, setMoreCategories] = useState(false);
             {/* Extra categories */}
             {moreCategories && (
               <ul className="space-y-1 divide-y divide-gray-400 font-normal mt-2 bg-white dark:bg-gray-900">
-                <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Sports</li>
-                <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Groceries</li>
-                <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Books</li>
-                <li className="py-2 px-4 theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800">Toys</li>
+                <li className="py-2 px-4 dtext-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Sports</li>
+                <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Groceries</li>
+                <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Books</li>
+                <li className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Toys</li>
               </ul>
             )}
 
@@ -83,25 +108,25 @@ const [moreCategories, setMoreCategories] = useState(false);
         </li>
 
         {/* Rest of your nav items */}
-        <li>
-          <span className="text-purple-600">Super Deals</span>
-        </li>
+        <Link to='/superdeals'> 
+          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Super Deals</span>
+        </Link>
 
         <li>
-          <span className="theme-text-white">Yossy's Business</span>
+          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Yossy's Business</span>
         </li>
 
-        <li>
-          <span className="theme-text-white">Home Appliances</span>
-        </li>
+        <Link to='/homeappliances'> 
+          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Home Appliances</span>
+        </Link>
 
         <li>
-          <span className="theme-text-white">Hair Extensions & Wigs</span>
+          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Hair Extensions & Wigs</span>
         </li>
 
         <li className="flex gap-2 items-center sm:gap-1">
-          <span className="theme-text-white">More</span>
-          <IoIosArrowDropdown className="theme-text-white" />
+          <span className="text-black dark:text-white">More</span>
+          <IoIosArrowDropdown className="text-black dark:text-white" />
         </li>
       </ul>
       </div>

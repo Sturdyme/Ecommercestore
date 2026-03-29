@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -27,7 +28,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-purple-500 to-indigo-600 px-4">
+    <div className="flex-1 flex items-center justify-center bg-white dark:bg-gray-900 px-4 py-12">
       
       {/* Card */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
@@ -104,9 +105,11 @@ const Login = () => {
         {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-6">
           Don’t have an account?{" "}
+          <Link to="/signup"> 
           <span className="text-purple-600 font-semibold cursor-pointer hover:underline">
             Create one
           </span>
+          </Link>
         </p>
       </div>
     </div>

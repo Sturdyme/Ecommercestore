@@ -77,7 +77,7 @@ const FeaturedSection = () => {
 
     {
         isExpanded && (
-            <div className='mt-4 mb-4 flex items-center justify-center flex-wrap gap-4'> {extraItems.map((item, index) => (
+            <div className='mt-4 mb-4 flex items-center  justify-center flex-wrap gap-4'> {extraItems.map((item, index) => (
                 <FeaturedCard
                 key={index}
                 title={item.title}
@@ -94,7 +94,7 @@ const FeaturedSection = () => {
           
     
         <button onClick={() => setIsExpanded(prev => !prev)}
-        className='mt-6 mx-auto mb-4 flex items-center gap-1 text-purple-600 hover:text-purple-800 transition'
+        className='mt-6 mx-auto mb-4 flex items-center gap-1 text-black dark:text-white hover:text-purple-800 transition'
         > 
         {isExpanded ? 'See less' : 'See more'}
         <span className= 'mt-[4px]'>  <BiDownArrow 

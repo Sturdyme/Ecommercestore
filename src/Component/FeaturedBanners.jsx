@@ -21,7 +21,7 @@ const items = [
     links: [
       { name: 'Contact Us', path: '/contact' }, 
       { name: 'Site Map', path: '/sitemap' },
-      { name: 'Help & Support', path: '/help-support' },
+      { name: 'Help & Support', path: '/helpsupport' },
       { name: 'Gift Voucher', path: '/gift-voucher' },
       { name: 'Best Sellers', path: '/best-sellers' }
     ]
@@ -34,7 +34,7 @@ const items = [
       { name: 'New Arrivals', path: '/new-arrivals' },
       { name: 'New Offers', path: '/new-offers' },
       { name: 'Top Picks', path: '/top-picks' },
-      { name: 'Super Deals', path: '/super-deals' },
+      { name: 'Super Deals', path: '/superdeals' },
       { name: 'Best Selling', path: '/best-selling' }
     ]
   },
@@ -55,7 +55,7 @@ const items = [
 
 export default function FeaturedBanners() {
   return (
-    <div className="flex justify-center items-start gap-16 flex-wrap">
+    <div className="flex justify-center text-black dark:text-white items-start gap-16 flex-wrap">
       {items.map((item, i) => (
         <TriangleWithBar
           key={i}

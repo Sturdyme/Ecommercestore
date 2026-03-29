@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
 
 const SignUp = () => {
 
@@ -62,7 +63,7 @@ const SignUp = () => {
   };
   return (
   
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-800 shadow-lg dark:text-white px-4">
+      <div className="flex-1 flex items-center justify-center bg-gray-100 dark:bg-gray-900 shadow-lg dark:text-white px-4 py-12">
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
         <h1 className="text-2xl font-bold text-center text-gray-800">
           Create an Account
@@ -168,10 +169,12 @@ const SignUp = () => {
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-6">
-          Already have an account?{" "}
-          <a href="#" className="text-black font-semibold hover:underline">
+         Already have an account?{" "}
+           <Link to="/login"> 
+          <span href="#" className="text-black font-semibold hover:underline">
             Log in
-          </a>
+          </span>
+          </Link>
         </p>
       </div>
     </div>

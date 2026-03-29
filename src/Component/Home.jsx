@@ -19,7 +19,7 @@ import Footer from './Footer'
 const Home = () => {
   return (
     <div>
-        <Categories />
+        
         <Slideprops />
         <Trending />
         <Products />

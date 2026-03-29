@@ -7,8 +7,8 @@ const SpecialOfferHeader = ({onLeft, onRight}) => {
           <div className='flex items-center justify-between px-10 mt-10'>
         <h1 className='text-1xl theme-text-black'>SPECIAL OFFERS</h1>
        <div> 
-        <button onClick={onLeft}> <BiLeftArrow className='hover:text-gray-400'/></button>
-        <button onClick={onRight}> <BiRightArrow className='hover:text-gray-400' /> </button>
+        <button onClick={onLeft}> <BiLeftArrow className='text-black dark:text-white'/></button>
+        <button onClick={onRight}> <BiRightArrow className='text-black dark:text-white' /> </button>
        </div>
       </div>
       <div className="border mt-2 h-1 w-full mb-6"> 
