@@ -42,41 +42,46 @@ export default function Cart() {
           {cart.map(item => (
             <div
               key={item.id}
-              className="flex text-black dark:text-white items-center justify-between border-b pb-4"
+              className="flex flex-col sm:flex-row text-black dark:text-white items-start sm:items-center justify-between border-b pb-4 gap-4"
             >
-              <div className="flex items-center gap-4">
+              {/* Item Info */}
+              <div className="flex items-center gap-4 w-full sm:w-auto">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-20 h-20 text-black dark:text-white rounded object-cover"
+                  className="w-16 h-16 sm:w-20 sm:h-20 text-black dark:text-white rounded object-cover"
                 />
                 <div>
-                  <h2 className="font-medium text-black dark:text-white">{item.title || item.name}</h2>
-                  <p className="text-black dark:text-white">${item.price}</p>
+                  <h2 className="font-medium text-sm sm:text-base text-black dark:text-white line-clamp-1">{item.title || item.name}</h2>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">${item.price}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <input
-                  type="number"
-                  min="1"
-                  value={item.quantity}
-                  onChange={(e) =>
-                    updateQuantity(item.id, Number(e.target.value))
-                  }
-                  className="w-16 border rounded px-2 py-1 text-center text-black dark:text-black
-                  "
-                />
+              {/* Item Actions/Pricing */}
+              <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-8 w-full sm:w-auto border-t sm:border-none pt-3 sm:pt-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-gray-400 sm:hidden">Qty:</span>
+                  <input
+                    type="number"
+                    min="1"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      updateQuantity(item.id, Number(e.target.value))
+                    }
+                    className="w-12 sm:w-16 border rounded px-1 py-1 text-center text-black dark:text-black"
+                  />
+                </div>
 
-                <p className="w-20 text-right font-medium text-black dark:text-white">
-                  ${item.price * item.quantity}
+                <p className="min-w-[60px] sm:w-20 text-right font-semibold text-sm sm:text-base text-black dark:text-white">
+                  ${(item.price * item.quantity).toFixed(2)}
                 </p>
 
                 <button
                   onClick={() => removeItem(item.id)}
-                  className="text-red-500 hover:text-red-700 text-sm dark:text-red-400 dark:hover:text-red-600 transition"
+                  className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition"
+                  aria-label="Remove item"
                 >
-                  Remove
+                  <span className="text-xs sm:text-sm font-medium">Remove</span>
                 </button>
               </div>
             </div>
