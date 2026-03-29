@@ -22,17 +22,22 @@ import { CartProvider } from './Component/CartContext'
 
 function App() {
  useEffect(() => {
-    toast("🚧 Unfortunately, this site is still under construction", {
-      duration: 8000, // 5 seconds
-      position: "top-right",
-      style: {
-        background: "#7e22ce", // purple
-        color: "#fff",
-        fontWeight: "bold",
-      },
-      icon: "⚠️",
-    });
-  }, []);
+  toast("🚧 This site is under construction", {
+    duration: 8000,
+    position: "top-right",
+    style: {
+      background: "#7e22ce",
+      color: "#fff",
+      fontWeight: "bold",
+      // RESPONSIVE SETTINGS BELOW:
+      fontSize: window.innerWidth < 640 ? "12px" : "14px", 
+      width: "auto",
+      maxWidth: "350px", // Limits width on desktop
+      margin: "0 10px",   // Adds a little space on mobile
+    },
+    icon: "⚠️",
+  });
+}, []);
 
 
   return (
