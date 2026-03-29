@@ -149,6 +149,21 @@ const Navbar = () => {
                   <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
                     Cameras
                   </li>
+                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
+                    Chairs
+                  </li>
+                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
+                    Furnitures
+                  </li>
+                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
+                    Home Theaters
+                  </li>
+                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
+                    Accessories
+                  </li>
+                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
+                    Lightings
+                  </li>
                   <li
                     className="p-3 pl-10 text-purple-500 flex items-center justify-between bg-purple-50/50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white"
                     onClick={() => setMoreCategories(!moreCategories)}
@@ -160,10 +175,29 @@ const Navbar = () => {
                       <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Sports</li>
                       <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Groceries</li>
                       <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Books</li>
+                      <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Toys</li>
                     </div>
                   )}
                 </div>
               )}
+
+              {/* Items from Category Bar */}
+              <Link to="/superdeals" onClick={() => setOpen(false)}>
+                <li className="p-4 border-b hover:bg-purple-50 dark:hover:bg-gray-800 transition">
+                  Super Deals
+                </li>
+              </Link>
+              <li className="p-4 border-b hover:bg-purple-50 dark:hover:bg-gray-800 transition">
+                Yossy's Business
+              </li>
+              <Link to="/homeappliances" onClick={() => setOpen(false)}>
+                <li className="p-4 border-b hover:bg-purple-50 dark:hover:bg-gray-800 transition">
+                  Home Appliances
+                </li>
+              </Link>
+              <li className="p-4 border-b hover:bg-purple-50 dark:hover:bg-gray-800 transition">
+                Hair Extensions & Wigs
+              </li>
 
               {/* Standard Links */}
               <li className="flex gap-3 items-center p-4 border-b">
