@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Shopping = () => {
   return (
@@ -10,9 +11,10 @@ const Shopping = () => {
         </div>
 
     <div> 
+      <Link to="/superdeals"> 
     <button className='bg-purple-800  text-white dark:text-white p-2 rounded-full font-serif hover:bg-pink-800  transition-colors
      
-     duration-300 ease-in-out max-sm:text-xs sm:text-xs'> Shop Now</button>
+     duration-300 ease-in-out max-sm:text-xs sm:text-xs'> Shop Now</button> </Link>
     </div>
       </div>
     </section>

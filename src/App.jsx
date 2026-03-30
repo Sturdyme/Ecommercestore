@@ -19,6 +19,7 @@ import Categories from './Component/Categories'
 import SiteMap from './Pages/SiteMap'
 import HelpSupport from './Pages/HelpSupport'
 import { CartProvider } from './Component/CartContext'
+import ScrollToTop from './Utilities/ScrollToTop'
 
 function App() {
  useEffect(() => {
@@ -46,6 +47,7 @@ function App() {
       <CartProvider> 
         <Toaster position='top-right' reverseOrder={false} />
     <BrowserRouter>
+    <ScrollToTop />
     <Navbar/>
     <Categories/>
     <main className="pt-[72px] lg:pt-[120px] min-h-screen flex flex-col">
