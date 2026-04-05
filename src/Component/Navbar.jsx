@@ -64,6 +64,7 @@ const Navbar = () => {
          <Link to="/"> 
         <h2  className="text-2xl text-purple-400 font-semibold">YossyVogue.com</h2> </Link>
       </div>
+       
 
       {/* Desktop Search */}
       <div className="hidden lg:block">
@@ -73,15 +74,30 @@ const Navbar = () => {
           className="border w-96 p-2 px-4 rounded-full"
         />
       </div>
-
+       
       {/* Desktop Menu */}
       <ul className="hidden lg:flex gap-6 theme-text-black items-center">
         <li className="flex gap-1 items-center">
           <GiWorld className="text-2xl" />
           <span className="text-sm theme-text-black">EN-USD</span>
         </li>
+
+           <span className="flex text-black dark:text-white gap-3 items-center p-4  justify-center">
+                <ThemeToggle />
+              </span>
        
-        
+         <Link to="/cart"> 
+        <li className="relative group">
+          <IoCart className="text-2xl list-none block text-purple-400 group-hover:scale-110 transition-transform" />
+          {/* The Badge */}
+          {totalItems > 0 && (
+            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in duration-300">
+              {totalItems}
+            </span>
+          )}
+        </li>
+        </Link>
+
         <li className="flex gap-1 items-center">
           <FaUser className="text-2xl text-purple-400" />
           <button onClick={handleNavigateToLoginWithSpinner} className="text-sm theme-text-black">Sign in</button>
@@ -97,12 +113,15 @@ const Navbar = () => {
       </ul>
 
       {/* Hamburger Button */}
-      <div className="flex justify-around gap-8 items-center"> 
+      <div className="flex justify-around lg:hidden gap-5 items-center"> 
 
-        <span className="text-black dark:text-white"> <ThemeToggle/></span>
+          <li className="flex gap-3 text-black dark:text-white items-center p-4 border-none justify-center">
+                <ThemeToggle />
+              </li>
+
        <Link to="/cart"> 
         <span className="relative group">
-          <IoCart className="text-2xl block text-purple-400 group-hover:scale-110 transition-transform" />
+          <IoCart className="text-2xl list-none block text-purple-400 group-hover:scale-110 transition-transform" />
           {/* The Badge */}
           {totalItems > 0 && (
             <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in duration-300">
@@ -112,7 +131,7 @@ const Navbar = () => {
         </span>
         </Link>
       <button
-        className="lg:hidden text-2xl text-purple-500"
+        className="text-2xl text-purple-500"
         onClick={() => setOpen(!open)}
       >
         {open ? <FaTimes /> : <FaBars />}
@@ -209,14 +228,29 @@ const Navbar = () => {
               <li className="flex gap-3 items-center p-4 border-b">
                 <GiWorld className="text-xl" /> English-USD
               </li>
-           
+              <Link to="/cart"> 
+        <li className="flex gap-3 items-center p-4 border-b relative group">
+          <div className="relative">
+            <IoCart className="text-2xl text-purple-400 group-hover:scale-110 transition-transform" />
+            
+            {/* The Badge */}
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-black dark:text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in duration-300">
+                {totalItems}
+              </span>
+            )}
+          </div>
+          <span className="font-medium">Cart</span>
+        </li>
+      </Link>
 
               <li className="flex gap-3 items-center p-4 border-b">
                 <button onClick={handleNavigateToLoginWithSpinner} className="flex items-center gap-2">
                 <FaUser className="text-xl text-purple-400" /> Sign in  </button> 
               </li>
 
-          
+           
+             
 
               {/* Mobile Create Account */}
               <li className="p-4">
