@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { FaUser, FaYoast, FaBars, FaTimes } from "react-icons/fa";
 import { GiWorld, GiHamburgerMenu } from "react-icons/gi";
 import { IoCart } from "react-icons/io5";
@@ -53,6 +54,48 @@ const Navbar = () => {
     navigate("/loading-to-login"); // go to spinner loading page
   }
 
+  // User info for navbar
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')));
+  const profilePic = user?.profilePic;
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem('token')));
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const location = useLocation();
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [dropdownOpen]);
+
+  // Keep user state in sync with localStorage changes and navigation (login/logout/profile update)
+  useEffect(() => {
+    const syncUser = () => {
+      setUser(JSON.parse(localStorage.getItem('user')));
+      setIsLoggedIn(Boolean(localStorage.getItem('token')));
+    };
+    window.addEventListener('storage', syncUser);
+    syncUser();
+    return () => window.removeEventListener('storage', syncUser);
+  }, [location]);
+
+  // Logout function
+  const handleLogout = async () => {
+    // Optionally: Call backend logout endpoint here if needed
+    // await api.post('/logout');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+    setIsLoggedIn(false);
+    navigate('/login');
+  };
+
   return (
     <section className={`fixed top-0 left-0 w-full h-[72px] z-[100] bg-white dark:bg-gray-900 shadow-md px-4 py-4 flex justify-between items-center border-b transition-transform duration-300 ${
     isVisible ? "translate-y-0" : "-translate-y-full"
@@ -82,34 +125,138 @@ const Navbar = () => {
           <span className="text-sm theme-text-black">EN-USD</span>
         </li>
 
-           <span className="flex text-black dark:text-white gap-3 items-center p-4  justify-center">
-                <ThemeToggle />
+        <span className="flex text-black dark:text-white gap-3 items-center p-4  justify-center">
+          <ThemeToggle />
+        </span>
+
+        <Link to="/cart"> 
+          <li className="relative group">
+            <IoCart className="text-2xl list-none block text-purple-400 group-hover:scale-110 transition-transform" />
+            {/* The Badge */}
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in duration-300">
+                {totalItems}
               </span>
-       
-         <Link to="/cart"> 
-        <li className="relative group">
-          <IoCart className="text-2xl list-none block text-purple-400 group-hover:scale-110 transition-transform" />
-          {/* The Badge */}
-          {totalItems > 0 && (
-            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in duration-300">
-              {totalItems}
-            </span>
-          )}
-        </li>
+            )}
+          </li>
         </Link>
 
-        <li className="flex gap-1 items-center">
-          <FaUser className="text-2xl text-purple-400" />
-          <button onClick={handleNavigateToLoginWithSpinner} className="text-sm theme-text-black">Sign in</button>
-        </li>
-        <li>
-          <button
-            onClick={handleNavigateWithSpinner}
-            className="bg-purple-400 rounded-xl font-semibold text-black dark:text-white p-2 px-4"
-          >
-            Create Account
-          </button>
-        </li>
+        {isLoggedIn ? (
+          <li className="relative flex items-center">
+            {/* Desktop Dropdown */}
+            <button
+              className="hidden lg:flex items-center gap-2 focus:outline-none"
+              onClick={() => setDropdownOpen((open) => !open)}
+            >
+              <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-purple-400">
+                {profilePic ? (
+                  <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <FaUser className="w-full h-full text-purple-400" />
+                )}
+              </div>
+              <span className="text-sm font-semibold theme-text-black">{user?.email || user?.name || 'Account'}</span>
+              <svg className="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            {dropdownOpen && (
+              <div ref={dropdownRef} className="hidden lg:block absolute right-0 mt-24 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 z-50 animate-fade-in">
+                <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400">
+                      {profilePic ? (
+                        <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <FaUser className="w-full h-full text-purple-400" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900 dark:text-white">{user?.name || '-'}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-300">{user?.email || '-'}</div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-purple-50 dark:hover:bg-gray-700 transition text-gray-800 dark:text-white"
+                  onClick={() => { setDropdownOpen(false); navigate('/profile'); }}
+                >
+                  My Profile
+                </button>
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-gray-700 transition text-red-600 dark:text-red-400 border-t border-gray-100 dark:border-gray-700"
+                  onClick={() => { setDropdownOpen(false); handleLogout(); }}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+            {/* Mobile Dropdown (shows in hamburger menu) */}
+            <button
+              className="flex lg:hidden items-center gap-2 focus:outline-none"
+              onClick={() => setMobileDropdownOpen((open) => !open)}
+            >
+              <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-purple-400">
+                {profilePic ? (
+                  <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <FaUser className="w-full h-full text-purple-400" />
+                )}
+              </div>
+              <span className="text-sm font-semibold theme-text-black">{user?.email || user?.name || 'Account'}</span>
+              <svg className="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            {mobileDropdownOpen && (
+              <div className="block lg:hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 z-50 animate-fade-in">
+                <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400">
+                      {profilePic ? (
+                        <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <FaUser className="w-full h-full text-purple-400" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900 dark:text-white">{user?.name || '-'}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-300">{user?.email || '-'}</div>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-purple-50 dark:hover:bg-gray-700 transition text-gray-800 dark:text-white"
+                  onClick={() => { setMobileDropdownOpen(false); navigate('/profile'); setOpen(false); }}
+                >
+                  My Profile
+                </button>
+                <button
+                  className="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-gray-700 transition text-red-600 dark:text-red-400 border-t border-gray-100 dark:border-gray-700"
+                  onClick={() => { setMobileDropdownOpen(false); handleLogout(); setOpen(false); }}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </li>
+        ) : (
+          <>
+            {/* Hide sign in/create account if logged in */}
+            {!isLoggedIn && (
+              <>
+                <li className="flex gap-1 items-center">
+                  <FaUser className="text-2xl text-purple-400" />
+                  <button onClick={handleNavigateToLoginWithSpinner} className="text-sm theme-text-black">Sign in</button>
+                </li>
+                <li>
+                  <button
+                    onClick={handleNavigateWithSpinner}
+                    className="bg-purple-400 rounded-xl font-semibold text-black dark:text-white p-2 px-4"
+                  >
+                    Create Account
+                  </button>
+                </li>
+              </>
+            )}
+          </>
+        )}
       </ul>
 
       {/* Hamburger Button */}

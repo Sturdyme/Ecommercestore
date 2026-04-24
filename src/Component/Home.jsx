@@ -15,11 +15,12 @@ import FeaturedCard from './FeaturedCard'
 import FeaturedSection from './FeaturedSection'
 import SignUpOffers from './SignUpOffers'
 import Footer from './Footer'
+import Dashboard from '../Pages/Dashboard'
 
 const Home = () => {
   return (
     <div>
-        
+
         <Slideprops />
         <Trending />
         <Products />

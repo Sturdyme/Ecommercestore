@@ -1,5 +1,6 @@
 import React from 'react'
 import Specialoffers from './Specialoffers'
+// Prices are passed as USD, displayed as Naira in Specialoffers
 import camera from '../assets/specialOfferImages/camera.png'
 import chair from '../assets/specialOfferImages/chair.png'
 import dining from '../assets/specialOfferImages/dining.png'

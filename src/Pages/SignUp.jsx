@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import api from '../api';
 
 const SignUp = () => {
 
@@ -8,8 +9,10 @@ const SignUp = () => {
     name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    password_confirmation: "",
   });
+
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
 
@@ -43,24 +46,49 @@ const SignUp = () => {
         "Password must be at least 8 characters and include letters and numbers.";
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match.";
+    if (formData.password !== formData.password_confirmation) {
+      newErrors.password_confirmation = "Passwords do not match.";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!validateForm()) return;
+  if (!validateForm()) return;
 
-    // Send to backend here
-    console.log("Signup Data:", formData);
+  try {
+    const response = await api.post("/register", {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      password_confirmation: formData.password_confirmation,
+    });
+
+    // ✅ Save token
+    localStorage.setItem("token", response.data.token);
+
+    // ✅ Optional: save user
+    localStorage.setItem("user", JSON.stringify(response.data.user));
 
     alert("Signup successful 🎉");
-  };
+
+    // ✅ Redirect to home or login
+    navigate("/");
+
+  } catch (error) {
+    console.error(error.response?.data || error.message);
+
+    if (error.response?.data?.errors) {
+      setErrors(error.response.data.errors);
+    } else {
+      alert("Something went wrong. Try again.");
+    }
+  }
+};
+  
   return (
   
       <div className="flex-1 flex items-center justify-center bg-gray-100 dark:bg-gray-900 shadow-lg dark:text-white px-4 py-12">
@@ -83,7 +111,7 @@ const SignUp = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+              className="mt-1 w-full px-4 py-2 border rounded-lg text-black dark:text-dark focus:ring-2 focus:ring-black focus:outline-none"
               placeholder="Enter your full name"
             />
             {errors.name && (
@@ -93,7 +121,7 @@ const SignUp = () => {
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-gray-700 dark:text-black">
               Email Address
             </label>
             <input
@@ -101,7 +129,7 @@ const SignUp = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+              className="mt-1 w-full px-4 py-2 border text-black dark:text-black rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
               placeholder="you@example.com"
             />
             {errors.email && (
@@ -119,7 +147,7 @@ const SignUp = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+              className="mt-1 w-full px-4 py-2 border text-black dark:text-black rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
               placeholder="********"
             />
             <button
@@ -141,10 +169,10 @@ const SignUp = () => {
             </label>
             <input
               type={showConfirmPassword ? "text" : "password"}
-              name="confirmPassword"
-              value={formData.confirmPassword}
+              name="password_confirmation"
+              value={formData.password_confirmation}
               onChange={handleChange}
-              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
+              className="mt-1 w-full px-4 py-2 border text-black dark:text-black rounded-lg focus:ring-2 focus:ring-black focus:outline-none"
               placeholder="********"
             />
             <button 

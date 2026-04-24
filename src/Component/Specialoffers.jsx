@@ -2,12 +2,13 @@
 
 
 
+
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 import { FaCartArrowDown, FaEye } from 'react-icons/fa'
 import { FaBurger } from 'react-icons/fa6'
-
 import { useEffect, useState } from 'react';
 import { useCart } from './CartContext';
+import { usdToNairaDisplay } from "../Utilities/currency";
 
 
 function Specialoffers({id, productName,productImage, oldPrice, newPrice}) {
@@ -34,9 +35,9 @@ function Specialoffers({id, productName,productImage, oldPrice, newPrice}) {
       <p className='mt-1 font-mono text-black dark:text-white'>{productName}</p> 
 
       <div className='flex gap-4 font-thin'>
-        <p className='text-black dark:text-white'>${newPrice}</p> 
-        <p className='line-through text-black dark:text-white'>${oldPrice}</p> 
-      </div> 
+        <p className='text-black dark:text-white'>{usdToNairaDisplay(newPrice)}</p> 
+        <p className='line-through text-black dark:text-white'>{usdToNairaDisplay(oldPrice)}</p> 
+      </div>
 
       {/* Hidden until hover */}
       <ul className="flex gap-3 mt-2 opacity-0 translate-y-2 

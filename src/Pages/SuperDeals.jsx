@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useCart } from '../Component/CartContext';
+import { usdToNairaDisplay } from "../Utilities/currency";
 
 const SuperDeals = () => {
   const [products, setProducts] = useState([]);
@@ -53,7 +54,7 @@ const SuperDeals = () => {
         {/* Price + Category */}
         <div className="flex justify-between items-center pt-1">
           <p className="text-base font-bold text-green-600">
-            ${p.price}
+            {usdToNairaDisplay(p.price)}
           </p>
           <span className="text-[10px] bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full capitalize">
             {p.category}

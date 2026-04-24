@@ -2,6 +2,8 @@ import { useState } from "react";
 import mug from "../assets/specialOfferImages/mug.png"
 import chair from "../assets/specialOfferImages/chair.png"
 import { useCart } from "../Component/CartContext";
+import { usdToNairaDisplay } from "../Utilities/currency";
+import { Link } from "react-router-dom";
 
 const initialCart = [
   {
@@ -53,7 +55,7 @@ export default function Cart() {
                 />
                 <div>
                   <h2 className="font-medium text-sm sm:text-base text-black dark:text-white line-clamp-1">{item.title || item.name}</h2>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">${item.price}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">{usdToNairaDisplay(item.price)}</p>
                 </div>
               </div>
 
@@ -73,7 +75,7 @@ export default function Cart() {
                 </div>
 
                 <p className="min-w-[60px] sm:w-20 text-right font-semibold text-sm sm:text-base text-black dark:text-white">
-                  ${(item.price * item.quantity).toFixed(2)}
+                  {usdToNairaDisplay(item.price * item.quantity)}
                 </p>
 
                 <button
@@ -94,22 +96,23 @@ export default function Cart() {
               <h2 className="text-xl font-bold mb-6 text-black dark:text-white">Order Summary</h2>
             <div className="flex justify-between mb-2">
               <span className="text-black dark:text-white">Subtotal</span>
-              <span className="text-black dark:text-white">${subtotal}</span>
+              <span className="text-black dark:text-white">{usdToNairaDisplay(subtotal)}</span>
             </div>
             <div className="flex justify-between mb-2">
               <span className="text-black dark:text-white">Shipping</span>
-              <span className="text-black dark:text-white">${shipping}</span>
+              <span className="text-black dark:text-white">{usdToNairaDisplay(shipping)}</span>
             </div>
             <div className="flex justify-between text-lg font-semibold mt-4">
               <span className="text-black dark:text-white">Total</span>
-              <span className="text-black dark:text-white">${total}</span>
+              <span className="text-black dark:text-white">{usdToNairaDisplay(total)}</span>
             </div>
-
+           <Link to="/checkout"> 
             <button
               className="w-full mt-6 bg-black text-white dark:text-white py-3 rounded hover:bg-gray-800 transition"
             >
               Proceed to Checkout
             </button>
+            </Link>
           </div>
           </div>
         </div>
