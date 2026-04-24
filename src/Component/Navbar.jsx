@@ -62,17 +62,21 @@ const Navbar = () => {
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const location = useLocation();
-  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside, but not when clicking the button itself
   useEffect(() => {
-    if (!dropdownOpen) return;
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const closeDropdown = (e) => {
+      // If the click is NOT inside the dropdownRef or the button, close it
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target) &&
+        !e.target.closest('.profile-dropdown-btn')
+      ) {
         setDropdownOpen(false);
       }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [dropdownOpen]);
+    };
+    document.addEventListener('mousedown', closeDropdown);
+    return () => document.removeEventListener('mousedown', closeDropdown);
+  }, []);
 
   // Keep user state in sync with localStorage changes and navigation (login/logout/profile update)
   useEffect(() => {
@@ -144,25 +148,45 @@ const Navbar = () => {
         {isLoggedIn ? (
           <li className="relative flex items-center">
             {/* Desktop Dropdown */}
-            <button
-              className="hidden lg:flex items-center gap-2 focus:outline-none"
-              onClick={() => setDropdownOpen((open) => !open)}
-            >
-              <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-purple-400">
-                {profilePic ? (
-                  <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  <FaUser className="w-full h-full text-purple-400" />
-                )}
-              </div>
-              <span className="text-sm font-semibold theme-text-black">{user?.email || user?.name || 'Account'}</span>
-              <svg className="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-            </button>
+           <button
+             type="button"
+             className="profile-dropdown-btn hidden lg:flex items-center gap-2 focus:outline-none cursor-pointer"
+             onClick={(e) => {
+               e.stopPropagation();
+               setDropdownOpen((open) => !open);
+             }}
+           >
+  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-purple-400">
+    {profilePic ? (
+      <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+    ) : (
+      <FaUser className="w-full h-full text-purple-400" />
+    )}
+  </div>
+  
+  <span className="text-sm font-semibold theme-text-black">
+    {user?.email || user?.name || 'Account'}
+  </span>
+
+  {/* Dynamic Arrow Logic */}
+  {dropdownOpen ? 
+   (
+    // DOWN ARROW (Open)
+    <svg className="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  ):(
+    // UP ARROW (Close)
+    <svg className="w-4 h-4 ml-1 text-purple-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+    </svg>
+  ) }
+</button>
             {dropdownOpen && (
-              <div ref={dropdownRef} className="hidden lg:block absolute right-0 mt-24 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 z-50 animate-fade-in">
+              <div ref={dropdownRef} className="hidden lg:block absolute right-0 mt-48 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 z-50 animate-fade-in">
                 <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                  <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full overflow-hidden">
                       {profilePic ? (
                         <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
                       ) : (
