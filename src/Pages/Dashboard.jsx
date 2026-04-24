@@ -101,7 +101,7 @@ const Dashboard = () => {
           <section>
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg md:text-xl font-semibold">Recommended for You</h3>
-              <Link to="/homepage" className="text-sm md:text-base text-purple-600 flex items-center hover:underline">
+              <Link to="/" className="text-sm md:text-base text-purple-600 flex items-center hover:underline">
                 View All <FiArrowRight className="ml-1" />
               </Link>
             </div>
