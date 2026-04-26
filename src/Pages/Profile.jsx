@@ -24,7 +24,7 @@ const Profile = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4 text-center">Profile</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center text-black dark:text-white">Profile</h2>
         <div className="flex flex-col items-center mb-6">
           <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-purple-600 mb-2">
             {profilePic ? (
@@ -40,8 +40,8 @@ const Profile = () => {
           {uploading && <p className="text-xs text-gray-500 mt-2">Uploading...</p>}
         </div>
         <div className="space-y-2">
-          <div><span className="font-semibold">Name:</span> {user.name || '-'}</div>
-          <div><span className="font-semibold">Email:</span> {user.email || '-'}</div>
+          <div className='text-black dark:text-white'><span className="font-semibold">Name:</span> {user.name || '-'}</div>
+          <div className='text-black dark:text-white'><span className="font-semibold">Email:</span> {user.email || '-'}</div>
         </div>
       </div>
     </div>

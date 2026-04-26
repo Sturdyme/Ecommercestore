@@ -1,10 +1,8 @@
 import { useEffect, useState, useRef } from "react";
-import { useLocation } from "react-router-dom";
-import { FaUser, FaYoast, FaBars, FaTimes } from "react-icons/fa";
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { FaUser, FaYoast, FaBars, FaTimes, FaSignOutAlt, FaChevronRight } from "react-icons/fa";
 import { GiWorld, GiHamburgerMenu } from "react-icons/gi";
 import { IoCart } from "react-icons/io5";
-import { IoIosArrowDropup } from "react-icons/io";
-import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 import { useCart } from "./CartContext";
 
@@ -12,432 +10,202 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { cart } = useCart();
+  const dropdownRef = useRef(null);
 
-  useEffect(() => {
-    const controlNavbar = () => {
-      if (typeof window !== 'undefined') {
-        // If scrolling down, hide it. If scrolling up, show it.
-        if (window.scrollY > lastScrollY && window.scrollY > 100) { 
-          setIsVisible(false); // Scrolling down
-        } else {
-          setIsVisible(true); // Scrolling up
-        }
-        // Update last scroll position
-        setLastScrollY(window.scrollY);
-      }
-    };
-
-    window.addEventListener('scroll', controlNavbar);
-
-    // Clean up listener on unmount
-    return () => {
-      window.removeEventListener('scroll', controlNavbar);
-    };
-  }, [lastScrollY]);
-
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')));
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem('token')));
+  const profilePic = user?.profilePic;
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
-  const [categories, setCategories] = useState(false);
-  const [moreCategories, setMoreCategories] = useState(false);
-
-  // Function to handle navigation with loading page
-  const handleNavigateWithSpinner = () => {
-    setOpen(false); // close mobile menu
-    navigate("/loading-to-page"); // go to spinner loading page
-  };
-
-  const handleNavigateToLoginWithSpinner = () => {
-    setOpen(false); // close mobile menu
-    navigate("/loading-to-login"); // go to spinner loading page
-  }
-
-  // User info for navbar
-  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')));
-  const profilePic = user?.profilePic;
-  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem('token')));
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-  const location = useLocation();
-  // Close dropdown when clicking outside, but not when clicking the button itself
+  // Logic for scroll visibility and outside clicks...
   useEffect(() => {
-    const closeDropdown = (e) => {
-      // If the click is NOT inside the dropdownRef or the button, close it
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target) &&
-        !e.target.closest('.profile-dropdown-btn')
-      ) {
-        setDropdownOpen(false);
-      }
+    const controlNavbar = () => {
+      if (window.scrollY > lastScrollY && window.scrollY > 100) setIsVisible(false);
+      else setIsVisible(true);
+      setLastScrollY(window.scrollY);
     };
-    document.addEventListener('mousedown', closeDropdown);
-    return () => document.removeEventListener('mousedown', closeDropdown);
-  }, []);
+    window.addEventListener('scroll', controlNavbar);
+    return () => window.removeEventListener('scroll', controlNavbar);
+  }, [lastScrollY]);
 
-  // Keep user state in sync with localStorage changes and navigation (login/logout/profile update)
   useEffect(() => {
-    const syncUser = () => {
-      setUser(JSON.parse(localStorage.getItem('user')));
-      setIsLoggedIn(Boolean(localStorage.getItem('token')));
-    };
-    window.addEventListener('storage', syncUser);
-    syncUser();
-    return () => window.removeEventListener('storage', syncUser);
-  }, [location]);
+    if (open) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "unset";
+  }, [open]);
 
-  // Logout function
-  const handleLogout = async () => {
-    // Optionally: Call backend logout endpoint here if needed
-    // await api.post('/logout');
+  const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
     setIsLoggedIn(false);
+    setOpen(false);
     navigate('/login');
   };
 
   return (
-    <section className={`fixed top-0 left-0 w-full h-[72px] z-[100] bg-white dark:bg-gray-900 shadow-md px-4 py-4 flex justify-between items-center border-b transition-transform duration-300 ${
-    isVisible ? "translate-y-0" : "-translate-y-full"
-  }`}>
-      {/* Logo */}
-     
-      <div className="flex gap-1 items-center">
-        <FaYoast className="text-3xl text-purple-400" />
-         <Link to="/"> 
-        <h2  className="text-2xl text-purple-400 font-semibold">YossyVogue.com</h2> </Link>
-      </div>
-       
-
-      {/* Desktop Search */}
-      <div className="hidden lg:block">
-        <input
-          type="text"
-          placeholder="Search for products..."
-          className="border w-96 p-2 px-4 rounded-full"
-        />
-      </div>
-       
-      {/* Desktop Menu */}
-      <ul className="hidden lg:flex gap-6 theme-text-black items-center">
-        <li className="flex gap-1 items-center">
-          <GiWorld className="text-2xl" />
-          <span className="text-sm theme-text-black">EN-USD</span>
-        </li>
-
-        <span className="flex text-black dark:text-white gap-3 items-center p-4  justify-center">
-          <ThemeToggle />
-        </span>
-
-        <Link to="/cart"> 
-          <li className="relative group">
-            <IoCart className="text-2xl list-none block text-purple-400 group-hover:scale-110 transition-transform" />
-            {/* The Badge */}
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in duration-300">
-                {totalItems}
-              </span>
-            )}
-          </li>
-        </Link>
-
-        {isLoggedIn ? (
-          <li className="relative flex items-center">
-            {/* Desktop Dropdown */}
-           <button
-             type="button"
-             className="profile-dropdown-btn hidden lg:flex items-center gap-2 focus:outline-none cursor-pointer"
-             onClick={(e) => {
-               e.stopPropagation();
-               setDropdownOpen((open) => !open);
-             }}
-           >
-  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-purple-400">
-    {profilePic ? (
-      <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
-    ) : (
-      <FaUser className="w-full h-full text-purple-400" />
-    )}
-  </div>
-  
-  <span className="text-sm font-semibold theme-text-black">
-    {user?.email || user?.name || 'Account'}
-  </span>
-
-  {/* Dynamic Arrow Logic */}
-  {dropdownOpen ? 
-   (
-    // DOWN ARROW (Open)
-    <svg className="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-    </svg>
-  ):(
-    // UP ARROW (Close)
-    <svg className="w-4 h-4 ml-1 text-purple-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-    </svg>
-  ) }
-</button>
-            {dropdownOpen && (
-              <div ref={dropdownRef} className="hidden lg:block absolute right-0 mt-48 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 z-50 animate-fade-in">
-                <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full overflow-hidden">
-                      {profilePic ? (
-                        <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
-                      ) : (
-                        <FaUser className="w-full h-full text-purple-400" />
-                      )}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900 dark:text-white">{user?.name || '-'}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-300">{user?.email || '-'}</div>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  className="w-full text-left px-4 py-2 hover:bg-purple-50 dark:hover:bg-gray-700 transition text-gray-800 dark:text-white"
-                  onClick={() => { setDropdownOpen(false); navigate('/profile'); }}
-                >
-                  My Profile
-                </button>
-                <button
-                  className="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-gray-700 transition text-red-600 dark:text-red-400 border-t border-gray-100 dark:border-gray-700"
-                  onClick={() => { setDropdownOpen(false); handleLogout(); }}
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-            {/* Mobile Dropdown (shows in hamburger menu) */}
-            <button
-              className="flex lg:hidden items-center gap-2 focus:outline-none"
-              onClick={() => setMobileDropdownOpen((open) => !open)}
-            >
-              <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-purple-400">
-                {profilePic ? (
-                  <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
-                ) : (
-                  <FaUser className="w-full h-full text-purple-400" />
-                )}
-              </div>
-              <span className="text-sm font-semibold theme-text-black">{user?.email || user?.name || 'Account'}</span>
-              <svg className="w-4 h-4 ml-1 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-            </button>
-            {mobileDropdownOpen && (
-              <div className="block lg:hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700 z-50 animate-fade-in">
-                <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                  <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400">
-                      {profilePic ? (
-                        <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
-                      ) : (
-                        <FaUser className="w-full h-full text-purple-400" />
-                      )}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-gray-900 dark:text-white">{user?.name || '-'}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-300">{user?.email || '-'}</div>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  className="w-full text-left px-4 py-2 hover:bg-purple-50 dark:hover:bg-gray-700 transition text-gray-800 dark:text-white"
-                  onClick={() => { setMobileDropdownOpen(false); navigate('/profile'); setOpen(false); }}
-                >
-                  My Profile
-                </button>
-                <button
-                  className="w-full text-left px-4 py-2 hover:bg-red-50 dark:hover:bg-gray-700 transition text-red-600 dark:text-red-400 border-t border-gray-100 dark:border-gray-700"
-                  onClick={() => { setMobileDropdownOpen(false); handleLogout(); setOpen(false); }}
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </li>
-        ) : (
-          <>
-            {/* Hide sign in/create account if logged in */}
-            {!isLoggedIn && (
-              <>
-                <li className="flex gap-1 items-center">
-                  <FaUser className="text-2xl text-purple-400" />
-                  <button onClick={handleNavigateToLoginWithSpinner} className="text-sm theme-text-black">Sign in</button>
-                </li>
-                <li>
-                  <button
-                    onClick={handleNavigateWithSpinner}
-                    className="bg-purple-400 rounded-xl font-semibold text-black dark:text-white p-2 px-4"
-                  >
-                    Create Account
-                  </button>
-                </li>
-              </>
-            )}
-          </>
-        )}
-      </ul>
-
-      {/* Hamburger Button */}
-      <div className="flex justify-around lg:hidden gap-5 items-center"> 
-
-          <li className="flex gap-3 text-black dark:text-white items-center p-4 border-none justify-center">
-                <ThemeToggle />
-              </li>
-
-       <Link to="/cart"> 
-        <span className="relative group">
-          <IoCart className="text-2xl list-none block text-purple-400 group-hover:scale-110 transition-transform" />
-          {/* The Badge */}
-          {totalItems > 0 && (
-            <span className="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in duration-300">
-              {totalItems}
-            </span>
-          )}
-        </span>
-        </Link>
-      <button
-        className="text-2xl text-purple-500"
-        onClick={() => setOpen(!open)}
-      >
-        {open ? <FaTimes /> : <FaBars />}
-      </button>
-
-      </div>
-
-      {/* Mobile Menu */}
-      {open && (
-        <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-900 shadow-xl z-[110] lg:hidden border-t border-gray-100">
-          <div className="max-h-[85vh] overflow-y-auto">
-            <ul className="flex flex-col theme-text-black dark:theme-text-white font-medium">
-              {/* Categories */}
-              <li
-                className="flex items-center dark:bg-black justify-between p-4 bg-gray-50 border-b cursor-pointer"
-                onClick={() => setCategories(!categories)}
-              >
-                <div className="flex dark:bg-black items-center gap-3">
-                  <GiHamburgerMenu className="text-purple-500 " />
-                  <span className="font-bold dark:bg-black theme-text-black">All Categories</span>
-                </div>
-                <IoIosArrowDropup
-                  className={`transition-transform duration-300 ${
-                    categories ? "rotate-180" : "rotate-0"
-                  }`}
-                />
-              </li>
-
-              {categories && (
-                <div className="bg-white dark:bg-gray-900 flex flex-col transition-all">
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
-                    Clothings
-                  </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
-                    Mobiles
-                  </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
-                    Electronics
-                  </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
-                    Cameras
-                  </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
-                    Chairs
-                  </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
-                    Furnitures
-                  </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
-                    Home Theaters
-                  </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
-                    Accessories
-                  </li>
-                  <li className="p-3 pl-10 border-b border-gray-50 hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">
-                    Lightings
-                  </li>
-                  <li
-                    className="p-3 pl-10 text-purple-500 flex items-center justify-between bg-purple-50/50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white"
-                    onClick={() => setMoreCategories(!moreCategories)}
-                  >
-                    <span>{moreCategories ? "Show Less" : "More Categories..."}</span>
-                  </li>
-                  {moreCategories && (
-                    <div className="bg-gray-50 dark:bg-gray-900">
-                      <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Sports</li>
-                      <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Groceries</li>
-                      <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Books</li>
-                      <li className="p-3 pl-14 border-b border-white hover:bg-purple-50 dark:hover:bg-gray-800 theme-text-black dark:theme-text-white">Toys</li>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Items from Category Bar */}
-              <Link to="/superdeals" onClick={() => setOpen(false)}>
-                <li className="p-4 border-b hover:bg-purple-50 dark:hover:bg-gray-800 transition">
-                  Super Deals
-                </li>
-              </Link>
-              <li className="p-4 border-b hover:bg-purple-50 dark:hover:bg-gray-800 transition">
-                Yossy's Business
-              </li>
-              <Link to="/homeappliances" onClick={() => setOpen(false)}>
-                <li className="p-4 border-b hover:bg-purple-50 dark:hover:bg-gray-800 transition">
-                  Home Appliances
-                </li>
-              </Link>
-              <li className="p-4 border-b hover:bg-purple-50 dark:hover:bg-gray-800 transition">
-                Hair Extensions & Wigs
-              </li>
-
-              {/* Standard Links */}
-              <li className="flex gap-3 items-center p-4 border-b">
-                <GiWorld className="text-xl" /> English-USD
-              </li>
-              <Link to="/cart"> 
-        <li className="flex gap-3 items-center p-4 border-b relative group">
-          <div className="relative">
-            <IoCart className="text-2xl text-purple-400 group-hover:scale-110 transition-transform" />
-            
-            {/* The Badge */}
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-black dark:text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] flex items-center justify-center border-2 border-white dark:border-gray-900 animate-in zoom-in duration-300">
-                {totalItems}
-              </span>
-            )}
+    <>
+      <nav className={`fixed top-0 left-0 w-full h-[72px] z-[100] bg-white/80 dark:bg-gray-900/80 backdrop-blur-md px-4 lg:px-10 flex justify-between items-center border-b border-gray-100 dark:border-gray-800 transition-transform duration-500 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
+        
+        {/* Logo */}
+        <Link to="/" className="flex gap-2 items-center group">
+          <div className="bg-purple-500 p-1.5 rounded-lg group-hover:rotate-12 transition-transform">
+            <FaYoast className="text-xl text-white" />
           </div>
-          <span className="font-medium">Cart</span>
-        </li>
-      </Link>
+          <h2 className="text-xl lg:text-2xl text-gray-900 dark:text-white font-black tracking-tighter">
+            YOSSY<span className="text-purple-500">VOGUE</span>
+          </h2>
+        </Link>
 
-              <li className="flex gap-3 items-center p-4 border-b">
-                <button onClick={handleNavigateToLoginWithSpinner} className="flex items-center gap-2">
-                <FaUser className="text-xl text-purple-400" /> Sign in  </button> 
-              </li>
-
-           
-             
-
-              {/* Mobile Create Account */}
-              <li className="p-4">
-                <button
-                  onClick={handleNavigateWithSpinner}
-                  className="w-full bg-purple-400 theme-text-white py-3 rounded-xl hover:bg-purple-500 transition"
-                >
-                  Create Account
-                </button>
-              </li>
-            </ul>
+        {/* Desktop Search */}
+        <div className="hidden lg:block flex-1 max-w-md mx-10">
+          <div className="relative group">
+            <input
+              type="text"
+              placeholder="Search trends..."
+              className="w-full bg-gray-100 dark:bg-gray-800 border-none py-2.5 px-6 rounded-2xl text-sm focus:ring-2 focus:ring-purple-400 transition-all"
+            />
           </div>
         </div>
-      )}
-    </section>
+
+        {/* Action Icons */}
+        <div className="flex items-center gap-2 lg:gap-6">
+          <div className="hidden lg:flex dark:text-white"><ThemeToggle /></div>
+          
+          <Link to="/cart" className="relative p-2.5 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
+            <IoCart className="text-xl text-gray-700 dark:text-gray-200" />
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white dark:border-gray-900">
+                {totalItems}
+              </span>
+            )}
+          </Link>
+
+          {/* Desktop Auth */}
+          <div className="hidden lg:block">
+            {isLoggedIn ? (
+              <button onClick={() => navigate('/profile')} className="w-10 h-10 rounded-xl border-2 border-purple-500 overflow-hidden shadow-lg shadow-purple-200 dark:shadow-none">
+                 {profilePic ? <img src={profilePic} className="w-full h-full object-cover" /> : <FaUser className="w-full h-full p-2 text-purple-500" />}
+              </button>
+            ) : (
+              <button onClick={() => navigate('/login')} className="bg-gray-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-xl font-bold text-sm hover:scale-105 transition-transform">
+                Sign In
+              </button>
+            )}
+          </div>
+
+          {/* RIGHT SIDE HAMBURGER */}
+          <button 
+            onClick={() => setOpen(true)}
+            className="p-2.5 bg-purple-500 text-white rounded-xl lg:hidden shadow-lg shadow-purple-200"
+          >
+            <FaBars className="text-xl" />
+          </button>
+        </div>
+      </nav>
+
+      {/* RIGHT SIDE DRAWER MENU */}
+      <div className={`fixed inset-0 z-[120] transition-visibility duration-300 ${open ? "visible" : "invisible"}`}>
+        
+        {/* Backdrop glass */}
+        <div 
+          className={`absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity duration-500 ${open ? "opacity-100" : "opacity-0"}`} 
+          onClick={() => setOpen(false)}
+        />
+
+        {/* Menu Panel */}
+        <div className={`absolute top-0 right-0 w-[85%] max-w-[380px] h-full bg-white dark:bg-gray-950 shadow-[-20px_0_50px_rgba(0,0,0,0.1)] transition-transform duration-500 ease-out ${open ? "translate-x-0" : "translate-x-full"}`}>
+          
+          {/* Close Button */}
+          <button 
+            onClick={() => setOpen(false)}
+            className="absolute top-6 left-[-50px] w-10 h-10 bg-white dark:bg-gray-900 flex items-center justify-center rounded-full shadow-lg text-purple-500"
+          >
+            <FaTimes />
+          </button>
+
+          <div className="h-full flex flex-col">
+            {/* Drawer Header (User Card) */}
+            <div className="p-8 pb-10 bg-gradient-to-br from-purple-600 to-purple-800 text-white rounded-bl-[40px]">
+              {isLoggedIn ? (
+                <div className="flex flex-col gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 overflow-hidden">
+                     {profilePic ? <img src={profilePic} className="w-full h-full object-cover" /> : <FaUser className="w-full h-full p-4" />}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">Hey, {user?.name?.split(' ')[0]}!</h3>
+                    <p className="text-xs text-purple-200">{user?.email}</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <h3 className="text-2xl font-black">Welcome.</h3>
+                  <p className="text-sm text-purple-100">Unlock deals, tracking, and more.</p>
+                  <button onClick={() => navigate('/login')} className="w-fit bg-white text-purple-600 px-6 py-2 rounded-xl font-bold text-sm">Join YossyVogue</button>
+                </div>
+              )}
+            </div>
+
+            {/* Navigation Links */}
+            <div className="flex-1 px-6 py-8 overflow-y-auto">
+              <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-400 mb-4 ml-2">Main Menu</p>
+              
+              <div className="flex flex-col gap-1">
+                <AnimatedMobileLink delay="100ms" to="/superdeals" label="Super Deals" setOpen={setOpen} />
+                <AnimatedMobileLink delay="150ms" to="/homeappliances" label="Home Appliances" setOpen={setOpen} />
+                <AnimatedMobileLink delay="200ms" to="/cart" label="Shopping Cart" setOpen={setOpen} count={totalItems} />
+                
+                {isLoggedIn && (
+                  <>
+                    <div className="my-4 border-t border-gray-100 dark:border-gray-800" />
+                    <AnimatedMobileLink delay="250ms" to="/profile" label="My Profile" setOpen={setOpen} />
+                    <AnimatedMobileLink delay="300ms" to="/orders" label="Order History" setOpen={setOpen} />
+                  </>
+                )}
+              </div>
+
+              {/* Extra Tools */}
+              <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-900 rounded-3xl flex items-center  dark:text-whitejustify-between">
+                <span className="text-sm font-bold dark:text-white">Dark Mode</span>
+                <ThemeToggle />
+              </div>
+            </div>
+
+            {/* Footer Logout */}
+            {isLoggedIn && (
+              <div className="p-6">
+                <button 
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center gap-3 py-4 bg-red-50 dark:bg-red-900/10 text-red-500 rounded-2xl font-bold transition-all hover:bg-red-100"
+                >
+                  <FaSignOutAlt /> Sign Out
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
+
+const AnimatedMobileLink = ({ to, label, setOpen, count, delay }) => (
+  <Link 
+    to={to} 
+    onClick={() => setOpen(false)}
+    style={{ transitionDelay: delay }}
+    className="flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-900 transition-all translate-x-0 group"
+  >
+    <div className="flex items-center gap-4">
+      <span className="text-gray-700 dark:text-gray-200 font-semibold group-hover:text-purple-500 transition-colors">{label}</span>
+      {count > 0 && <span className="bg-purple-100 text-purple-600 text-[10px] px-2 py-0.5 rounded-full font-bold">{count}</span>}
+    </div>
+    <FaChevronRight className="text-xs text-gray-300 group-hover:text-purple-500 transition-all" />
+  </Link>
+);
 
 export default Navbar;
