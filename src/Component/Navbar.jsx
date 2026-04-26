@@ -145,7 +145,7 @@ const Navbar = () => {
                 <div className="flex flex-col gap-4">
                   <h3 className="text-2xl font-black">Welcome.</h3>
                   <p className="text-sm text-purple-100">Unlock deals, tracking, and more.</p>
-                  <button onClick={() => navigate('/login')} className="w-fit bg-white text-purple-600 px-6 py-2 rounded-xl font-bold text-sm">Join YossyVogue</button>
+                  <button onClick={() => navigate('/loading-to-page')} className="w-fit bg-white text-purple-600 px-6 py-2 rounded-xl font-bold text-sm">Join YossyVogue</button>
                 </div>
               )}
             </div>
