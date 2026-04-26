@@ -1,7 +1,7 @@
 import React from 'react'
 import { BiDownArrow } from 'react-icons/bi'
 
-const TriangleIcon = ({ size = 20, color = '#7c3aed', children}) => {
+const TriangleIcon = ({ size = 14, color = '#7c3aed', children}) => {
     
     
 

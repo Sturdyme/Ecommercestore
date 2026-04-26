@@ -1,8 +1,3 @@
-
-
-
-
-
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
 import { FaCartArrowDown, FaEye } from 'react-icons/fa'
 import { FaBurger } from 'react-icons/fa6'
@@ -10,100 +5,81 @@ import { useEffect, useState } from 'react';
 import { useCart } from './CartContext';
 import { usdToNairaDisplay } from "../Utilities/currency";
 
-
-function Specialoffers({id, productName,productImage, oldPrice, newPrice}) {
-
-
-    const [quickView, setQuickView] = useState(false);
-    const [compare, setCompare] = useState(false);
-    const [addCart, setAddCart] = useState(false);
+function Specialoffers({id, productName, productImage, oldPrice, newPrice}) {
     const { addToCart } = useCart();
-   
-    
-  return (
-    <section className='mb-10 mt-5 p-5'>
-  <div>
-     <article> 
-  <div className='group flex flex-col p-4 border border-gray-300 rounded-lg shadow-lg 
-                  hover:border-purple-500 transition-all duration-300'>
-      
-      <img src={productImage}
-        alt="offer1" 
-        className='h-80 object-cover rounded-md shadow-md'
-      />
 
-      <p className='mt-1 font-mono text-black dark:text-white'>{productName}</p> 
+    return (
+        <section className='mb-10 mt-5 p-2'>
+            <article className='max-w-sm mx-auto'> 
+                <div className='group relative flex flex-col p-3 border border-gray-200 dark:border-zinc-800 rounded-2xl shadow-sm 
+                                hover:shadow-2xl hover:border-purple-500/50 transition-all duration-500 bg-white dark:bg-zinc-900 overflow-hidden'>
+                    
+                    {/* Image Container with Zoom Effect */}
+                    <div className='relative overflow-hidden rounded-xl h-80'>
+                        <img 
+                            src={productImage}
+                            alt={productName} 
+                            className='w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-110'
+                        />
+                        
+                        {/* Discount Badge */}
+                        <div className='absolute top-3 left-3 bg-purple-600 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider'>
+                            Special Offer
+                        </div>
 
-      <div className='flex gap-4 font-thin'>
-        <p className='text-black dark:text-white'>{usdToNairaDisplay(newPrice)}</p> 
-        <p className='line-through text-black dark:text-white'>{usdToNairaDisplay(oldPrice)}</p> 
-      </div>
+                        {/* Floating Action Menu - Appears on Hover */}
+                        <div className="absolute inset-0 flex items-center justify-center gap-3 bg-black/20 backdrop-blur-[2px] 
+                                        opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            
+                            {/* Quick View */}
+                            <button 
+                                title="Quick View"
+                                className="w-10 h-10 flex items-center justify-center bg-white dark:bg-zinc-800 text-black dark:text-white rounded-full 
+                                           shadow-xl hover:bg-purple-600 hover:text-white transition-all duration-300 translate-y-8 group-hover:translate-y-0 delay-[50ms]"
+                            >
+                                <FaEye size={18} />
+                            </button>
 
-      {/* Hidden until hover */}
-      <ul className="flex gap-3 mt-2 opacity-0 translate-y-2 
-               group-hover:opacity-100 group-hover:translate-y-0 
-               transition-all duration-500 ease-in-out">
-         <li className="border w-8 h-8 flex items-center justify-center text-black dark:text-white rounded-full bg-gray-400 
-                 cursor-pointer hover:bg-purple-600 relative group"
-   onClick= {() => setQuickView(!quickView)}>
-  <FaEye size={20} className="transition-transform duration-500 group-hover:rotate-[360deg]"/>
+                            {/* Compare */}
+                            <button 
+                                title="Compare"
+                                className="w-10 h-10 flex items-center justify-center bg-white dark:bg-zinc-800 text-black dark:text-white rounded-full 
+                                           shadow-xl hover:bg-purple-600 hover:text-white transition-all duration-300 translate-y-8 group-hover:translate-y-0 delay-[100ms]"
+                            >
+                                <FaBurger size={18} />
+                            </button>
 
-  {/* Tooltip text to the right */}
-{ quickView && <span className=" absolute left-2 top-8 bg-gray-500 text-black dark:text-white text-xs rounded
-                     transition-opacity duration-300 whitespace-nowrap">
-    Quick View
-  </span>}
-</li>
-         <li
-      className="border w-8 h-8 flex items-center text-black dark:text-white justify-center rounded-full bg-gray-400 
-                 cursor-pointer hover:bg-purple-600 relative"
-      onClick={() => setCompare(!compare)}
-    >
-      {/* Icon spins on hover */}
-      <FaBurger
-        size={20}
-        className="transition-transform duration-500 group-hover:rotate-[360deg]"
-      />
+                            {/* Add to Cart */}
+                            <button 
+                                onClick={() => addToCart({ id, title: productName, price: newPrice, image: productImage })}
+                                title="Add to Cart"
+                                className="w-10 h-10 flex items-center justify-center bg-white dark:bg-zinc-800 text-black dark:text-white rounded-full 
+                                           shadow-xl hover:bg-purple-600 hover:text-white transition-all duration-300 translate-y-8 group-hover:translate-y-0 delay-[150ms]"
+                            >
+                                <FaCartArrowDown size={18} />
+                            </button>
+                        </div>
+                    </div>
 
-      {/* Tooltip shows only on click */}
-      {compare && (
-        <span
-          className="absolute  left-2 top-8 bg-gray-500 text-black dark:text-white text-xs rounded
-                     transition-opacity duration-300 whitespace-nowrap"
-        >
-          Compare
-        </span>
-      )}
-    </li>
-   <li
-      className="border w-8 h-8 flex items-center text-black dark:text-white justify-center rounded-full bg-gray-400 
-                 cursor-pointer hover:bg-purple-600 relative group"
-      onClick={() => setAddCart(!addCart)}
-    >
-      {/* Icon spins on hover */}
-      <FaCartArrowDown
-        size={20}
-        className="transition-transform duration-500 group-hover:rotate-[360deg]"
-      />
+                    {/* Content Section */}
+                    <div className='mt-4 px-1 pb-2'>
+                        <h3 className='font-semibold text-sm md:text-base text-zinc-800 dark:text-zinc-100 truncate mb-1'>
+                            {productName}
+                        </h3> 
 
-      {/* Tooltip shows only on click */}
-      {addCart && (
-        <button onClick={() => addToCart({ id, title: productName, price: newPrice, image: productImage })}
-          className="absolute left-2 top-8  bg-gray-500 text-black dark:text-white text-xs rounded
-                     transition-opacity duration-300 whitespace-nowrap"
-        >
-          Add to Cart
-        </button>
-      )}
-    </li>
-
-      </ul>
-  </div>  
-</article>
-
-  </div>
-    </section>
-  )
+                        <div className='flex items-center gap-3'>
+                            <span className='text-lg font-bold text-purple-600 dark:text-purple-400'>
+                                {usdToNairaDisplay(newPrice)}
+                            </span> 
+                            <span className='text-sm line-through text-zinc-400 font-light'>
+                                {usdToNairaDisplay(oldPrice)}
+                            </span> 
+                        </div>
+                    </div>
+                </div>  
+            </article>
+        </section>
+    )
 }
 
 export default Specialoffers;

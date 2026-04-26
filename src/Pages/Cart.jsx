@@ -26,7 +26,7 @@ export default function Cart() {
  const { cart, updateQuantity, removeItem} = useCart();
 
  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
- const shipping = subtotal > 0 ? 20 : 0;
+ const shipping = subtotal *  0.15 ;
  const total = subtotal + shipping;
 
   return (

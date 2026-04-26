@@ -7,12 +7,9 @@ const Footer = () => {
 
 
   return (
-    <section className='mt-10'> 
-    <div className='flex  justify-center items-center'> 
-     <FeaturedBanners/>
-    </div>
-
-    <div className='mt-10 h-16 flex justify-around items-center  bg-purple-400 w-full '> 
+    <section> 
+   <FeaturedBanners />
+    <div className=' h-16 flex justify-around items-center  bg-purple-400 w-full '> 
       <div> 
         <p className='text-black dark:text-white font-thin md:text-sm max-sm:text-xs sm:text-xs'> <span className='font-semibold text-md theme-text-white md:text-sm '>© 2026 YossyVogue. </span> All rights reserved.</p>
         <p className='text-black dark:text-white font-thin md:text-sm max-sm:text-xs sm:text-xs'>Designed and made by Sturdyme</p>
