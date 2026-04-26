@@ -169,8 +169,8 @@ const Navbar = () => {
               </div>
 
               {/* Extra Tools */}
-              <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-900 rounded-3xl flex items-center  dark:text-whitejustify-between">
-                <span className="text-sm font-bold dark:text-white">Dark Mode</span>
+              <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-900 dark:text-white rounded-3xl flex items-center  dark:text-whitejustify-between">
+               
                 <ThemeToggle />
               </div>
             </div>
