@@ -6,7 +6,7 @@ const Shopping = () => {
   return (
     <section className='p-4 md:p-8 mt-5'>
       {/* Enhanced background with a subtle gradient and overflow control */}
-      <div className='relative overflow-hidden bg-gradient-to-r from-purple-500 to-purple-400 rounded-2xl flex flex-col md:flex-row justify-between items-center p-8 md:p-12 text-white w-full min-h-[120px] shadow-lg border border-purple-300/20'>
+      <div className='relative overflow-hidden bg-gradient-to-r from-purple-700 to-purple-500 rounded-2xl flex flex-col md:flex-row justify-between items-center p-8 md:p-12 text-white w-full min-h-[120px] shadow-lg border border-purple-300/20'>
         
         {/* Decorative Background Circles for a professional touch */}
         <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>

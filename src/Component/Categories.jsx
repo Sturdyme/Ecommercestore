@@ -30,7 +30,7 @@ const [moreCategories, setMoreCategories] = useState(false);
 
   return (
       <section 
-        className={`fixed left-0 w-full top-[72px] bg-purple-400 z-[90] shadow transition-transform duration-300 ${
+        className={`fixed left-0 w-full top-[72px] bg-purple-500 z-[90] shadow transition-transform duration-300 ${
           isVisible ? "translate-y-0" : "-translate-y-[72px]"
         }`}
       >

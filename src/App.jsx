@@ -81,7 +81,7 @@ function App() {
       } />
       <Route path='/chat' element={<Chat room="general" />} />
       <Route path='/contact' element={<ContactUs />} />
-      <Route path='superdeals' element={<SuperDeals />}/>
+      <Route path='/superdeals' element={<SuperDeals />}/>
       <Route path='/homeappliances' element={<HomeAppliances />}/>
       <Route path='/sitemap' element={<SiteMap/>}/>
       <Route path='/helpsupport' element={<HelpSupport/>}/>
