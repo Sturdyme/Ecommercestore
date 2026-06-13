@@ -36,7 +36,11 @@ const Checkout = ({ cartItems = [] }) => {
         "/pay",
         { 
           amount: amountToSend,
-          items: cartItems // Useful for backend order history
+
+          items:cartItems.map(item => ({
+            ...item,
+            price: convertToNaira(Number(item.price))
+          }))
         },
         {
           headers: {

@@ -6,10 +6,7 @@ const SpecialOfferHeader = ({onLeft, onRight}) => {
     <section className="bg-white dark:bg-gray-900">
           <div className='flex items-center justify-between px-10 mt-10'>
         <h1 className='text-1xl theme-text-black'>SPECIAL OFFERS</h1>
-       <div> 
-        <button onClick={onLeft}> <BiLeftArrow className='text-black dark:text-white'/></button>
-        <button onClick={onRight}> <BiRightArrow className='text-black dark:text-white' /> </button>
-       </div>
+      
       </div>
       <div className="border mt-2 h-1 w-full mb-6"> 
   <p className="bg-purple-400 h-full w-40"></p>

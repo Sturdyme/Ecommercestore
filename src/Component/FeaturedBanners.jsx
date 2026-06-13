@@ -55,7 +55,7 @@ const FeaturedBanners = () => {
             <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/superdeals'>Super Deals</a></li>
             <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/best-selling'>Best Selling</a></li>
             <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/new-arrivals'>New Arrivals</a></li>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/sitemap'>Site Map</a></li>
+          
           </ul>
         </div>
 
@@ -65,11 +65,10 @@ const FeaturedBanners = () => {
             <IoLinkSharp size={18} className='text-gray-400' />
             <h2 className='text-sm font-bold uppercase tracking-widest'>Quick Links</h2> 
           </div>
-          <ul className='flex flex-col space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400'> 
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/blog'>Our Blog</a></li>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/privacy-policy'>Privacy Policy</a></li>
+          <ul className='flex flex-col space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400'>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/privacypolicy'>Privacy Policy</a></li>
             <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/about'>About Our Shop</a></li>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/sitemap'>Site Map</a></li>
+        
           </ul>
         </div>
 

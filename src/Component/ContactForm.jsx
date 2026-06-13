@@ -9,7 +9,7 @@ const ContactForm = () => {
     </h2>
     <p className="mt-6 text-gray-600 max-w-2xl mx-auto dark:text-white leading-relaxed">
       Feel free to contact us with any questions, queries, or ideas for
-      YossyVogue. Our team will respond as soon as possible.
+      Yuna collective. Our team will respond as soon as possible.
     </p>
   </div>
 

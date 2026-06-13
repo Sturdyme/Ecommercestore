@@ -54,39 +54,49 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-  e.preventDefault();
+ const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!validateForm()) return;
+    if (!validateForm()) return;
 
-  try {
-    const response = await api.post("/register", {
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      password_confirmation: formData.password_confirmation,
-    });
+    try {
+      const response = await api.post("/register", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        password_confirmation: formData.password_confirmation,
+      });
 
-    // ✅ Save token
-    localStorage.setItem("token", response.data.token);
+      console.log("REGISTER RESPONSE:", response.data);
 
-    // ✅ Optional: save user
-    localStorage.setItem("user", JSON.stringify(response.data.user));
+      // 💡 THE ULTIMATE CRUCIAL ADDITION: Save the token sent back by Laravel!
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      } else {
+        console.error("Token was missing from the backend response payload!");
+      }
 
-    alert("Signup successful 🎉");
+      // ADDED: Initialize 'is_verified' to false so the protected layout knows the user state
+      localStorage.setItem("is_verified", "false");
+      localStorage.setItem("user", JSON.stringify(response.data.user));
 
-    // ✅ Redirect to home or login
-    navigate("/");
+      console.log("TOKEN SAVED:", localStorage.getItem("token"));
+      console.log("USER SAVED:", localStorage.getItem("user"));
 
-  } catch (error) {
-    console.error(error.response?.data || error.message);
+      alert("Signup successful 🎉 Please verify your email");
 
-    if (error.response?.data?.errors) {
-      setErrors(error.response.data.errors);
-    } else {
-      alert("Something went wrong. Try again.");
+      // Redirect smoothly to verification page with authorization fully intact
+      navigate("/verify-otp", { state: { email: formData.email } });
+
+    } catch (error) {
+      console.error(error.response?.data || error.message);
+
+      if (error.response?.data?.errors) {
+        setErrors(error.response.data.errors);
+      } else {
+        alert("Something went wrong. Try again.");
+      }
     }
-  }
 };
   
   return (
@@ -97,7 +107,7 @@ const SignUp = () => {
           Create an Account
         </h1>
         <p className="text-center text-gray-500 mb-6">
-          Join <span className="font-semibold text-black">YossyVogue</span>
+          Join <span className="font-semibold text-black">Yuna collective</span>
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">

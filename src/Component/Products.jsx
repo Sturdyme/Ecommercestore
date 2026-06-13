@@ -3,6 +3,7 @@ import { usdToNairaDisplay } from "../Utilities/currency";
 import axios from "axios";
 import AOS from "aos";
 import { useCart } from "./CartContext";
+import { Link } from "react-router-dom";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -27,7 +28,7 @@ const Products = () => {
     return (
       <div className="flex flex-col items-center justify-center h-64">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-purple-500"></div>
-        <p className="mt-4 text-gray-500">Loading YossyVogue Collection...</p>
+        <p className="mt-4 text-gray-500">Loading Yuna collective Collection...</p>
       </div>
     );
   }
@@ -61,7 +62,7 @@ const Products = () => {
           >
             
             {/* Image Container - Responsive Height */}
-            <div className="bg-gray-50 dark:bg-gray-800 aspect-square overflow-hidden relative">
+            <Link to={`/products/${p.id}`} className="bg-gray-50 dark:bg-gray-800 aspect-square overflow-hidden relative">
               <img
                 src={p.images[0]}
                 alt={p.title}
@@ -74,7 +75,7 @@ const Products = () => {
                     ⭐ {p.rating}
                  </span>
               </div>
-            </div>
+            </Link>
 
             {/* Content Section */}
             <div className="p-3 sm:p-4 flex flex-col flex-1">
@@ -82,9 +83,9 @@ const Products = () => {
                 <p className="text-[10px] tracking-wider text-gray-400 font-bold uppercase">
                   {p.brand || "Exclusive"}
                 </p>
-                <h3 className="font-bold text-sm sm:text-base text-gray-800 dark:text-white line-clamp-1">
+                <Link to={`/product/${p.id}`} className="font-bold text-sm sm:text-base text-gray-800 dark:text-white line-clamp-1">
                   {p.title}
-                </h3>
+                </Link>
               </div>
 
               {/* Price & Stock Section */}

@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { createContext, useState } from "react";
-import { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 
 const CartContext = createContext();
@@ -29,7 +29,11 @@ export const CartProvider = ({ children }) => {
         );
     };
     const removeItem = (id) => {
+        const removedItem = cart.find(item => item.id === id);
         setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+        if (removedItem) {
+            toast.success(`${removedItem.title || removedItem.name} removed from cart`);
+        }
     };
 
     return (

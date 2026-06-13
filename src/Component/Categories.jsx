@@ -109,23 +109,23 @@ const [moreCategories, setMoreCategories] = useState(false);
 
         {/* Rest of your nav items */}
         <Link to='/superdeals'> 
-          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Super Deals</span>
+          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-200">Super Deals</span>
         </Link>
 
         <li>
-          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Yossy's Business</span>
+          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-200">Yossy's Business</span>
         </li>
 
         <Link to='/homeappliances'> 
-          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Home Appliances</span>
+          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-200">Home Appliances</span>
         </Link>
 
         <li>
-          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500">Hair Extensions & Wigs</span>
+          <span className="text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-200">Hair Extensions & Wigs</span>
         </li>
 
         <li className="flex gap-2 items-center sm:gap-1">
-          <span className="text-black dark:text-white">More</span>
+          <span className="text-black  dark:text-white hover:text-purple-500 dark:hover:text-purple-200">More</span>
           <IoIosArrowDropdown className="text-black dark:text-white" />
         </li>
       </ul>

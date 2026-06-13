@@ -22,10 +22,20 @@ import { CartProvider } from './Component/CartContext'
 import ScrollToTop from './Utilities/ScrollToTop'
 import Checkout from './Component/Checkout'
 import CheckoutWrapper from './Component/CheckoutWrapper'
-import PaymentSuccess from './Pages/PaymentSuccess'
+import PaymentSuccess from './Component/PaymentSuccess'
 import Dashboard from './Pages/Dashboard'
+import Wishlist from './Pages/Wishlist'
 import ProtectedRoute from './Component/ProtectedRoute'
 import Profile from './Pages/Profile'
+import AIChatbox from './Utilities/AiChatbox';
+import AISupport from './Pages/AISupport';
+import PrivacyPolicy from './Pages/PrivacyPolicy';
+import About from './Pages/About';
+import VerifyOtp from './Pages/VerifyOtp';
+import OrderHistory from './Component/OrderHistory';
+import ProductDetails from './Component/ProductDetails';
+import Products from './Component/Products';
+import FeaturedDetailsPage from './Pages/FeaturedDetailsPage';
 
 function App() {
  useEffect(() => {
@@ -60,10 +70,14 @@ function App() {
     <Routes> 
       <Route path='/' element={<Home />} />
       <Route path='/signup' element={<SignUp />} />
+      <Route path='/verify-otp' element={<VerifyOtp />} />
       <Route path='/login' element={<Login />} />
       <Route path='/loading-to-login' element={<LoadingToLogin />} />
       <Route path='/loading-to-page' element={<LoadingToPage />} />
       <Route path='/cart' element={<Cart />} />
+     <Route path="/" element={<Products />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path='/featured/:id' element={<FeaturedDetailsPage/>}/>
       <Route path='/dashboard' element={
         <ProtectedRoute>
           <Dashboard />
@@ -79,13 +93,25 @@ function App() {
           <Profile />
         </ProtectedRoute>
       } />
+      <Route path='/wishlist' element={
+        <ProtectedRoute>
+          <Wishlist />
+        </ProtectedRoute>
+      } />
+      <Route path='/order' element={<OrderHistory />}/>
       <Route path='/chat' element={<Chat room="general" />} />
       <Route path='/contact' element={<ContactUs />} />
       <Route path='/superdeals' element={<SuperDeals />}/>
       <Route path='/homeappliances' element={<HomeAppliances />}/>
       <Route path='/sitemap' element={<SiteMap/>}/>
       <Route path='/helpsupport' element={<HelpSupport/>}/>
-      <Route path='/payment/success' element={<PaymentSuccess />} />
+      <Route path='/payment-success' element={<PaymentSuccess />} />
+      <Route path='/aisupportpage' element={<AISupport />} />
+      <Route path='/aichatbox' element={<AIChatbox />} />
+      <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+      <Route path='/about' element={<About />} />
+      
+      
     </Routes>
     </main>
     <Footer/>

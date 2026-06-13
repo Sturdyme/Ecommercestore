@@ -13,7 +13,7 @@ const Footer = () => {
         {/* Credits Section */}
         <div className="text-center md:text-left"> 
           <p className='text-white/90 font-light text-[10px] sm:text-xs md:text-sm tracking-wide'> 
-            <span className='font-bold text-white'>© 2026 YossyVogue.</span> All rights reserved.
+            <span className='font-bold text-white'>© 2026 Yuna collective.</span> All rights reserved.
           </p>
           <p className='text-white/70 font-light text-[10px] sm:text-xs md:text-sm italic'>
             Designed and made by <span className="hover:text-white transition-colors cursor-pointer">Sturdyme</span>

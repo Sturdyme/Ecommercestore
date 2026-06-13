@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { BiChat, BiX } from "react-icons/bi";
 import { BsNewspaper } from "react-icons/bs";
 import { IoNewspaperOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
 import {
   collection,
   addDoc,
@@ -90,6 +91,10 @@ const ContactHeroSection = ({ forceOpen, onClose }) => {
             title="Need Support?" 
             desc="Explore our documentation and help articles." 
             actionText="Explore Help Center"
+            onClick={() => {
+              // Navigate to the AI Support page
+              window.location.href = "/aisupportpage";
+            }}
           />
           <SupportCard 
             icon={<BsNewspaper size={42} />} 
@@ -165,8 +170,7 @@ const SupportCard = ({ icon, title, desc, actionText, onClick }) => (
     <div className="text-purple-600 mb-4">{icon}</div>
     <h3 className="text-xl font-bold text-gray-900">{title}</h3>
     <p className="mt-2 text-gray-500 text-sm">{desc}</p>
-    <button 
-      onClick={onClick}
+    <button onClick={onClick}
       className="mt-6 text-purple-600 font-semibold underline underline-offset-4 hover:text-purple-800 transition text-sm"
     >
       {actionText}

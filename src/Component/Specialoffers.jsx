@@ -1,12 +1,23 @@
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
-import { FaCartArrowDown, FaEye } from 'react-icons/fa'
+import { FaCartArrowDown, FaEye, FaHeart } from 'react-icons/fa'
 import { FaBurger } from 'react-icons/fa6'
 import { useEffect, useState } from 'react';
 import { useCart } from './CartContext';
 import { usdToNairaDisplay } from "../Utilities/currency";
+import { useWishlist } from '../Utilities/WishlistContext';
 
-function Specialoffers({id, productName, productImage, oldPrice, newPrice}) {
+function Specialoffers({id, productName, productImage, oldPrice, newPrice, onQuickView, }) {
     const { addToCart } = useCart();
+    const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
+    const isWishlisted = wishlist.some((item) => item.id === id);
+
+    const toggleWishlist = () => {
+      if (isWishlisted) {
+        removeFromWishlist(id);
+      } else {
+        addToWishlist({ id, title: productName, price: newPrice, image: productImage });
+      }
+    };
 
     return (
         <section className='mb-10 mt-5 p-2'>
@@ -33,6 +44,7 @@ function Specialoffers({id, productName, productImage, oldPrice, newPrice}) {
                             
                             {/* Quick View */}
                             <button 
+                            onClick={onQuickView}
                                 title="Quick View"
                                 className="w-10 h-10 flex items-center justify-center bg-white dark:bg-zinc-800 text-black dark:text-white rounded-full 
                                            shadow-xl hover:bg-purple-600 hover:text-white transition-all duration-300 translate-y-8 group-hover:translate-y-0 delay-[50ms]"
@@ -40,13 +52,13 @@ function Specialoffers({id, productName, productImage, oldPrice, newPrice}) {
                                 <FaEye size={18} />
                             </button>
 
-                            {/* Compare */}
+                            {/* Wishlist */}
                             <button 
-                                title="Compare"
-                                className="w-10 h-10 flex items-center justify-center bg-white dark:bg-zinc-800 text-black dark:text-white rounded-full 
-                                           shadow-xl hover:bg-purple-600 hover:text-white transition-all duration-300 translate-y-8 group-hover:translate-y-0 delay-[100ms]"
+                              onClick={toggleWishlist}
+                              title={isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                              className={`w-10 h-10 flex items-center justify-center rounded-full shadow-xl transition-all duration-300 translate-y-8 group-hover:translate-y-0 delay-[100ms] ${isWishlisted ? 'bg-purple-600 text-white' : 'bg-white dark:bg-zinc-800 text-black dark:text-white hover:bg-purple-600 hover:text-white'}`}
                             >
-                                <FaBurger size={18} />
+                                <FaHeart size={18} />
                             </button>
 
                             {/* Add to Cart */}

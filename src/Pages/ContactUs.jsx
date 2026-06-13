@@ -29,7 +29,7 @@ const ContactUs = () => {
             </p>
 
             <p className="text-2xl sm:text-4xl mt-3 text-black dark:text-white font-semibold">
-              Have A Question About YossyVogue?
+              Have A Question About Yuna collective?
             </p>
 
             <p className="text-black dark:text-white mt-3 text-sm sm:text-base">

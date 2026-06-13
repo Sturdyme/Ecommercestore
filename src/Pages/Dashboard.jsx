@@ -1,17 +1,74 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   FiShoppingBag, FiHeart, FiUser, FiLogOut, 
   FiGrid, FiCreditCard, FiArrowRight, FiMenu, FiX 
 } from 'react-icons/fi';
+import { useCart } from '../Component/CartContext';
+import { usdToNairaDisplay } from '../Utilities/currency';
 import product1 from '../assets/specialOfferImages/cam.png';
 import product2 from '../assets/specialOfferImages/bicycle.png';
 import bgImage from '../assets/specialOfferImages/shoppingcart.png';
+import { useWishlist } from '../Utilities/WishlistContext';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const user = JSON.parse(localStorage.getItem('user'));
+  const { cart, addToCart } = useCart();
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
+ 
+ const [user, setUser] = useState(() => {
+    try {
+      const storedUser = localStorage.getItem("user");
+      // Fixed: changed 'storeUser' to 'storedUser'
+      return storedUser && storedUser !== "undefined" ? JSON.parse(storedUser) : {};
+    } catch (error) {
+      console.error("Failed to parse initial user data:", error);
+      return {}; // Fixed: Added safe fallback layout
+    }
+  });
+
+  // 2. Fixed: Grouped ALL routing guard conditions back inside a single useEffect boundary
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    
+    const isVerified = localStorage.getItem("is_verified") === "true";
+    if (!isVerified) {
+      navigate("/verify-otp");
+      return;
+    }
+
+    // Refresh user state smoothly upon safe arrival
+    const storedUser = localStorage.getItem("user");
+    if (storedUser && storedUser !== "undefined") {
+      setUser(JSON.parse(storedUser));
+    }
+  }, [navigate]);
+
+  const dashboardProducts = [
+    { id: 'sony-a7', name: 'Sony A7 Camera', price: 56.67, image: product1 },
+    { id: 'sport-bicycle', name: 'Sport Bicycle X200', price: 30, image: product2 }
+  ];
+
+  const toggleWishlist = (product) => {
+    const existing = wishlist.some((item) => item.id === product.id);
+    if (existing) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist({ id: product.id, title: product.name, price: product.price, image: product.image });
+    }
+  };
+
+  // Calculate actual cart metrics
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const shipping = subtotal * 0.15;
+  const total = subtotal + shipping;
+  
 
   const handleLogout = () => {
     localStorage.clear();
@@ -46,12 +103,14 @@ const Dashboard = () => {
 
         <nav className="flex-1 px-4 md:mt-10 lg:mt-0 space-y-2 overflow-y-auto">
           <NavItem icon={<FiGrid />} label="Overview" active onClick={() => setIsSidebarOpen(false)} />
-          <Link to="/cart" className="block">
+          <Link to="/order" className="block">
             <NavItem icon={<FiShoppingBag />} label="My Orders" onClick={() => setIsSidebarOpen(false)} />
           </Link>
-          <NavItem icon={<FiHeart />} label="Wishlist" onClick={() => setIsSidebarOpen(false)} />
+          <Link to="/wishlist" className="block">
+            <NavItem icon={<FiHeart />} label={`Wishlist (${wishlist.length || 0})`} onClick={() => setIsSidebarOpen(false)} />
+          </Link>
           <NavItem icon={<FiCreditCard />} label="Payments" onClick={() => { navigate('/checkout'); setIsSidebarOpen(false); }} />
-          <NavItem icon={<FiUser />} label="Profile Settings" onClick={() => setIsSidebarOpen(false)} />
+         <NavItem icon={<FiUser />} label="Profile" onClick={() => { navigate('/profile'); setIsSidebarOpen(false); }} />
         </nav>
 
       </aside>
@@ -65,7 +124,7 @@ const Dashboard = () => {
           </button>
          
           <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-xs font-bold">
-            {user?.name?.charAt(0) || 'U'}
+            {user?.name?.charAt(0) || ''}
           </div>
         </header>
 
@@ -74,7 +133,7 @@ const Dashboard = () => {
           <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold">
-                Welcome back, {user?.name?.split(' ')[0] || 'User'}!
+                Welcome back, {user?.name ? user.name.split(' ')[0] : 'User'}!
               </h1>
               <p className="text-gray-500 mt-1 text-sm md:text-base">
                 Here's what's happening with your order today.
@@ -83,18 +142,20 @@ const Dashboard = () => {
             <div className="hidden sm:flex items-center space-x-4">
               <button className="relative p-2 bg-white dark:bg-gray-800 rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
                 <FiShoppingBag className="text-xl" />
-                <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
-                  3
-                </span>
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
+                    {totalItems}
+                  </span>
+                )}
               </button>
             </div>
           </header>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
-            <StatCard title="Total Orders" value="12" icon={<FiShoppingBag className="text-blue-500" />} />
-            <StatCard title="Wishlist Items" value="08" icon={<FiHeart className="text-pink-500" />} />
-            <StatCard title="Reward Points" value="1,250" icon={<FiCreditCard className="text-green-500" />} />
+            <StatCard title="Cart Items" value={totalItems.toString()} icon={<FiShoppingBag className="text-blue-500" />} />
+            <StatCard title="Cart Total" value={usdToNairaDisplay(total)} icon={<FiCreditCard className="text-green-500" />} />
+            <StatCard title="Wishlist Items" value={wishlist.length.toString()} icon={<FiHeart className="text-pink-500" />} />
           </div>
 
           {/* Recommended Section */}
@@ -107,16 +168,15 @@ const Dashboard = () => {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              <ProductCard 
-                image={product1} 
-                name="Sony A7 Camera" 
-                price="₦85,000" 
-              />
-              <ProductCard 
-                image={product2} 
-                name="Sport Bicycle X200" 
-                price="₦45,000" 
-              />
+              {dashboardProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onAdd={() => addToCart(product)}
+                  onWishlist={() => toggleWishlist(product)}
+                  wishlisted={wishlist.some((item) => item.id === product.id)}
+                />
+              ))}
               {/* Checkout Card */}
              <div 
   className="relative rounded-2xl p-6 text-white flex flex-col justify-between shadow-xl overflow-hidden group"
@@ -170,14 +230,29 @@ const StatCard = ({ title, value, icon }) => (
   </div>
 );
 
-const ProductCard = ({ image, name, price }) => (
-  <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 group cursor-pointer">
+const ProductCard = ({ product, onAdd, onWishlist, wishlisted }) => (
+  <div className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 group">
     <div className="relative overflow-hidden h-48">
-      <img src={image} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+      <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
     </div>
     <div className="p-4">
-      <h4 className="font-bold text-base mb-1 truncate">{name}</h4>
-      <p className="text-purple-600 font-bold text-sm">{price}</p>
+      <h4 className="font-bold text-base mb-1 truncate">{product.name}</h4>
+      <p className="text-purple-600 font-bold text-sm">{usdToNairaDisplay(product.price)}</p>
+      <div className="mt-4 flex gap-3">
+        <button
+          onClick={onAdd}
+          className="flex-1 bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition text-sm"
+        >
+          Add to Cart
+        </button>
+        <button
+          onClick={onWishlist}
+          className={`w-12 h-12 rounded-lg transition ${wishlisted ? 'bg-purple-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-purple-600 dark:text-purple-300 hover:bg-purple-600 hover:text-white'}`}
+          title={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <FiHeart className="mx-auto" />
+        </button>
+      </div>
     </div>
   </div>
 );

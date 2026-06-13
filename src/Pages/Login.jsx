@@ -19,41 +19,63 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrors({}); // Clear previous errors
+  e.preventDefault();
+  setLoading(true);
+  setErrors({}); // Clear previous errors
 
-    try {
-      // 1. Send the login request to Laravel
-      const response = await api.post("/login", {
-        email: formData.email,
-        password: formData.password,
-      });
+  try {
+    // 1. Send the login request to Laravel
+    const response = await api.post("/login", {
+      email: formData.email,
+      password: formData.password,
+    });
 
-      // 2. Save token and user data to localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+    // Extract the user data directly from the response
+    const backendUser = response.data.user;
 
-      // 3. Success notification & Redirect
-      alert("Login successful 🎉");
-      navigate("/dashboard"); // Redirect to dashboard
-
-    } catch (error) {
-      console.error("Login Error:", error.response?.data || error.message);
-
-      // Handle 401 (Invalid Credentials) or 422 (Validation errors)
-      if (error.response?.status === 401) {
-        setErrors({ general: "Invalid email or password." });
-      } else if (error.response?.data?.errors) {
-        setErrors(error.response.data.errors);
-      } else {
-        setErrors({ general: "Something went wrong. Please try again." });
-      }
-    } finally {
-      setLoading(false);
+    // 2. Check if user has a saved local profile picture
+    const savedProfilePic = localStorage.getItem(`profilePic_${backendUser.email}`);
+    const userData = { ...backendUser };
+    
+    if (savedProfilePic) {
+      userData.profilePic = savedProfilePic;
     }
-  };
 
+    // 3. Clean & Unified Local Storage Saves
+    localStorage.setItem("token", response.data.token);
+    
+    // Determine verification state from backend field (converts true/false or 1/0 cleanly to string)
+    const isVerifiedString = backendUser.is_verified ? "true" : "false";
+    localStorage.setItem("is_verified", isVerifiedString);
+
+    // Save the finalized user object with profile image if it exists
+    localStorage.setItem("user", JSON.stringify(userData));
+
+    // 4. Dispatch custom event to notify Navbar of login
+    window.dispatchEvent(new CustomEvent('userLogin', { detail: userData }));
+
+    // 5. Success notification & Redirect
+    alert("Login successful 🎉");
+    
+    // Redirects to dashboard. Your ProtectedRoute/Dashboard useEffect will now 
+    // catch the "is_verified" key perfectly and know whether to show the screen or kick to OTP.
+    navigate("/dashboard"); 
+
+  } catch (error) {
+    console.error("Login Error:", error.response?.data || error.message);
+
+    // Handle 401 (Invalid Credentials) or 422 (Validation errors)
+    if (error.response?.status === 401) {
+      setErrors({ general: "Invalid email or password." });
+    } else if (error.response?.data?.errors) {
+      setErrors(error.response.data.errors);
+    } else {
+      setErrors({ general: "Something went wrong. Please try again." });
+    }
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="flex-1 flex items-center justify-center bg-white dark:bg-gray-900 px-4 py-12">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
@@ -61,7 +83,7 @@ const Login = () => {
           Welcome Back
         </h2>
         <p className="text-center text-gray-500 mt-1 mb-6">
-          Login to <span className="font-semibold text-purple-600">YossyVogue</span>
+          Login to <span className="font-semibold text-purple-600">Yuna collective</span>
         </p>
 
         {/* General Error Message */}
