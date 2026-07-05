@@ -113,7 +113,7 @@ const [moreCategories, setMoreCategories] = useState(false);
         </Link>
 
         <li>
-          <span className="text-black dark:text-white hover:text-purple-100 dark:hover:text-purple-200">Yossy's Business</span>
+          <span className="text-black dark:text-white hover:text-purple-100 dark:hover:text-purple-200">Yuna's Business</span>
         </li>
 
         <Link to='/homeappliances'> 

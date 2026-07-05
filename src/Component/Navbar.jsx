@@ -146,7 +146,7 @@ const Navbar = () => {
             <FaYoast className="text-xl text-white" />
           </div>
           <h2 className="text-xl lg:text-2xl text-gray-900 dark:text-white font-black tracking-tighter">
-            YOSSY<span className="text-purple-500">VOGUE</span>
+            YUNA<span className="text-purple-500">VOGUE</span>
           </h2>
         </Link>
 

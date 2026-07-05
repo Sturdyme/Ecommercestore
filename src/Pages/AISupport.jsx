@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/solid";
-import AIChatbox from "../Utilities/AiChatbox";
+import AIChatbox from "../Utilities/AiChatbox.jsx";
 
 const AISupport = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);

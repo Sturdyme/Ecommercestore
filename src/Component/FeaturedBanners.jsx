@@ -3,6 +3,7 @@ import { FaFacebook, FaInstagram, FaTwitter, FaWhatsapp, FaYoutube } from 'react
 import { FaInfo } from 'react-icons/fa6' // Using Fa6 for a more modern look
 import { IoLinkSharp } from 'react-icons/io5'
 import { MdCollections } from 'react-icons/md'
+import { Link } from 'react-router-dom'
 
 const FeaturedBanners = () => {
   return (
@@ -37,11 +38,11 @@ const FeaturedBanners = () => {
             <h2 className='text-sm font-bold uppercase tracking-widest'>Information</h2> 
           </div>
           <ul className='flex flex-col space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400'> 
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/blog'>Our Blog</a></li>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/privacy-policy'>Privacy Policy</a></li>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/about'>About Our Shop</a></li>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/sitemap'>Site Map</a></li>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/helpsupport'>Help & Support</a></li>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><Link to='/blog'>Our Blog</Link></li>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><Link to='/privacy-policy'>Privacy Policy</Link></li>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><Link to='/about'>About Our Shop</Link></li>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><Link to='/sitemap'>Site Map</Link></li>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><Link to='/helpsupport'>Help & Support</Link></li>
           </ul>
         </div>
 
@@ -52,9 +53,9 @@ const FeaturedBanners = () => {
             <h2 className='text-sm font-bold uppercase tracking-widest'>Collections</h2> 
           </div>
           <ul className='flex flex-col space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400'> 
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/superdeals'>Super Deals</a></li>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/best-selling'>Best Selling</a></li>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/new-arrivals'>New Arrivals</a></li>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><Link to='/superdeals'>Super Deals</Link></li>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><Link to='/best-selling'>Best Selling</Link></li>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><Link to='/new-arrivals'>New Arrivals</Link></li>
           
           </ul>
         </div>
@@ -66,8 +67,8 @@ const FeaturedBanners = () => {
             <h2 className='text-sm font-bold uppercase tracking-widest'>Quick Links</h2> 
           </div>
           <ul className='flex flex-col space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400'>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/privacypolicy'>Privacy Policy</a></li>
-            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><a href='/about'>About Our Shop</a></li>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><Link to='/privacy-policy'>Privacy Policy</Link></li>
+            <li className='hover:translate-x-1 hover:text-black dark:hover:text-white transition-all cursor-pointer'><Link to='/about'>About Our Shop</Link></li>
         
           </ul>
         </div>
@@ -177,4 +178,3 @@ export default FeaturedBanners
 //     </div>
 //   );
 // }
-

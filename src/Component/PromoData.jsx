@@ -1,8 +1,8 @@
 import whatsapp from '../assets/ExplorePictures/Whatsapp.jpg'
 import order from '../assets/ExplorePictures/order.jpg'
-import brandlogo from '../assets/ExplorePictures/brandlogo.jpg'
+import brandlogo from '../assets/ExplorePictures/brandlogo.png'
 import instagram from '../assets/ExplorePictures/instagram.jpg'
-import instgramcomment from '../assets/ExplorePictures/instgramcomment.jpg'
+import instgramcomment from '../assets/ExplorePictures/instagramcomment.png'
 import spcialoffer from '../assets/ExplorePictures/spcialoffer.jpg'
 import rewards from '../assets/ExplorePictures/rewards.jpg'
 export const PromoCards = [

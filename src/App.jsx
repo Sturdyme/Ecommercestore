@@ -104,7 +104,9 @@ function App() {
       <Route path='/superdeals' element={<SuperDeals />}/>
       <Route path='/homeappliances' element={<HomeAppliances />}/>
       <Route path='/sitemap' element={<SiteMap/>}/>
+      <Route path='/site-map' element={<SiteMap/>}/>
       <Route path='/helpsupport' element={<HelpSupport/>}/>
+      <Route path='/help-support' element={<HelpSupport/>}/>
       <Route path='/payment-success' element={<PaymentSuccess />} />
       <Route path='/aisupportpage' element={<AISupport />} />
       <Route path='/aichatbox' element={<AIChatbox />} />

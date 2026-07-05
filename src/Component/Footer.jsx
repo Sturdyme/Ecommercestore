@@ -1,5 +1,6 @@
 import React from 'react'
 import FeaturedBanners from './FeaturedBanners'
+import { Link } from 'react-router-dom'
 
 const Footer = () => {
   return (
@@ -22,13 +23,13 @@ const Footer = () => {
 
         {/* Legal Links Section */}
         <div className="flex gap-4 md:gap-8"> 
-          <a href="/privacy-policy" className='text-white/90 hover:text-white font-medium text-[10px] sm:text-xs md:text-sm tracking-widest transition-all duration-300 hover:scale-105'>
+          <Link to="/privacy-policy" className='text-white/90 hover:text-white font-medium text-[10px] sm:text-xs md:text-sm tracking-widest transition-all duration-300 hover:scale-105'>
             PRIVACY POLICY
-          </a>
+          </Link>
           <span className="text-white/30 hidden md:block">|</span>
-          <a href="/terms" className='text-white/90 hover:text-white font-medium text-[10px] sm:text-xs md:text-sm tracking-widest transition-all duration-300 hover:scale-105'>
+          <Link to="/terms" className='text-white/90 hover:text-white font-medium text-[10px] sm:text-xs md:text-sm tracking-widest transition-all duration-300 hover:scale-105'>
             TERMS & CONDITIONS
-          </a>
+          </Link>
         </div>
       </div>
     </footer>
