@@ -56,8 +56,28 @@ const Checkout = ({ cartItems = [] }) => {
         window.location.href = authorization_url;
       }
     } catch (error) {
-      console.error("Payment failed:", error.response?.data || error.message);
-      const errorMsg = error.response?.data?.message || "Payment could not be initiated. Try again.";
+      const resp = error.response || {};
+      const respData = resp.data;
+      console.error("Payment failed:", {
+        status: resp.status,
+        data: respData,
+        message: error.message,
+        stack: error.stack,
+      });
+
+      const safeDataString = (() => {
+        try {
+          return typeof respData === "string" ? respData : JSON.stringify(respData);
+        } catch (e) {
+          return String(respData);
+        }
+      })();
+
+      const errorMsg =
+        (respData && (respData.message || safeDataString)) ||
+        error.message ||
+        "Payment could not be initiated. Try again.";
+
       alert(errorMsg);
     } finally {
       setLoading(false);

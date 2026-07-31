@@ -15,7 +15,7 @@ export const FeaturedCards = [
     id: 1,
     title : "Valentine's Day",
    image: image1,
-    price: 5.00,
+    price: 1.00,
         description: 'premuim selection of wellness products curated for daily care and comfort',
         category: 'well-Being'
 
@@ -25,7 +25,7 @@ export const FeaturedCards = [
     id:2,
     title : 'Vitamins & Supplements',
  image: image2,
-  price: 8.50,
+  price: 2.50,
         description: 'premuim selection of wellness products curated for daily care and comfort',
         category: 'well-Being'
 
@@ -35,7 +35,7 @@ export const FeaturedCards = [
     id:3,
     title : 'Grocery & Beverages',
  image: image3,
-  price: 4.25,
+  price: 2.25,
         description: 'premuim selection of wellness products curated for daily care and comfort',
         category: 'well-Being'
 
