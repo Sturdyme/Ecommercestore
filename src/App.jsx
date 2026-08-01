@@ -34,6 +34,7 @@ import OrderHistory from './Component/OrderHistory';
 import ProductDetails from './Component/ProductDetails';
 import Products from './Component/Products';
 import FeaturedDetailsPage from './Pages/FeaturedDetailsPage';
+import FeaturedSection from './Component/FeaturedSection';
 
 function App() {
  useEffect(() => {
@@ -76,6 +77,7 @@ function App() {
      <Route path="/" element={<Products />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path='/featured/:id' element={<FeaturedDetailsPage/>}/>
+        <Route path='/featured' element={<FeaturedSection />} />
       <Route path='/dashboard' element={
         <ProtectedRoute>
           <Dashboard />

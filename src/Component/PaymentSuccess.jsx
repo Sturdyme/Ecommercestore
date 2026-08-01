@@ -11,7 +11,7 @@ const PaymentSuccess = () => {
     useEffect(() => {
         if (reference) {
             // Optional: Double check payment status with your verify endpoint to show fresh UI data
-            axios.get(`http://127.0.0.1:8000/api/payments/verify/${reference}`)
+            axios.get(`${import.meta.env.VITE_API_URL}/api/payments/verify/${reference}`)
                 .then(response => {
                     if (response.data.status === 'success') {
                         setStatus('success');

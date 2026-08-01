@@ -1,16 +1,23 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { FaArrowLeft, FaShoppingCart } from 'react-icons/fa';
 import { useCart } from '../Component/CartContext';
 import { usdToNairaDisplay } from "../Utilities/currency";
-import { FeaturedCards } from '../Component/FeaturedData'; 
-
-// If extraItems can be exported from FeaturedSection, do so, or move it to FeaturedData.js
-import { extraItems } from '../Component/FeaturedSection'; 
+import { FeaturedCards, extraItems } from '../Component/FeaturedData';
 
 const FeaturedDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { addToCart } = useCart();
+
+  const handleBack = () => {
+    if (window.history.state && window.history.state.idx > 0) {
+      navigate(-1);
+      return;
+    }
+
+    navigate('/featured');
+  };
 
   // Combine both local arrays to search through everything at once
   const allFeaturedItems = [...FeaturedCards, ...extraItems];
@@ -23,9 +30,13 @@ const FeaturedDetails = () => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-black px-4">
         <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-xl max-w-sm text-center border dark:border-gray-800">
           <p className="text-red-500 font-bold mb-4">Collection item not found</p>
-          <Link to="/" className="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-purple-700 transition">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-purple-700 transition"
+          >
             <FaArrowLeft /> Back to Home
-          </Link>
+          </button>
         </div>
       </div>
     );
@@ -37,9 +48,13 @@ const FeaturedDetails = () => {
         
         {/* Back navigation */}
         <div className="mb-6">
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 font-medium group transition">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 font-medium group transition"
+          >
             <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> Back to Discover
-          </Link>
+          </button>
         </div>
 
         {/* Local Layout Grid */}
