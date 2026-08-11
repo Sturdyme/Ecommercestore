@@ -130,7 +130,7 @@ const About = () => {
   {/* TEXT CONTENT */}
   <div className="p-6 text-center">
     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-      Yossy Vogue (Founder & Owner)
+      Omowaye Emmanuel (Founder & Owner)
     </h3>
 
     <p className="text-sm text-gray-500 dark:text-gray-300 mt-2">
@@ -172,11 +172,6 @@ const About = () => {
 
           </div>
         </section>
-
-        {/* FOOTER NOTE */}
-        <div className="text-center text-gray-500 dark:text-gray-400 text-sm mt-12">
-          © {new Date().getFullYear()} Yuna collective. All rights reserved.
-        </div>
 
       </div>
     </div>
