@@ -43,15 +43,13 @@ export default function AIChatbox({ onClose }) {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/chat`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ message: question }),
-        }
-      );
+  `${import.meta.env.VITE_CHAT_API_URL}/api/chat`,
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: question }),
+  }
+);
 
       const data = await response.json();
 
