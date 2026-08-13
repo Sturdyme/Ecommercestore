@@ -228,7 +228,7 @@ const Navbar = () => {
                       }}
                       className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700 text-sm"
                     >
-                      View Profile
+                      Settings
                     </button>
 
                     {/* Go to Dashboard */}
