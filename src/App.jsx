@@ -35,6 +35,8 @@ import ProductDetails from './Component/ProductDetails';
 import Products from './Component/Products';
 import FeaturedDetailsPage from './Pages/FeaturedDetailsPage';
 import FeaturedSection from './Component/FeaturedSection';
+import OrderReview from './Component/OrderReview';
+
 
 function App() {
  useEffect(() => {
@@ -88,6 +90,7 @@ function App() {
           <CheckoutWrapper />
         </ProtectedRoute>
       } />
+      <Route path="/order-review" element={<OrderReview />} />
       <Route path='/profile' element={
         <ProtectedRoute>
           <Profile />

@@ -1,9 +1,16 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { FaCreditCard, FaLock } from "react-icons/fa";
 import api from "../api";
 import { convertToNaira } from "../Utilities/currency";
 
-const Checkout = ({ cartItems = [] }) => {
+const Checkout = ({ cartItems: cartItemsProp, fulfillmentMethod: fulfillmentMethodProp }) => {
+  const location = useLocation();
+  // Prefer whatever OrderReview navigated here with; fall back to props
+  // (e.g. if Checkout is ever rendered directly, or during local testing).
+  const cartItems = location.state?.cartItems ?? cartItemsProp ?? [];
+  const fulfillmentMethod = location.state?.fulfillmentMethod ?? fulfillmentMethodProp ?? "delivery";
+
   const [loading, setLoading] = useState(false);
 
   // 1. Convert all item prices to Naira and calculate subtotal
@@ -12,8 +19,9 @@ const Checkout = ({ cartItems = [] }) => {
     0
   );
 
-  // 2. Shipping is 15% of subtotal (in Naira)
-  const calculatedShipping = calculatedSubtotal * 0.15;
+  // 2. Shipping is 15% of subtotal for delivery, free for pickup
+  const calculatedShipping =
+    fulfillmentMethod === "delivery" ? calculatedSubtotal * 0.15 : 0;
 
   // 3. Grand total
   const calculatedTotal = calculatedSubtotal + calculatedShipping;
@@ -26,7 +34,12 @@ const Checkout = ({ cartItems = [] }) => {
       const amountToSend = Math.round(calculatedTotal);
 
       // Safety check for empty carts
-      if (!amountToSend || amountToSend <= 0) {
+      if (!amountToSend && fulfillmentMethod !== "pickup") {
+        alert("Your cart is empty. Please add products before checking out.");
+        setLoading(false);
+        return;
+      }
+      if (cartItems.length === 0) {
         alert("Your cart is empty. Please add products before checking out.");
         setLoading(false);
         return;
@@ -34,13 +47,13 @@ const Checkout = ({ cartItems = [] }) => {
 
       const response = await api.post(
         "/pay",
-        { 
+        {
           amount: amountToSend,
-
-          items:cartItems.map(item => ({
+          fulfillment_method: fulfillmentMethod,
+          items: cartItems.map((item) => ({
             ...item,
-            price: convertToNaira(Number(item.price))
-          }))
+            price: convertToNaira(Number(item.price)),
+          })),
         },
         {
           headers: {
@@ -86,12 +99,10 @@ const Checkout = ({ cartItems = [] }) => {
 
   // Helper for Naira formatting: comma as thousands separator, dot as decimal separator (kobo)
   const formatNaira = (amount) => {
-    // Always show 2 decimals, comma as thousands separator, dot as decimal separator
-    // Example: 1,234,567.89 -> ₦1,234,567.89
     const parts = amount
       .toFixed(2)
       .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",") // thousands
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
       .split(".");
     return `₦${parts[0]}.${parts[1]}`;
   };
@@ -111,6 +122,11 @@ const Checkout = ({ cartItems = [] }) => {
           </div>
         </div>
 
+        {/* Fulfillment method reminder */}
+        <div className="text-xs font-semibold uppercase tracking-wide text-purple-600 dark:text-purple-400">
+          {fulfillmentMethod === "pickup" ? "Store Pickup" : "Delivery"}
+        </div>
+
         {/* Order Summary Breakdown */}
         <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 space-y-2 border border-gray-100 dark:border-gray-700">
           <div className="flex justify-between text-sm">
@@ -120,9 +136,11 @@ const Checkout = ({ cartItems = [] }) => {
             </span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600 dark:text-gray-400">Shipping (15%)</span>
+            <span className="text-gray-600 dark:text-gray-400">
+              {fulfillmentMethod === "delivery" ? "Shipping (15%)" : "Shipping"}
+            </span>
             <span className="font-medium text-gray-800 dark:text-white">
-              {formatNaira(calculatedShipping)}
+              {fulfillmentMethod === "delivery" ? formatNaira(calculatedShipping) : "Free"}
             </span>
           </div>
           <div className="flex justify-between text-lg font-bold mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
@@ -152,7 +170,7 @@ const Checkout = ({ cartItems = [] }) => {
         {/* Pay Button */}
         <button
           onClick={handlePayment}
-          disabled={loading || calculatedTotal <= 0}
+          disabled={loading || calculatedTotal < 0 || cartItems.length === 0}
           className="w-full bg-purple-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-purple-700 transition-all transform active:scale-95 disabled:opacity-50 disabled:active:scale-100 shadow-lg shadow-purple-200 dark:shadow-none"
         >
           {loading ? "Initializing..." : `Pay ${formatNaira(calculatedTotal)}`}

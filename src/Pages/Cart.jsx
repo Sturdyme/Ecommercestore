@@ -106,7 +106,7 @@ export default function Cart() {
               <span className="text-black dark:text-white">Total</span>
               <span className="text-black dark:text-white">{usdToNairaDisplay(total)}</span>
             </div>
-           <Link to="/checkout"> 
+           <Link to="/order-review"> 
             <button
               className="w-full mt-6 bg-black text-white dark:text-white py-3 rounded hover:bg-gray-800 transition"
             >
