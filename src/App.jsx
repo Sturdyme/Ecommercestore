@@ -36,6 +36,9 @@ import Products from './Component/Products';
 import FeaturedDetailsPage from './Pages/FeaturedDetailsPage';
 import FeaturedSection from './Component/FeaturedSection';
 import OrderReview from './Component/OrderReview';
+import AddMoneyModal from './Component/AddMoneyModal';
+import PaystackCallback from './Pages/PaystackCallback';
+import Payments from './Pages/Payments';
 
 
 function App() {
@@ -68,7 +71,7 @@ function App() {
     <Navbar/>
     <Categories/>
     <main className="pt-[72px] lg:pt-[120px] min-h-screen flex flex-col">
-    <Routes> 
+    <Routes>
       <Route path='/' element={<Home />} />
       <Route path='/signup' element={<SignUp />} />
       <Route path='/verify-otp' element={<VerifyOtp />} />
@@ -76,10 +79,13 @@ function App() {
       <Route path='/loading-to-login' element={<LoadingToLogin />} />
       <Route path='/loading-to-page' element={<LoadingToPage />} />
       <Route path='/cart' element={<Cart />} />
-     <Route path="/" element={<Products />} />
+     <Route path="products" element={<Products />} />
         <Route path="/products/:id" element={<ProductDetails />} />
         <Route path='/featured/:id' element={<FeaturedDetailsPage/>}/>
         <Route path='/featured' element={<FeaturedSection />} />
+        <Route path='/wallet' element={<AddMoneyModal/>}/>
+        <Route path='payments' element={< Payments/>}/> 
+        <Route path='/wallet/callback' element={<PaystackCallback/>}/>
       <Route path='/dashboard' element={
         <ProtectedRoute>
           <Dashboard />

@@ -19,7 +19,7 @@ const ProductDetails = () => {
     const fetchSingleProduct = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`https://dummyjson.com/products/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
         setProduct(response.data);
         setError(null);
       } catch (err) {
@@ -78,7 +78,7 @@ const ProductDetails = () => {
                   <div key={index} className="w-full h-full shrink-0 flex items-center justify-center p-6">
                     <img 
                       src={img} 
-                      alt={`${product.title} view ${index + 1}`} 
+                      alt={`${product.name} view ${index + 1}`} 
                       className="w-full h-full object-contain max-h-[400px]"
                     />
                   </div>
@@ -146,7 +146,7 @@ const ProductDetails = () => {
                   {product.brand || "Exclusive"}
                 </span>
                 <h1 className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mt-2">
-                  {product.title}
+                  {product.name}
                 </h1>
               </div>
 

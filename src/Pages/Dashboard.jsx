@@ -109,7 +109,7 @@ const Dashboard = () => {
           <Link to="/wishlist" className="block">
             <NavItem icon={<FiHeart />} label={`Wishlist (${wishlist.length || 0})`} onClick={() => setIsSidebarOpen(false)} />
           </Link>
-          <NavItem icon={<FiCreditCard />} label="Payments" onClick={() => { navigate('/checkout'); setIsSidebarOpen(false); }} />
+          <NavItem icon={<FiCreditCard />} label="Payments" onClick={() => { navigate('/payments'); setIsSidebarOpen(false); }} />
          <NavItem icon={<FiUser />} label="Profile" onClick={() => { navigate('/profile'); setIsSidebarOpen(false); }} />
         </nav>
 

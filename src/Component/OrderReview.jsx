@@ -5,7 +5,7 @@ import { convertToNaira } from "../Utilities/currency";
 import { useCart } from "./CartContext";
 
 const PICKUP_LOCATION = {
-  name: "YossyVogue Flagship Store",
+  name: "YunaVogue Flagship Store",
   address: "No 17 Yemi Alimi Street, Ikorodu, Lagos",
   hours: "Mon–Sat, 9am–6pm",
 };

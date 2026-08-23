@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
-import { FaUser, FaYoast, FaBars, FaTimes, FaSignOutAlt, FaChevronRight } from "react-icons/fa";
+import { FaUser, FaYoast, FaBars, FaTimes, FaSignOutAlt, FaChevronRight, FaWallet, FaPlus } from "react-icons/fa";
 import { GiWorld, GiHamburgerMenu } from "react-icons/gi";
 import { IoCart } from "react-icons/io5";
 import ThemeToggle from "./ThemeToggle";
@@ -13,6 +13,11 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(0.00);
+  const searchRef = useRef(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,6 +45,37 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem('token')));
   const profilePic = user?.profilePic;
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+
+  // Fetch Wallet Balance
+  const fetchWalletBalance = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/wallet`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setWalletBalance(data.balance ?? 0.00);
+      }
+    } catch (err) {
+      console.error('Failed to fetch wallet balance', err);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchWalletBalance();
+    }
+    
+    const handleWalletUpdate = () => fetchWalletBalance();
+    window.addEventListener('walletUpdated', handleWalletUpdate);
+    return () => window.removeEventListener('walletUpdated', handleWalletUpdate);
+  }, [isLoggedIn]);
 
   // Logic for scroll visibility and outside clicks...
   useEffect(() => {
@@ -101,6 +137,30 @@ const Navbar = () => {
     return () => window.removeEventListener('userLogin', handleUserLogin);
   }, []);
 
+  // Debounced product search
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/products/search?q=${encodeURIComponent(searchQuery)}`
+        );
+        if (!res.ok) throw new Error("Search failed");
+        const data = await res.json();
+        setSearchResults(data);
+      } catch (err) {
+        console.error("Search failed", err);
+        setSearchResults([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const handleProfileImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -110,7 +170,6 @@ const Navbar = () => {
     reader.onloadend = () => {
       const updatedUser = { ...user, profilePic: reader.result };
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      // Persist profile picture separately by email to survive logout
       if (user?.email) {
         localStorage.setItem(`profilePic_${user.email}`, reader.result);
       }
@@ -131,7 +190,6 @@ const Navbar = () => {
     setUser(null);
     setIsLoggedIn(false);
     setOpen(false);
-    // Dispatch logout event for any other components that need to react
     window.dispatchEvent(new Event('userLogout'));
     navigate('/login');
   };
@@ -151,19 +209,68 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop Search */}
-        <div className="hidden lg:block flex-1 max-w-md mx-10">
+        <div className="hidden lg:block flex-1 max-w-md mx-10 relative" ref={searchRef}>
           <div className="relative group">
             <input
               type="text"
               placeholder="Search trends..."
-              className="w-full bg-gray-100 dark:bg-gray-800 border-none py-2.5 px-6 rounded-2xl text-sm focus:ring-2 focus:ring-purple-400 transition-all"
+              className="w-full bg-gray-100 dark:bg-gray-800 dark:text-white border-none py-2.5 px-6 rounded-2xl text-sm focus:ring-2 focus:ring-purple-400 transition-all"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setShowResults(true)}
+              onBlur={() => setTimeout(() => setShowResults(false), 200)}
             />
           </div>
+
+          {/* Results dropdown */}
+          {showResults && searchQuery.trim() && (
+            <div className="absolute top-full mt-2 w-full bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50 max-h-80 overflow-y-auto">
+              {searchResults.length > 0 ? (
+                searchResults.map((product) => (
+                  <Link
+                    key={product.id}
+                    to={`/products/${product.id}`}
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSearchResults([]);
+                      setShowResults(false);
+                    }}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <img
+                      src={product.image_url || "/placeholder.png"}
+                      alt={product.name}
+                      className="w-9 h-9 rounded-lg object-cover flex-shrink-0"
+                    />
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="text-sm text-gray-700 dark:text-gray-200 truncate">{product.name}</span>
+                      <span className="text-xs text-gray-400">₦{product.price}</span>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="px-4 py-3 text-sm text-gray-400">
+                  No products found for "{searchQuery}"
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Action Icons */}
-        <div className="flex items-center gap-2 lg:gap-6">
+        <div className="flex items-center gap-2 lg:gap-4">
           <div className="hidden lg:flex dark:text-white"><ThemeToggle /></div>
+
+          {/* Desktop Wallet Pill Badge */}
+          {isLoggedIn && (
+            <Link 
+              to="/wallet" 
+              className="hidden lg:flex items-center gap-2 px-3.5 py-2 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300 rounded-xl font-bold text-xs hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors border border-purple-200 dark:border-purple-800/50"
+            >
+              <FaWallet className="text-purple-500" />
+              <span>₦{Number(walletBalance).toLocaleString('en-NG', { minimumFractionDigits: 2 })}</span>
+            </Link>
+          )}
           
           <Link to="/cart" className="relative p-2.5 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors">
             <IoCart className="text-xl text-gray-700 dark:text-gray-200" />
@@ -188,7 +295,6 @@ const Navbar = () => {
                 {/* Profile Dropdown Menu */}
                 {profileDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50">
-                    {/* Profile Header */}
                     <div className="p-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-lg overflow-hidden border-2 border-white">
@@ -201,7 +307,6 @@ const Navbar = () => {
                       </div>
                     </div>
 
-                    {/* Upload Option */}
                     <div className="border-t border-gray-100 dark:border-gray-700">
                       <label className="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
                         <div className="flex items-center gap-3 text-gray-700 dark:text-gray-200">
@@ -220,7 +325,17 @@ const Navbar = () => {
                       {uploading && <p className="px-4 py-2 text-xs text-purple-600 dark:text-purple-400">Uploading...</p>}
                     </div>
 
-                    {/* View Profile */}
+                    <button 
+                      onClick={() => {
+                        navigate('/wallet');
+                        setProfileDropdownOpen(false);
+                      }}
+                      className="w-full px-4 py-3 text-left text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-t border-gray-100 dark:border-gray-700 text-sm font-medium flex items-center justify-between"
+                    >
+                      <span>My Wallet</span>
+                      <span className="text-xs font-bold text-purple-500">₦{Number(walletBalance).toFixed(0)}</span>
+                    </button>
+
                     <button 
                       onClick={() => {
                         navigate('/profile');
@@ -231,7 +346,6 @@ const Navbar = () => {
                       Settings
                     </button>
 
-                    {/* Go to Dashboard */}
                     <button 
                       onClick={() => {
                         navigate('/dashboard');
@@ -242,7 +356,6 @@ const Navbar = () => {
                       Go to Dashboard
                     </button>
 
-                    {/* Logout */}
                     <button 
                       onClick={handleLogout}
                       className="w-full px-4 py-3 text-left text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm font-medium border-t border-gray-100 dark:border-gray-700"
@@ -259,7 +372,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* RIGHT SIDE HAMBURGER */}
+          {/* Hamburger Menu Button */}
           <button 
             onClick={() => setOpen(true)}
             className="p-2.5 bg-purple-500 text-white rounded-xl lg:hidden shadow-lg shadow-purple-200"
@@ -269,19 +382,14 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* RIGHT SIDE DRAWER MENU */}
+      {/* Mobile Drawer Menu */}
       <div className={`fixed inset-0 z-[120] transition-visibility duration-300 ${open ? "visible" : "invisible"}`}>
-        
-        {/* Backdrop glass */}
         <div 
           className={`absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity duration-500 ${open ? "opacity-100" : "opacity-0"}`} 
           onClick={() => setOpen(false)}
         />
 
-        {/* Menu Panel */}
         <div className={`absolute top-0 right-0 w-[85%] max-w-[380px] h-full bg-white dark:bg-gray-950 shadow-[-20px_0_50px_rgba(0,0,0,0.1)] transition-transform duration-500 ease-out ${open ? "translate-x-0" : "translate-x-full"}`}>
-          
-          {/* Close Button */}
           <button 
             onClick={() => setOpen(false)}
             className="absolute top-6 left-[-50px] w-10 h-10 bg-white dark:bg-gray-900 flex items-center justify-center rounded-full shadow-lg text-purple-500"
@@ -290,8 +398,8 @@ const Navbar = () => {
           </button>
 
           <div className="h-full flex flex-col">
-            {/* Drawer Header (User Card) */}
-            <div className="p-8 pb-10 bg-gradient-to-br from-purple-600 to-purple-800 text-white rounded-bl-[40px]">
+            {/* Drawer Header */}
+            <div className="p-8 pb-8 bg-gradient-to-br from-purple-600 to-purple-800 text-white rounded-bl-[40px]">
               {isLoggedIn ? (
                 <div className="flex flex-col gap-4">
                   <label className="cursor-pointer group">
@@ -316,13 +424,40 @@ const Navbar = () => {
                 <div className="flex flex-col gap-4">
                   <h3 className="text-2xl font-black">Welcome.</h3>
                   <p className="text-sm text-purple-100">Unlock deals, tracking, and more.</p>
-                  <button onClick={() => navigate('/loading-to-page')} className="w-fit bg-white text-purple-600 px-6 py-2 rounded-xl font-bold text-sm">Join Yuna collective</button>
+                  <button onClick={() => navigate('/login')} className="w-fit bg-white text-purple-600 px-6 py-2 rounded-xl font-bold text-sm">Join Yuna collective</button>
                 </div>
               )}
             </div>
 
             {/* Navigation Links */}
-            <div className="flex-1 px-6 py-8 overflow-y-auto">
+            <div className="flex-1 px-6 py-6 overflow-y-auto">
+              
+              {/* Mobile Wallet Display Card */}
+              {isLoggedIn && (
+                <div className="mb-6 p-4 rounded-2xl bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/40 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-purple-500 text-white rounded-xl">
+                      <FaWallet />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-purple-500 dark:text-purple-400">Wallet Balance</p>
+                      <p className="text-lg font-black text-gray-900 dark:text-white">
+                        ₦{Number(walletBalance).toLocaleString('en-NG', { minimumFractionDigits: 2 })}
+                      </p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      setOpen(false);
+                      navigate('/wallet');
+                    }}
+                    className="p-2 bg-purple-500 text-white rounded-xl hover:bg-purple-600 transition-colors flex items-center gap-1 text-xs font-bold"
+                  >
+                    <FaPlus className="text-[10px]" /> Top Up
+                  </button>
+                </div>
+              )}
+
               <p className="text-[10px] font-black uppercase tracking-[2px] text-gray-400 mb-4 ml-2">Main Menu</p>
               
               <div className="flex flex-col gap-1">
@@ -333,16 +468,15 @@ const Navbar = () => {
                 {isLoggedIn && (
                   <>
                     <div className="my-4 border-t border-gray-100 dark:border-gray-800" />
-                    <AnimatedMobileLink delay="250ms" to="/profile" label="My Profile" 
-                    setOpen={setOpen} />
-                    <AnimatedMobileLink delay="300ms" to="/order" label="Order History" setOpen={setOpen} />
+                    <AnimatedMobileLink delay="250ms" to="/wallet" label="My Wallet" setOpen={setOpen} />
+                    <AnimatedMobileLink delay="300ms" to="/profile" label="My Profile" setOpen={setOpen} />
+                    <AnimatedMobileLink delay="350ms" to="/order" label="Order History" setOpen={setOpen} />
                   </>
                 )}
               </div>
 
-              {/* Extra Tools */}
-              <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-900 dark:text-white rounded-3xl flex items-center  dark:text-whitejustify-between">
-               
+              <div className="mt-8 p-4 bg-gray-50 dark:bg-gray-900 rounded-3xl flex items-center justify-between">
+                <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">Appearance</span>
                 <ThemeToggle />
               </div>
             </div>
@@ -370,7 +504,7 @@ const AnimatedMobileLink = ({ to, label, setOpen, count, delay }) => (
     to={to} 
     onClick={() => setOpen(false)}
     style={{ transitionDelay: delay }}
-    className="flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-900 transition-all translate-x-0 group"
+    className="flex items-center justify-between p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-900 transition-all group"
   >
     <div className="flex items-center gap-4">
       <span className="text-gray-700 dark:text-gray-200 font-semibold group-hover:text-purple-500 transition-colors">{label}</span>

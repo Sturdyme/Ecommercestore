@@ -49,12 +49,12 @@ export default function Cart() {
               {/* Item Info */}
               <div className="flex items-center gap-4 w-full sm:w-auto">
                 <img
-                  src={item.image}
+                  src={item.image_url}
                   alt={item.name}
                   className="w-16 h-16 sm:w-20 sm:h-20 text-black dark:text-white rounded object-cover"
                 />
                 <div>
-                  <h2 className="font-medium text-sm sm:text-base text-black dark:text-white line-clamp-1">{item.title || item.name}</h2>
+                  <h2 className="font-medium text-sm sm:text-base text-black dark:text-white line-clamp-1">{item.name || item.name}</h2>
                   <p className="text-gray-500 dark:text-gray-400 text-sm">{usdToNairaDisplay(item.price)}</p>
                 </div>
               </div>

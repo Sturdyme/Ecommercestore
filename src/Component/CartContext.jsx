@@ -1,12 +1,24 @@
-import { useContext } from "react";
-import { createContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { createContext } from "react";
 import toast from "react-hot-toast";
 
 
 const CartContext = createContext();
+const CART_STORAGE_KEY = "cart";
 
 export const CartProvider = ({ children }) => {
-    const [cart, setCart] = useState([]);
+    const [cart, setCart] = useState(() => {
+        try {
+            const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+            return savedCart ? JSON.parse(savedCart) : [];
+        } catch {
+            return [];
+        }
+    });
+
+    useEffect(() => {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    }, [cart]);
 
     const addToCart = (product) => {
         setCart((prevCart) => {

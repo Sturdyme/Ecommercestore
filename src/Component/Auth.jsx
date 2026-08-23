@@ -1,5 +1,6 @@
 import { auth, provider } from "../Firebase"
 import { signInWithPopup } from "firebase/auth";
+import Login from "../Pages/Login";
 
 export default function Auth() {
     const logi = async () => {
@@ -8,7 +9,7 @@ export default function Auth() {
 
     return (
         <button
-        onClick={logi}
+        onClick={Login}
         className="bg-blue-600 theme-text-white px-4 py-2 rounded-lg hover:bg-blue-700"
         >
         Sign in with Google
