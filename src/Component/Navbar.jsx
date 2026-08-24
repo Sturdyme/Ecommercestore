@@ -325,6 +325,18 @@ const Navbar = () => {
                       {uploading && <p className="px-4 py-2 text-xs text-purple-600 dark:text-purple-400">Uploading...</p>}
                     </div>
 
+                    {user?.role === "admin" && (
+         <button
+         onClick={() => {
+         navigate('/admin/products/new');
+          setProfileDropdownOpen(false);
+          }}
+            className="w-full px-4 py-3 text-left text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors border-t border-gray-100 dark:border-gray-700 text-sm font-semibold"
+          >
+         Add New Product
+       </button>
+      )}
+
                     <button 
                       onClick={() => {
                         navigate('/wallet');

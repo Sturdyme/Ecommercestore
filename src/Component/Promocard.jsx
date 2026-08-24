@@ -1,8 +1,22 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRightIcon } from '@heroicons/react/24/solid';
+import { useNavigate } from 'react-router-dom';
 
-const Promocard = ({ title, whatsapp, order, brandlogo, button, badge = "HOT DEAL" }) => {
+const Promocard = ({ title, whatsapp, order, brandlogo, button, link, isExternal, badge = "HOT DEAL" }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (!link) return;
+
+    if (isExternal) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    navigate(link);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -60,7 +74,11 @@ const Promocard = ({ title, whatsapp, order, brandlogo, button, badge = "HOT DEA
 
         {/* CTA BUTTON */}
         <div className="pt-1">
-          <button className="w-full relative group/button overflow-hidden rounded-xl bg-purple-600 hover:bg-purple-700 py-3 text-sm font-semibold text-white shadow-md shadow-purple-600/20 transition-all duration-300 active:scale-[0.98]">
+          <button
+            type="button"
+            onClick={handleClick}
+            className="w-full relative group/button overflow-hidden rounded-xl bg-purple-600 hover:bg-purple-700 py-3 text-sm font-semibold text-white shadow-md shadow-purple-600/20 transition-all duration-300 active:scale-[0.98]"
+          >
             <span className="relative z-10 flex items-center justify-center gap-2">
               <span>{button || "Explore Deal"}</span>
               <ArrowRightIcon className="w-4 h-4 transition-transform duration-300 group-hover/button:translate-x-1" />

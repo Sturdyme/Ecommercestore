@@ -4,6 +4,7 @@ import { usdToNairaDisplay } from "../Utilities/currency";
 import axios from "axios";
 import AOS from "aos";
 import { useCart } from "./CartContext";
+import { getProductImage } from "../Utilities/productImage";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -70,8 +71,7 @@ const Products = () => {
                    xl:grid-cols-5"      
       >
         {limitedProducts.map((p) => {
-          // Fallback image checker
-          const imgSrc = p.image_url || p.image || (p.images && p.images[0]) || "";
+          const imgSrc = getProductImage(p);
 
           return (
             <article

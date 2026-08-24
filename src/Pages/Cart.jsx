@@ -4,6 +4,7 @@ import chair from "../assets/specialOfferImages/chair.png"
 import { useCart } from "../Component/CartContext";
 import { usdToNairaDisplay } from "../Utilities/currency";
 import { Link } from "react-router-dom";
+import { getProductImage } from "../Utilities/productImage";
 
 const initialCart = [
   {
@@ -49,8 +50,8 @@ export default function Cart() {
               {/* Item Info */}
               <div className="flex items-center gap-4 w-full sm:w-auto">
                 <img
-                  src={item.image_url}
-                  alt={item.name}
+                  src={getProductImage(item)}
+                  alt={item.name || item.title}
                   className="w-16 h-16 sm:w-20 sm:h-20 text-black dark:text-white rounded object-cover"
                 />
                 <div>

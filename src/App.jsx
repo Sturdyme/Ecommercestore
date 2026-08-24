@@ -39,6 +39,10 @@ import OrderReview from './Component/OrderReview';
 import AddMoneyModal from './Component/AddMoneyModal';
 import PaystackCallback from './Pages/PaystackCallback';
 import Payments from './Pages/Payments';
+import AdminRoute from "./routes/AdminRoute";
+import AddProduct from './Pages/AddProduct';
+import ManageProducts from './Pages/ManageProducts';
+import PrizeWheel from './Component/PrizeWheel';
 
 
 function App() {
@@ -81,6 +85,13 @@ function App() {
       <Route path='/cart' element={<Cart />} />
      <Route path="products" element={<Products />} />
         <Route path="/products/:id" element={<ProductDetails />} />
+
+      <Route path="admin/products/new" element={<AdminRoute>
+        <AddProduct />
+      </AdminRoute>}/>
+
+      <Route path="/admin/products" element ={<AdminRoute> <ManageProducts /> </AdminRoute>}/>
+
         <Route path='/featured/:id' element={<FeaturedDetailsPage/>}/>
         <Route path='/featured' element={<FeaturedSection />} />
         <Route path='/wallet' element={<AddMoneyModal/>}/>
@@ -121,6 +132,7 @@ function App() {
       <Route path='/aichatbox' element={<AIChatbox />} />
       <Route path='/privacy-policy' element={<PrivacyPolicy />} />
       <Route path='/about' element={<About />} />
+      <Route path="/prize-wheel" element={<PrizeWheel />}/>
       
       
     </Routes>

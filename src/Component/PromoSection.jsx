@@ -13,6 +13,8 @@ const PromoSection = () => {
           order={card.order}
           brandlogo={card.brandlogo}
           button={card.button}
+          link={card.link}
+          isExternal={card.isExternal}
         />
       ))}
     </div>

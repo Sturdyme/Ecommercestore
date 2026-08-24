@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaArrowLeft, FaShoppingCart, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { usdToNairaDisplay } from "../Utilities/currency";
 import { useCart } from "./CartContext";
+import { getProductImage } from "../Utilities/productImage";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -35,12 +36,12 @@ const ProductDetails = () => {
   // Slider Navigation Logic
   const prevSlide = () => {
     const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? product.images.length - 1 : currentIndex - 1;
+    const newIndex = isFirstSlide ? productImages.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
   };
 
   const nextSlide = () => {
-    const isLastSlide = currentIndex === product.images.length - 1;
+    const isLastSlide = currentIndex === productImages.length - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
@@ -49,7 +50,10 @@ const ProductDetails = () => {
   if (error || !product) return <div className="text-center py-20 text-red-500">{error}</div>;
 
   // Safety check to ensure we always fall back onto an array structure
-  const productImages = product.images && product.images.length > 0 ? product.images : [product.thumbnail];
+  const productImages = (Array.isArray(product.images) && product.images.length > 0
+    ? product.images
+    : [product.image_url || product.image || product.thumbnail]
+  ).map((image) => getProductImage({ image }));
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black py-8 px-4 sm:px-6 lg:px-8">
