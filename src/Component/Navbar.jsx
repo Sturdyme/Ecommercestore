@@ -6,11 +6,30 @@ import { IoCart } from "react-icons/io5";
 import ThemeToggle from "./ThemeToggle";
 import { useCart } from "./CartContext";
 
+const PRODUCT_CATEGORIES = [
+  "Clothing",
+  "Mobiles",
+  "Electronics",
+  "Cameras",
+  "Chairs",
+  "Furniture",
+  "Home Theaters",
+  "Accessories",
+  "Lightings",
+  "Sports",
+  "Groceries",
+  "Books",
+  "Toys",
+  "Home Appliances",
+  "Hair Extensions & Wigs",
+];
+
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -192,6 +211,12 @@ const Navbar = () => {
     setOpen(false);
     window.dispatchEvent(new Event('userLogout'));
     navigate('/login');
+  };
+
+  const handleMobileCategoryClick = (category) => {
+    setOpen(false);
+    setMobileCategoriesOpen(false);
+    navigate(`/products?category=${encodeURIComponent(category)}`);
   };
 
   return (
@@ -476,6 +501,35 @@ const Navbar = () => {
                 <AnimatedMobileLink delay="100ms" to="/superdeals" label="Super Deals" setOpen={setOpen} />
                 <AnimatedMobileLink delay="150ms" to="/homeappliances" label="Home Appliances" setOpen={setOpen} />
                 <AnimatedMobileLink delay="200ms" to="/cart" label="Shopping Cart" setOpen={setOpen} count={totalItems} />
+
+                <div className="mt-2 border-t border-gray-100 dark:border-gray-800 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setMobileCategoriesOpen((isOpen) => !isOpen)}
+                    className="flex w-full items-center justify-between p-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-900 transition-all group"
+                  >
+                    <span className="text-gray-700 dark:text-gray-200 font-semibold group-hover:text-purple-500 transition-colors">
+                       Categories
+                    </span>
+                    <FaChevronRight className={`text-xs text-gray-300 group-hover:text-purple-500 transition-transform ${mobileCategoriesOpen ? "rotate-90" : ""}`} />
+                  </button>
+
+                  {mobileCategoriesOpen && (
+                    <div className="ml-4 border-l border-purple-200 dark:border-purple-800 pl-2">
+                      {PRODUCT_CATEGORIES.map((category) => (
+                        <button
+                          key={category}
+                          type="button"
+                          onClick={() => handleMobileCategoryClick(category)}
+                          className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-left text-sm text-gray-600 dark:text-gray-300 hover:bg-purple-50 hover:text-purple-600 dark:hover:bg-purple-900/20 dark:hover:text-purple-400 transition-colors"
+                        >
+                          {category}
+                          <FaChevronRight className="text-[10px] text-gray-300" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 
                 {isLoggedIn && (
                   <>
