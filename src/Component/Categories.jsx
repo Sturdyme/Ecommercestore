@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
-import { FaChevronRight, FaTimes } from 'react-icons/fa';
+import { FaChevronRight } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import AOS from 'aos';
@@ -10,9 +10,8 @@ const Categories = () => {
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollYRef = useRef(0);
 
   const [categories, setCategories] = useState(false);
   const [moreCategories, setMoreCategories] = useState(false);
@@ -20,18 +19,6 @@ const Categories = () => {
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
-
-  // Lock background body scrolling when mobile drawer is open
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [mobileMenuOpen]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -45,35 +32,31 @@ const Categories = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Control visibility on scroll (Hides completely on scroll down, restores on scroll up)
+  // Hide while scrolling down and reveal when the user scrolls upward.
   useEffect(() => {
     const controlNavbar = () => {
-      if (typeof window !== 'undefined') {
-        const currentScrollY = window.scrollY;
+      const currentScrollY = window.scrollY;
+      const previousScrollY = lastScrollYRef.current;
 
-        if (currentScrollY > lastScrollY && currentScrollY > 40) {
-          // Hide when scrolling down
-          setIsVisible(false);
-          setCategories(false);
-          setMobileMenuOpen(false);
-        } else if (currentScrollY < lastScrollY) {
-          // Show when scrolling up
-          setIsVisible(true);
-        }
-
-        setLastScrollY(currentScrollY);
+      if (currentScrollY <= 40 || currentScrollY < previousScrollY) {
+        setIsVisible(true);
+      } else if (currentScrollY > previousScrollY) {
+        setIsVisible(false);
+        setCategories(false);
+        setMoreCategories(false);
       }
+
+      lastScrollYRef.current = currentScrollY;
     };
 
     window.addEventListener('scroll', controlNavbar, { passive: true });
     return () => window.removeEventListener('scroll', controlNavbar);
-  }, [lastScrollY]);
+  }, []);
 
   // Universal category click handler
   const handleCategoryClick = (e, categoryName) => {
     e.stopPropagation();
     setCategories(false);
-    setMobileMenuOpen(false);
     navigate(`/products?category=${encodeURIComponent(categoryName)}`);
   };
 
@@ -94,7 +77,7 @@ const Categories = () => {
   return (
     <>
       <section
-        className={`fixed left-0 w-full top-[72px] bg-purple-600 dark:bg-purple-900 border-b border-purple-500/30 z-[90] shadow-md transition-transform duration-300 ease-in-out ${
+        className={`hidden md:block fixed left-0 w-full top-[72px] bg-purple-600 dark:bg-purple-900 border-b border-purple-500/30 z-[90] shadow-md transition-transform duration-300 ease-in-out ${
           isVisible ? 'translate-y-0' : '-translate-y-[200%]'
         }`}
       >
@@ -223,100 +206,9 @@ const Categories = () => {
             </ul>
           </div>
 
-          {/* MOBILE NAVIGATION BAR */}
-          <div className="flex md:hidden items-center justify-between py-2.5 text-white">
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="flex items-center gap-2 bg-purple-700 active:bg-purple-800 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-sm focus:outline-none"
-            >
-              <GiHamburgerMenu className="text-sm" />
-              <span>Categories & Menu</span>
-            </button>
-
-            <Link
-              to="/superdeals"
-              className="text-xs font-semibold bg-purple-700/60 active:bg-purple-700 px-3 py-1.5 rounded-lg"
-            >
-              Super Deals
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* MOBILE DRAWER MODAL OVERLAY */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <div className="fixed inset-0 z-[100] md:hidden">
-            {/* Backdrop blur overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            />
-
-            {/* Slide-down drawer content */}
-            <motion.div
-              initial={{ y: '-100%', opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: '-100%', opacity: 0 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="relative w-full max-h-[80vh] bg-white dark:bg-gray-900 rounded-b-2xl shadow-2xl text-gray-800 dark:text-gray-100 overflow-hidden"
-            >
-              <div className="p-4 space-y-3 max-h-[80vh] overflow-y-auto">
-                <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-800">
-                  <span className="font-bold text-base text-purple-600 dark:text-purple-400">
-                    Categories & Navigation
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="p-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-gray-700"
-                  >
-                    <FaTimes />
-                  </button>
-                </div>
-
-                <div className="space-y-1">
-                  {[...mainCategories, ...extraCategories].map((cat) => (
-                    <div
-                      key={cat}
-                      onClick={(e) => handleCategoryClick(e, cat)}
-                      className="py-2.5 px-3 rounded-lg hover:bg-purple-50 dark:hover:bg-gray-800 text-sm font-medium cursor-pointer transition-colors"
-                    >
-                      {cat}
-                    </div>
-                  ))}
-                </div>
-
-                <div className="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2 text-sm font-medium">
-                  <Link
-                    to="/superdeals"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block py-2 px-3 text-purple-600 dark:text-purple-400 font-semibold"
-                  >
-                    Super Deals
-                  </Link>
-                  <div
-                    onClick={(e) => handleCategoryClick(e, 'Home Appliances')}
-                    className="py-2 px-3 cursor-pointer"
-                  >
-                    Home Appliances
-                  </div>
-                  <div
-                    onClick={(e) => handleCategoryClick(e, 'Hair Extensions & Wigs')}
-                    className="py-2 px-3 cursor-pointer"
-                  >
-                    Hair Extensions & Wigs
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </>
   );
 };
