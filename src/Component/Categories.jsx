@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
-import { IoIosArrowDropdown, IoIosArrowDropup } from 'react-icons/io';
+import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
+import { FaChevronRight, FaTimes } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-import SuperDeals from '../Pages/SuperDeals';
+import { motion, AnimatePresence } from 'framer-motion';
 import AOS from 'aos';
 
 const Categories = () => {
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
@@ -18,18 +21,25 @@ const Categories = () => {
     AOS.init({ duration: 1000 });
   }, []);
 
-  // Universal handler to navigate to products page with category filter
-  const handleCategoryClick = (e, categoryName) => {
-    e.stopPropagation(); // Prevents event bubbling/toggling dropdowns unexpectedly
-    setCategories(false); // Closes menu on click
-    navigate(`/products?category=${encodeURIComponent(categoryName)}`);
-  };
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setCategories(false);
+        setMoreCategories(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
+  // Hide/Show sub-navbar on scroll down/up
   useEffect(() => {
     const controlNavbar = () => {
       if (typeof window !== 'undefined') {
-        if (window.scrollY > lastScrollY && window.scrollY > 100) { 
+        if (window.scrollY > lastScrollY && window.scrollY > 100) {
           setIsVisible(false);
+          setCategories(false);
         } else {
           setIsVisible(true);
         }
@@ -41,188 +51,239 @@ const Categories = () => {
     return () => window.removeEventListener('scroll', controlNavbar);
   }, [lastScrollY]);
 
+  // Universal category click handler
+  const handleCategoryClick = (e, categoryName) => {
+    e.stopPropagation();
+    setCategories(false);
+    setMobileMenuOpen(false);
+    navigate(`/products?category=${encodeURIComponent(categoryName)}`);
+  };
+
+  const mainCategories = [
+    'Clothing',
+    'Mobiles',
+    'Electronics',
+    'Cameras',
+    'Chairs',
+    'Furniture',
+    'Home Theaters',
+    'Accessories',
+    'Lightings',
+  ];
+
+  const extraCategories = ['Sports', 'Groceries', 'Books', 'Toys'];
+
   return (
-    <section 
-      className={`fixed left-0 w-full top-[72px] bg-purple-500 z-[90] shadow transition-transform duration-300 ${
-        isVisible ? "translate-y-0" : "-translate-y-[72px]"
+    <section
+      className={`fixed left-0 w-full top-[72px] bg-purple-600 dark:bg-purple-900 border-b border-purple-500/30 z-[90] shadow-md transition-transform duration-300 ease-in-out ${
+        isVisible ? 'translate-y-0' : '-translate-y-[100%]'
       }`}
     >
-      <div className=' lg:overflow-visible'>  
-        <ul className="flex items-center
-          justify-start md:justify-center
-          gap-4 md:gap-4 md:text-sm sm:gap-4 sm:text-xs sm:px-1
-          px-4 py-3 max-sm:text-xs max-sm:hidden max-md:hidden
-          lg:overflow-visible
-          whitespace-nowrap
-          border-b
-          text-gray-600 font-semibold ">
-          
-          {/* All Categories */}
-          <li
-            className="flex gap-2 items-center bg-gray-200 px-4 py-2 rounded-full relative cursor-pointer"
-            onClick={() => setCategories(!categories)}
-          >
-            <GiHamburgerMenu />
-            <span className='text-black dark:text-black hover:text-purple-500 dark:hover:text-purple-500'>
-              All Categories
-            </span>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* DESKTOP NAVIGATION BAR */}
+        <div className="hidden md:flex items-center justify-between py-2.5 text-xs lg:text-sm font-medium text-white">
+          <ul className="flex items-center gap-2 lg:gap-6 whitespace-nowrap">
+            {/* All Categories Dropdown Button */}
+            <li className="relative" ref={dropdownRef}>
+              <button
+                type="button"
+                onClick={() => setCategories(!categories)}
+                className="flex items-center gap-2.5 bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded-full font-semibold transition-colors duration-200 shadow-sm focus:outline-none"
+              >
+                <GiHamburgerMenu className="text-base" />
+                <span>All Categories</span>
+                <motion.div
+                  animate={{ rotate: categories ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <IoIosArrowDown className="text-base" />
+                </motion.div>
+              </button>
 
-            {/* Arrow rotates when categories is open */}
-            <IoIosArrowDropup
-              className={`transition-transform duration-300 ${
-                categories ? "rotate-180" : "rotate-0"
-              } text-gray-700`}
-            />
+              {/* Animated Category Dropdown */}
+              <AnimatePresence>
+                {categories && (
+                  <motion.ul
+                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                    className="absolute left-0 top-full mt-2 w-64 z-[9999] rounded-xl shadow-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 divide-y divide-gray-100 dark:divide-gray-800 text-gray-800 dark:text-gray-100 overflow-hidden"
+                  >
+                    <div className="py-1">
+                      {mainCategories.map((cat) => (
+                        <li
+                          key={cat}
+                          onClick={(e) => handleCategoryClick(e, cat)}
+                          className="flex items-center justify-between px-4 py-2.5 hover:bg-purple-50 dark:hover:bg-gray-800/80 hover:text-purple-600 dark:hover:text-purple-400 cursor-pointer transition-colors text-sm font-medium"
+                        >
+                          <span>{cat}</span>
+                          <FaChevronRight className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </li>
+                      ))}
+                    </div>
 
-            {/* Dropdown menu with slide-down animation */}
-            <ul
-              className={`absolute left-0 top-full mt-2 w-56
-                z-[9999]
-                overflow-hidden rounded-lg shadow-lg border
-                theme-text-black dark:theme-text-white font-semibold bg-white dark:bg-gray-900
-                transition-all divide-y divide-gray-400 duration-500 ${
-                  categories
-                    ? "max-h-[40rem] opacity-100"
-                    : "max-h-0 opacity-0 pointer-events-none"
-                }`}
-            >
-              <li 
-                onClick={(e) => handleCategoryClick(e, "Clothing")}
-                className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800 cursor-pointer"
-              >
-                Clothings
-              </li>
-              <li 
-                onClick={(e) => handleCategoryClick(e, "Mobiles")}
-                className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800 cursor-pointer"
-              >
-                Mobiles
-              </li>
-              <li 
-                onClick={(e) => handleCategoryClick(e, "Electronics")}
-                className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800 cursor-pointer"
-              >
-                Electronics
-              </li>
-              <li 
-                onClick={(e) => handleCategoryClick(e, "Cameras")}
-                className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800 cursor-pointer"
-              >
-                Cameras
-              </li>
-              <li 
-                onClick={(e) => handleCategoryClick(e, "Chairs")}
-                className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800 cursor-pointer"
-              >
-                Chairs
-              </li>
-              <li 
-                onClick={(e) => handleCategoryClick(e, "Furniture")}
-                className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800 cursor-pointer"
-              >
-                Furnitures
-              </li>
-              <li 
-                onClick={(e) => handleCategoryClick(e, "Home Theaters")}
-                className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800 cursor-pointer"
-              >
-                Home Theaters
-              </li>
-              <li 
-                onClick={(e) => handleCategoryClick(e, "Accessories")}
-                className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800 cursor-pointer"
-              >
-                Accessories
-              </li>
-              <li 
-                onClick={(e) => handleCategoryClick(e, "Lightings")}
-                className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 hover:bg-purple-50 dark:hover:bg-gray-800 cursor-pointer"
-              >
-                Lightings
-              </li>
+                    {/* Expandable Extra Categories */}
+                    <div className="py-1">
+                      <li
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setMoreCategories(!moreCategories);
+                        }}
+                        className="flex items-center justify-between px-4 py-2.5 hover:bg-purple-50 dark:hover:bg-gray-800/80 hover:text-purple-600 dark:hover:text-purple-400 cursor-pointer transition-colors text-sm font-semibold"
+                      >
+                        <span>More Categories</span>
+                        {moreCategories ? (
+                          <IoIosArrowUp className="text-base" />
+                        ) : (
+                          <IoIosArrowDown className="text-base" />
+                        )}
+                      </li>
 
-              <li
-                className="flex items-center py-2 px-4 justify-between cursor-pointer theme-text-black dark:theme-text-white hover:bg-purple-50 dark:hover:bg-gray-800"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setMoreCategories(!moreCategories);
-                }}
-              >
-                <span className='text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500'>
-                  More Categories
-                </span>
-                {moreCategories ? (
-                  <IoIosArrowDropdown className="text-md" />
-                ) : (
-                  <IoIosArrowDropup className="text-md" />
+                      <AnimatePresence>
+                        {moreCategories && (
+                          <motion.ul
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="bg-gray-50 dark:bg-gray-950/50 overflow-hidden"
+                          >
+                            {extraCategories.map((cat) => (
+                              <li
+                                key={cat}
+                                onClick={(e) => handleCategoryClick(e, cat)}
+                                className="pl-7 pr-4 py-2 hover:bg-purple-100 dark:hover:bg-gray-800 hover:text-purple-600 dark:hover:text-purple-400 cursor-pointer transition-colors text-xs font-normal"
+                              >
+                                {cat}
+                              </li>
+                            ))}
+                          </motion.ul>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </motion.ul>
                 )}
-              </li>
+              </AnimatePresence>
+            </li>
 
-              {/* Extra categories */}
-              {moreCategories && (
-                <ul className="space-y-1 divide-y divide-gray-400 font-normal mt-2 bg-white dark:bg-gray-900">
-                  <li 
-                    onClick={(e) => handleCategoryClick(e, "Sports")}
-                    className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 cursor-pointer"
-                  >
-                    Sports
-                  </li>
-                  <li 
-                    onClick={(e) => handleCategoryClick(e, "Groceries")}
-                    className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 cursor-pointer"
-                  >
-                    Groceries
-                  </li>
-                  <li 
-                    onClick={(e) => handleCategoryClick(e, "Books")}
-                    className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 cursor-pointer"
-                  >
-                    Books
-                  </li>
-                  <li 
-                    onClick={(e) => handleCategoryClick(e, "Toys")}
-                    className="py-2 px-4 text-black dark:text-white hover:text-purple-500 dark:hover:text-purple-500 cursor-pointer"
-                  >
-                    Toys
-                  </li>
-                </ul>
-              )}
-            </ul>
-          </li>
+            {/* Static Navigation Items */}
+            <li>
+              <Link
+                to="/superdeals"
+                className="hover:text-purple-200 transition-colors py-1.5 px-2 rounded-md"
+              >
+                Super Deals
+              </Link>
+            </li>
 
-          {/* Rest of your nav items */}
-          <Link to='/superdeals'> 
-            <span className="text-black dark:text-white hover:text-purple-100 dark:hover:text-purple-200">
-              Super Deals
-            </span>
-          </Link>
+            <li>
+              <span className="hover:text-purple-200 cursor-pointer transition-colors py-1.5 px-2 rounded-md">
+                Yuna's Business
+              </span>
+            </li>
 
-          <li>
-            <span className="text-black dark:text-white hover:text-purple-100 dark:hover:text-purple-200">
-              Yuna's Business
-            </span>
-          </li>
-
-          <li onClick={(e) => handleCategoryClick(e, "Home Appliances")} className="cursor-pointer">
-            <span className="text-black dark:text-white hover:text-purple-100 dark:hover:text-purple-200">
+            <li
+              onClick={(e) => handleCategoryClick(e, 'Home Appliances')}
+              className="cursor-pointer hover:text-purple-200 transition-colors py-1.5 px-2 rounded-md"
+            >
               Home Appliances
-            </span>
-          </li>
+            </li>
 
-          <li onClick={(e) => handleCategoryClick(e, "Hair Extensions & Wigs")} className="cursor-pointer">
-            <span className="text-black dark:text-white hover:text-purple-100 dark:hover:text-purple-200">
+            <li
+              onClick={(e) => handleCategoryClick(e, 'Hair Extensions & Wigs')}
+              className="cursor-pointer hover:text-purple-200 transition-colors py-1.5 px-2 rounded-md"
+            >
               Hair Extensions & Wigs
-            </span>
-          </li>
+            </li>
 
-          <li className="flex gap-2 items-center sm:gap-1">
-            <span className="text-black dark:text-white hover:text-purple-100 dark:hover:text-purple-200">
-              More
-            </span>
-            <IoIosArrowDropdown className="text-black dark:text-white" />
-          </li>
-        </ul>
+            <li className="flex items-center gap-1 cursor-pointer hover:text-purple-200 transition-colors py-1.5 px-2 rounded-md">
+              <span>More</span>
+              <IoIosArrowDown className="text-xs" />
+            </li>
+          </ul>
+        </div>
+
+        {/* MOBILE NAVIGATION BAR (Small Screens) */}
+        <div className="flex md:hidden items-center justify-between py-2 text-white">
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="flex items-center gap-2 bg-purple-700 px-3 py-1.5 rounded-lg text-xs font-semibold"
+          >
+            <GiHamburgerMenu className="text-sm" />
+            <span>Categories & Menu</span>
+          </button>
+
+          <Link
+            to="/superdeals"
+            className="text-xs font-semibold bg-purple-700/60 px-3 py-1.5 rounded-lg"
+          >
+            Super Deals
+          </Link>
+        </div>
       </div>
+
+      {/* MOBILE DRAWER */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="md:hidden bg-white dark:bg-gray-900 border-t border-purple-400 dark:border-gray-800 text-gray-800 dark:text-gray-100 overflow-hidden"
+          >
+            <div className="p-4 space-y-3 max-h-[75vh] overflow-y-auto">
+              <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-800">
+                <span className="font-bold text-sm text-purple-600 dark:text-purple-400">
+                  Categories Menu
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-1 rounded-md text-gray-500 hover:text-gray-700"
+                >
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="space-y-1">
+                {[...mainCategories, ...extraCategories].map((cat) => (
+                  <div
+                    key={cat}
+                    onClick={(e) => handleCategoryClick(e, cat)}
+                    className="py-2 px-3 rounded-lg hover:bg-purple-50 dark:hover:bg-gray-800 text-sm font-medium cursor-pointer"
+                  >
+                    {cat}
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-3 border-t border-gray-200 dark:border-gray-800 space-y-2 text-sm font-medium">
+                <Link
+                  to="/superdeals"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block py-2 px-3 text-purple-600 dark:text-purple-400"
+                >
+                  Super Deals
+                </Link>
+                <div
+                  onClick={(e) => handleCategoryClick(e, 'Home Appliances')}
+                  className="py-2 px-3"
+                >
+                  Home Appliances
+                </div>
+                <div
+                  onClick={(e) => handleCategoryClick(e, 'Hair Extensions & Wigs')}
+                  className="py-2 px-3"
+                >
+                  Hair Extensions & Wigs
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

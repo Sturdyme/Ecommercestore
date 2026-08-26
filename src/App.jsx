@@ -43,6 +43,10 @@ import AdminRoute from "./routes/AdminRoute";
 import AddProduct from './Pages/AddProduct';
 import ManageProducts from './Pages/ManageProducts';
 import PrizeWheel from './Component/PrizeWheel';
+import ManageOrders from './Pages/ManageOrders';
+import ManageUsers from './Pages/ManageUsers';
+import AdminDashboard from './Pages/AdminDashboard';
+import PinGate from './routes/PinGate';
 
 
 function App() {
@@ -91,6 +95,20 @@ function App() {
       </AdminRoute>}/>
 
       <Route path="/admin/products" element ={<AdminRoute> <ManageProducts /> </AdminRoute>}/>
+
+      <Route path="/admin/orders" element={<AdminRoute>
+        <ManageOrders/>
+      </AdminRoute>}/>
+
+      <Route path="/admin/users" element={<AdminRoute>
+        <PinGate>
+          <ManageUsers />
+        </PinGate>
+      </AdminRoute>}/> 
+
+      <Route path="/admin" element={<AdminRoute>
+        <AdminDashboard/>
+      </AdminRoute>} />
 
         <Route path='/featured/:id' element={<FeaturedDetailsPage/>}/>
         <Route path='/featured' element={<FeaturedSection />} />

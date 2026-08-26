@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FaCamera, FaCheck, FaTimes, FaUser, FaLock, FaShieldAlt, FaBell, FaMapMarkerAlt, FaExclamationTriangle } from 'react-icons/fa';
+import {
+  FaCamera,
+  FaCheck,
+  FaTimes,
+  FaUser,
+  FaLock,
+  FaKey,
+  FaShieldAlt,
+  FaBell,
+  FaMapMarkerAlt,
+  FaExclamationTriangle,
+} from 'react-icons/fa';
 
 import COUNTRIES from '../Utilities/countries.js';
-
 
 // ============================================================
 // CONFIGURATION
 // ============================================================
 
 const API_URL = import.meta.env.VITE_API_URL;
-
 
 // ============================================================
 // TABS
@@ -43,12 +52,16 @@ const TABS = [
     icon: FaShieldAlt,
   },
   {
+    id: 'admin',
+    label: 'Admin Access',
+    icon: FaKey,
+  },
+  {
     id: 'danger',
     label: 'Danger Zone',
     icon: FaExclamationTriangle,
   },
 ];
-
 
 // ============================================================
 // REUSABLE COMPONENTS
@@ -69,7 +82,6 @@ const Banner = ({ tone = 'success', children }) => {
   );
 };
 
-
 const SectionCard = ({ title, description, children }) => (
   <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-8">
     <h3 className="text-lg font-bold text-black dark:text-white">
@@ -88,7 +100,6 @@ const SectionCard = ({ title, description, children }) => (
   </div>
 );
 
-
 const Field = ({ label, ...props }) => (
   <label className="block">
     <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
@@ -101,7 +112,6 @@ const Field = ({ label, ...props }) => (
     />
   </label>
 );
-
 
 const CountrySelect = ({ value, onChange }) => (
   <label className="block">
@@ -127,13 +137,7 @@ const CountrySelect = ({ value, onChange }) => (
   </label>
 );
 
-
-const Toggle = ({
-  label,
-  description,
-  checked,
-  onChange,
-}) => (
+const Toggle = ({ label, description, checked, onChange }) => (
   <div className="flex items-start justify-between border-b border-gray-100 py-4 last:border-0 dark:border-gray-700">
     <div className="pr-6">
       <p className="text-sm font-semibold text-black dark:text-white">
@@ -153,9 +157,7 @@ const Toggle = ({
       aria-checked={checked}
       onClick={onChange}
       className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 ${
-        checked
-          ? 'bg-purple-600'
-          : 'bg-gray-300 dark:bg-gray-600'
+        checked ? 'bg-purple-600' : 'bg-gray-300 dark:bg-gray-600'
       }`}
     >
       <span
@@ -167,13 +169,11 @@ const Toggle = ({
   </div>
 );
 
-
 // ============================================================
 // PROFILE COMPONENT
 // ============================================================
 
 const Profile = () => {
-
   // ==========================================================
   // USER DATA
   // ==========================================================
@@ -186,15 +186,11 @@ const Profile = () => {
         ? JSON.parse(storedUser)
         : {};
     } catch (error) {
-      console.error(
-        'Error parsing user from localStorage:',
-        error
-      );
+      console.error('Error parsing user from localStorage:', error);
 
       return {};
     }
   });
-
 
   // ==========================================================
   // GENERAL STATE
@@ -202,21 +198,17 @@ const Profile = () => {
 
   const [activeTab, setActiveTab] = useState('personal');
 
-
   // ==========================================================
   // PROFILE PHOTO STATE
   // ==========================================================
 
-  const [profilePic, setProfilePic] = useState(
-    user.profilePic || null
-  );
+  const [profilePic, setProfilePic] = useState(user.profilePic || null);
 
   const [tempProfilePic, setTempProfilePic] = useState(null);
 
   const [uploading, setUploading] = useState(false);
 
   const [saveSuccess, setSaveSuccess] = useState(false);
-
 
   // ==========================================================
   // PERSONAL INFORMATION STATE
@@ -232,7 +224,6 @@ const Profile = () => {
 
   const [savingPersonal, setSavingPersonal] = useState(false);
 
-
   // ==========================================================
   // PASSWORD STATE
   // ==========================================================
@@ -246,7 +237,6 @@ const Profile = () => {
   const [passwordStatus, setPasswordStatus] = useState(null);
 
   const [savingPassword, setSavingPassword] = useState(false);
-
 
   // ==========================================================
   // ADDRESS STATE
@@ -264,38 +254,36 @@ const Profile = () => {
 
   const [savingAddress, setSavingAddress] = useState(false);
 
-
   // ==========================================================
   // NOTIFICATION STATE
   // ==========================================================
 
   const [notifications, setNotifications] = useState({
-    orderUpdates:
-      user.notifications?.orderUpdates ?? true,
+    orderUpdates: user.notifications?.orderUpdates ?? true,
 
-    promotions:
-      user.notifications?.promotions ?? false,
+    promotions: user.notifications?.promotions ?? false,
 
-    newsletter:
-      user.notifications?.newsletter ?? false,
+    newsletter: user.notifications?.newsletter ?? false,
 
-    smsAlerts:
-      user.notifications?.smsAlerts ?? false,
+    smsAlerts: user.notifications?.smsAlerts ?? false,
   });
 
+  // ADMIN PIN STATE
+
+  const [adminPin, setAdminPin] = useState('');
+  const [confirmAdminPin, setConfirmAdminPin] = useState('');
+  const [pinStatus, setPinStatus] = useState(null);
+  const [savingPin, setSavingPin] = useState(false);
 
   // ==========================================================
   // PRIVACY STATE
   // ==========================================================
 
   const [privacy, setPrivacy] = useState({
-    shareActivity:
-      user.privacy?.shareActivity ?? false,
+    shareActivity: user.privacy?.shareActivity ?? false,
 
-    personalizedAds:
-      user.privacy?.personalizedAds ?? true,
+    personalizedAds: user.privacy?.personalizedAds ?? true,
   });
-
 
   // ==========================================================
   // AUTHENTICATION HELPERS
@@ -311,7 +299,6 @@ const Profile = () => {
       : {};
   };
 
-
   // ==========================================================
   // LOCAL USER PERSISTENCE
   // ==========================================================
@@ -322,14 +309,10 @@ const Profile = () => {
       ...updatedFields,
     };
 
-    localStorage.setItem(
-      'user',
-      JSON.stringify(updatedUser)
-    );
+    localStorage.setItem('user', JSON.stringify(updatedUser));
 
     setUser(updatedUser);
   };
-
 
   // ==========================================================
   // PROFILE PHOTO HANDLERS
@@ -357,7 +340,6 @@ const Profile = () => {
     reader.readAsDataURL(file);
   };
 
-
   const handleSaveImage = () => {
     if (!tempProfilePic) return;
 
@@ -370,10 +352,7 @@ const Profile = () => {
     });
 
     if (user?.email) {
-      localStorage.setItem(
-        `profilePic_${user.email}`,
-        tempProfilePic
-      );
+      localStorage.setItem(`profilePic_${user.email}`, tempProfilePic);
     }
 
     setSaveSuccess(true);
@@ -383,11 +362,9 @@ const Profile = () => {
     }, 3000);
   };
 
-
   const handleCancelImage = () => {
     setTempProfilePic(null);
   };
-
 
   // ==========================================================
   // PERSONAL INFORMATION HANDLER
@@ -421,8 +398,7 @@ const Profile = () => {
 
       setPersonalStatus({
         tone: 'success',
-        message:
-          'Personal information updated.',
+        message: 'Personal information updated.',
       });
     } catch (error) {
       setPersonalStatus({
@@ -436,7 +412,6 @@ const Profile = () => {
     }
   };
 
-
   // ==========================================================
   // PASSWORD HANDLER
   // ==========================================================
@@ -449,8 +424,7 @@ const Profile = () => {
     if (newPassword.length < 8) {
       setPasswordStatus({
         tone: 'error',
-        message:
-          'New password must be at least 8 characters.',
+        message: 'New password must be at least 8 characters.',
       });
 
       return;
@@ -459,8 +433,7 @@ const Profile = () => {
     if (newPassword !== confirmPassword) {
       setPasswordStatus({
         tone: 'error',
-        message:
-          'New password and confirmation do not match.',
+        message: 'New password and confirmation do not match.',
       });
 
       return;
@@ -501,7 +474,6 @@ const Profile = () => {
     }
   };
 
-
   // ==========================================================
   // ADDRESS HANDLER
   // ==========================================================
@@ -514,13 +486,9 @@ const Profile = () => {
     setAddressStatus(null);
 
     try {
-      await axios.put(
-        `${API_URL}/api/user/address`,
-        address,
-        {
-          headers: authHeaders(),
-        }
-      );
+      await axios.put(`${API_URL}/api/user/address`, address, {
+        headers: authHeaders(),
+      });
 
       persistUser({
         address,
@@ -534,14 +502,12 @@ const Profile = () => {
       setAddressStatus({
         tone: 'error',
         message:
-          error.response?.data?.message ||
-          'Could not save your address.',
+          error.response?.data?.message || 'Could not save your address.',
       });
     } finally {
       setSavingAddress(false);
     }
   };
-
 
   // ==========================================================
   // NOTIFICATION HANDLER
@@ -560,16 +526,11 @@ const Profile = () => {
     });
 
     axios
-      .put(
-        `${API_URL}/api/user/notifications`,
-        updated,
-        {
-          headers: authHeaders(),
-        }
-      )
+      .put(`${API_URL}/api/user/notifications`, updated, {
+        headers: authHeaders(),
+      })
       .catch(() => {});
   };
-
 
   // ==========================================================
   // PRIVACY HANDLER
@@ -588,16 +549,11 @@ const Profile = () => {
     });
 
     axios
-      .put(
-        `${API_URL}/api/user/privacy`,
-        updated,
-        {
-          headers: authHeaders(),
-        }
-      )
+      .put(`${API_URL}/api/user/privacy`, updated, {
+        headers: authHeaders(),
+      })
       .catch(() => {});
   };
-
 
   // ==========================================================
   // DANGER ZONE
@@ -628,6 +584,55 @@ const Profile = () => {
     }
   };
 
+  // ADMIN PIN HANDLER
+
+  const handleSetAdminPin = async (e) => {
+    e.preventDefault();
+
+    setPinStatus(null);
+
+    if (!/^\d{4}$/.test(adminPin)) {
+      setPinStatus({
+        tone: 'error',
+        message: 'PIN must be exactly 4 digits.',
+      });
+      return;
+    }
+
+    if (adminPin !== confirmAdminPin) {
+      setPinStatus({
+        tone: 'error',
+        message: 'PIN and confirmation do not match.',
+      });
+      return;
+    }
+
+    setSavingPin(true);
+
+    try {
+      await axios.post(
+        `${API_URL}/api/admin/pin/set`,
+        { pin: adminPin },
+        { headers: authHeaders() }
+      );
+
+      setPinStatus({
+        tone: 'success',
+        message: 'Admin PIN updated successfully.',
+      });
+
+      setAdminPin('');
+      setConfirmAdminPin('');
+    } catch (error) {
+      setPinStatus({
+        tone: 'error',
+        message:
+          error.response?.data?.message || 'Could not update your PIN.',
+      });
+    } finally {
+      setSavingPin(false);
+    }
+  };
 
   const handleDeleteAccount = async () => {
     if (
@@ -639,12 +644,9 @@ const Profile = () => {
     }
 
     try {
-      await axios.delete(
-        `${API_URL}/api/user`,
-        {
-          headers: authHeaders(),
-        }
-      );
+      await axios.delete(`${API_URL}/api/user`, {
+        headers: authHeaders(),
+      });
     } finally {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
@@ -653,20 +655,14 @@ const Profile = () => {
     }
   };
 
-
   // ==========================================================
   // RENDER
   // ==========================================================
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-8 dark:bg-gray-900 sm:px-6 lg:px-8">
-
       <div className="mx-auto max-w-5xl">
-
-        {/* ====================================================
-            PAGE HEADER
-        ==================================================== */}
-
+        {/* PAGE HEADER */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-black dark:text-white sm:text-3xl">
             Account Settings
@@ -677,25 +673,13 @@ const Profile = () => {
           </p>
         </div>
 
-
-        {/* ====================================================
-            MAIN LAYOUT
-        ==================================================== */}
-
+        {/* MAIN LAYOUT */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr]">
-
-
-          {/* ==================================================
-              SIDEBAR
-          ================================================== */}
-
+          {/* SIDEBAR */}
           <div className="h-fit rounded-xl border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 lg:sticky lg:top-8">
-
             {/* Mini Profile */}
             <div className="mb-2 flex items-center gap-3 border-b border-gray-100 px-2 pb-4 dark:border-gray-700">
-
               <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full border-2 border-purple-600">
-
                 {profilePic ? (
                   <img
                     src={profilePic}
@@ -707,11 +691,9 @@ const Profile = () => {
                     <FaUser />
                   </div>
                 )}
-
               </div>
 
               <div className="min-w-0">
-
                 <p className="truncate text-sm font-semibold text-black dark:text-white">
                   {user.name || 'Your account'}
                 </p>
@@ -719,61 +701,86 @@ const Profile = () => {
                 <p className="truncate text-xs text-gray-500 dark:text-gray-400">
                   {user.email || '-'}
                 </p>
-
               </div>
-
             </div>
-
 
             {/* Navigation */}
             <nav className="space-y-1">
-
-              {TABS.map(
-                ({ id, label, icon: Icon }) => (
+              {TABS.filter((tab) => tab.id !== 'admin' || user?.role === 'admin').map(
+                ({ id, label, icon: IconComponent }) => (
                   <button
                     key={id}
                     type="button"
-                    onClick={() =>
-                      setActiveTab(id)
-                    }
+                    onClick={() => setActiveTab(id)}
                     className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors ${
                       activeTab === id
                         ? 'bg-purple-600 text-white'
                         : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
                     }`}
                   >
-                    <Icon className="shrink-0 text-base" />
-
+                    <IconComponent className="shrink-0 text-base" />
                     {label}
                   </button>
                 )
               )}
-
             </nav>
-
           </div>
 
-
-          {/* ==================================================
-              CONTENT
-          ================================================== */}
-
+          {/* CONTENT AREA */}
           <div className="space-y-6">
+            {/* ADMIN ACCESS */}
+            {activeTab === 'admin' && user?.role === 'admin' && (
+              <SectionCard
+                title="Admin access PIN"
+                description="A personal 4-digit PIN required to open the Manage Users page, separate from your account password."
+              >
+                {pinStatus && (
+                  <Banner tone={pinStatus.tone}>{pinStatus.message}</Banner>
+                )}
 
+                <form onSubmit={handleSetAdminPin} className="max-w-md space-y-4">
+                  <Field
+                    label="New 4-digit PIN"
+                    type="password"
+                    inputMode="numeric"
+                    maxLength={4}
+                    value={adminPin}
+                    onChange={(e) =>
+                      setAdminPin(e.target.value.replace(/\D/g, ''))
+                    }
+                    autoComplete="off"
+                  />
 
-            {/* =================================================
-                PERSONAL INFORMATION
-            ================================================= */}
+                  <Field
+                    label="Confirm PIN"
+                    type="password"
+                    inputMode="numeric"
+                    maxLength={4}
+                    value={confirmAdminPin}
+                    onChange={(e) =>
+                      setConfirmAdminPin(e.target.value.replace(/\D/g, ''))
+                    }
+                    autoComplete="off"
+                  />
 
+                  <button
+                    type="submit"
+                    disabled={savingPin}
+                    className="rounded-lg bg-purple-600 px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-purple-700 disabled:opacity-50"
+                  >
+                    {savingPin ? 'Saving...' : 'Set PIN'}
+                  </button>
+                </form>
+              </SectionCard>
+            )}
+
+            {/* PERSONAL INFORMATION */}
             {activeTab === 'personal' && (
               <>
-
-                {/* Profile Photo */}
                 <SectionCard
                   title="Profile photo"
                   description="Shown on your reviews and order history."
                 >
-
                   {saveSuccess && (
                     <Banner tone="success">
                       Profile picture saved successfully!
@@ -781,9 +788,7 @@ const Profile = () => {
                   )}
 
                   <div className="flex items-center gap-6">
-
                     <div className="h-20 w-20 shrink-0 overflow-hidden rounded-full border-4 border-purple-600 shadow">
-
                       {tempProfilePic ? (
                         <img
                           src={tempProfilePic}
@@ -801,31 +806,20 @@ const Profile = () => {
                           <FaCamera />
                         </div>
                       )}
-
                     </div>
 
-
                     <div className="flex-1">
-
                       <label className="inline-block">
-
-                        <span className="sr-only">
-                          Choose profile photo
-                        </span>
+                        <span className="sr-only">Choose profile photo</span>
 
                         <input
                           type="file"
                           accept="image/*"
                           className="block w-full cursor-pointer text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-purple-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-purple-700 hover:file:bg-purple-100 dark:text-gray-400 dark:file:bg-purple-900/30 dark:file:text-purple-400 dark:hover:file:bg-purple-900/50"
                           onChange={handleImageChange}
-                          disabled={
-                            uploading ||
-                            tempProfilePic !== null
-                          }
+                          disabled={uploading || tempProfilePic !== null}
                         />
-
                       </label>
-
 
                       {uploading && (
                         <p className="mt-2 text-xs font-semibold text-purple-600 dark:text-purple-400">
@@ -833,10 +827,8 @@ const Profile = () => {
                         </p>
                       )}
 
-
                       {tempProfilePic && (
                         <div className="mt-3 flex gap-3">
-
                           <button
                             type="button"
                             onClick={handleSaveImage}
@@ -846,7 +838,6 @@ const Profile = () => {
                             Save
                           </button>
 
-
                           <button
                             type="button"
                             onClick={handleCancelImage}
@@ -855,186 +846,119 @@ const Profile = () => {
                             <FaTimes />
                             Cancel
                           </button>
-
                         </div>
                       )}
-
                     </div>
-
                   </div>
-
                 </SectionCard>
 
-
-                {/* Personal Information */}
                 <SectionCard
                   title="Personal information"
                   description="Your name, email, and phone number."
                 >
-
                   {personalStatus && (
                     <Banner tone={personalStatus.tone}>
                       {personalStatus.message}
                     </Banner>
                   )}
 
-
-                  <form
-                    onSubmit={handleSavePersonal}
-                    className="space-y-4"
-                  >
-
+                  <form onSubmit={handleSavePersonal} className="space-y-4">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
                       <Field
                         label="Full name"
                         value={name}
-                        onChange={(e) =>
-                          setName(e.target.value)
-                        }
+                        onChange={(e) => setName(e.target.value)}
                       />
 
                       <Field
                         label="Email address"
                         type="email"
                         value={email}
-                        onChange={(e) =>
-                          setEmail(e.target.value)
-                        }
+                        onChange={(e) => setEmail(e.target.value)}
                       />
-
                     </div>
-
 
                     <Field
                       label="Phone number"
                       type="tel"
                       placeholder="e.g. 08012345678"
                       value={phone}
-                      onChange={(e) =>
-                        setPhone(e.target.value)
-                      }
+                      onChange={(e) => setPhone(e.target.value)}
                     />
-
 
                     <button
                       type="submit"
                       disabled={savingPersonal}
                       className="rounded-lg bg-purple-600 px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-purple-700 disabled:opacity-50"
                     >
-                      {savingPersonal
-                        ? 'Saving...'
-                        : 'Save changes'}
+                      {savingPersonal ? 'Saving...' : 'Save changes'}
                     </button>
-
                   </form>
-
                 </SectionCard>
-
               </>
             )}
 
-
-            {/* =================================================
-                SECURITY
-            ================================================= */}
-
+            {/* SECURITY */}
             {activeTab === 'security' && (
               <SectionCard
                 title="Change password"
                 description="Choose a strong password you don't use elsewhere."
               >
-
                 {passwordStatus && (
                   <Banner tone={passwordStatus.tone}>
                     {passwordStatus.message}
                   </Banner>
                 )}
 
-
-                <form
-                  onSubmit={handleChangePassword}
-                  className="max-w-md space-y-4"
-                >
-
+                <form onSubmit={handleChangePassword} className="max-w-md space-y-4">
                   <Field
                     label="Current password"
                     type="password"
                     value={currentPassword}
-                    onChange={(e) =>
-                      setCurrentPassword(
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => setCurrentPassword(e.target.value)}
                     autoComplete="current-password"
                   />
-
 
                   <Field
                     label="New password"
                     type="password"
                     value={newPassword}
-                    onChange={(e) =>
-                      setNewPassword(
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => setNewPassword(e.target.value)}
                     autoComplete="new-password"
                   />
-
 
                   <Field
                     label="Confirm new password"
                     type="password"
                     value={confirmPassword}
-                    onChange={(e) =>
-                      setConfirmPassword(
-                        e.target.value
-                      )
-                    }
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     autoComplete="new-password"
                   />
-
 
                   <button
                     type="submit"
                     disabled={savingPassword}
                     className="rounded-lg bg-purple-600 px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-purple-700 disabled:opacity-50"
                   >
-                    {savingPassword
-                      ? 'Updating...'
-                      : 'Update password'}
+                    {savingPassword ? 'Updating...' : 'Update password'}
                   </button>
-
                 </form>
-
               </SectionCard>
             )}
 
-
-            {/* =================================================
-                ADDRESSES
-            ================================================= */}
-
+            {/* ADDRESSES */}
             {activeTab === 'addresses' && (
               <SectionCard
                 title="Shipping address"
                 description="Used to prefill checkout and estimate delivery."
               >
-
                 {addressStatus && (
                   <Banner tone={addressStatus.tone}>
                     {addressStatus.message}
                   </Banner>
                 )}
 
-
-                <form
-                  onSubmit={handleSaveAddress}
-                  className="space-y-4"
-                >
-
-                  {/* Street */}
+                <form onSubmit={handleSaveAddress} className="space-y-4">
                   <Field
                     label="Street address"
                     value={address.line1}
@@ -1046,10 +970,7 @@ const Profile = () => {
                     }
                   />
 
-
-                  {/* Location Fields */}
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
                     <Field
                       label="City"
                       value={address.city}
@@ -1060,7 +981,6 @@ const Profile = () => {
                         })
                       }
                     />
-
 
                     <Field
                       label="State"
@@ -1073,283 +993,147 @@ const Profile = () => {
                       }
                     />
 
-
                     <Field
                       label="Postal code"
                       value={address.postalCode}
                       onChange={(e) =>
                         setAddress({
                           ...address,
-                          postalCode:
-                            e.target.value,
+                          postalCode: e.target.value,
                         })
                       }
                     />
-
 
                     <CountrySelect
                       value={address.country}
                       onChange={(e) =>
                         setAddress({
                           ...address,
-                          country:
-                            e.target.value,
+                          country: e.target.value,
                         })
                       }
                     />
-
                   </div>
-
 
                   <button
                     type="submit"
                     disabled={savingAddress}
                     className="rounded-lg bg-purple-600 px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-purple-700 disabled:opacity-50"
                   >
-                    {savingAddress
-                      ? 'Saving...'
-                      : 'Save address'}
+                    {savingAddress ? 'Saving...' : 'Save address'}
                   </button>
-
                 </form>
-
               </SectionCard>
             )}
 
-
-            {/* =================================================
-                NOTIFICATIONS
-            ================================================= */}
-
+            {/* NOTIFICATIONS */}
             {activeTab === 'notifications' && (
               <SectionCard
-                title="Notification preferences"
-                description="Choose what we contact you about."
+                title="Notification Preferences"
+                description="Manage how and when you receive updates."
               >
-
-                <Toggle
-                  label="Order updates"
-                  description="Shipping, delivery, and OTP verification emails."
-                  checked={
-                    notifications.orderUpdates
-                  }
-                  onChange={() =>
-                    toggleNotification(
-                      'orderUpdates'
-                    )
-                  }
-                />
-
-
-                <Toggle
-                  label="Promotions & discounts"
-                  description="Sales, new arrivals, and limited-time offers."
-                  checked={
-                    notifications.promotions
-                  }
-                  onChange={() =>
-                    toggleNotification(
-                      'promotions'
-                    )
-                  }
-                />
-
-
-                <Toggle
-                  label="Newsletter"
-                  description="Occasional style guides and store news."
-                  checked={
-                    notifications.newsletter
-                  }
-                  onChange={() =>
-                    toggleNotification(
-                      'newsletter'
-                    )
-                  }
-                />
-
-
-                <Toggle
-                  label="SMS alerts"
-                  description="Text messages for time-sensitive order updates."
-                  checked={
-                    notifications.smsAlerts
-                  }
-                  onChange={() =>
-                    toggleNotification(
-                      'smsAlerts'
-                    )
-                  }
-                />
-
+                <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                  <Toggle
+                    label="Order Updates"
+                    description="Receive email notifications about order status changes."
+                    checked={notifications.orderUpdates}
+                    onChange={() => toggleNotification('orderUpdates')}
+                  />
+                  <Toggle
+                    label="Promotional Emails"
+                    description="Receive exclusive deals, discounts, and flash sale alerts."
+                    checked={notifications.promotions}
+                    onChange={() => toggleNotification('promotions')}
+                  />
+                  <Toggle
+                    label="Weekly Newsletter"
+                    description="Stay up to date with fresh trends and brand updates."
+                    checked={notifications.newsletter}
+                    onChange={() => toggleNotification('newsletter')}
+                  />
+                  <Toggle
+                    label="SMS Alerts"
+                    description="Get quick text notifications for express delivery."
+                    checked={notifications.smsAlerts}
+                    onChange={() => toggleNotification('smsAlerts')}
+                  />
+                </div>
               </SectionCard>
             )}
 
-
-            {/* =================================================
-                PRIVACY
-            ================================================= */}
-
+            {/* PRIVACY */}
             {activeTab === 'privacy' && (
               <SectionCard
-                title="Privacy & data"
-                description="Control how your data is used."
+                title="Privacy Settings"
+                description="Control how your data and browsing activity are used."
               >
-
-                <Toggle
-                  label="Share activity for recommendations"
-                  description="Lets us suggest products based on your browsing and past orders."
-                  checked={
-                    privacy.shareActivity
-                  }
-                  onChange={() =>
-                    togglePrivacy(
-                      'shareActivity'
-                    )
-                  }
-                />
-
-
-                <Toggle
-                  label="Personalized ads"
-                  description="Show ads based on your shopping activity on this site."
-                  checked={
-                    privacy.personalizedAds
-                  }
-                  onChange={() =>
-                    togglePrivacy(
-                      'personalizedAds'
-                    )
-                  }
-                />
-
-
-                {/* Data Export */}
-                <div className="mt-2 border-t border-gray-100 pt-4 dark:border-gray-700">
-
-                  <p className="mb-1 text-sm font-semibold text-black dark:text-white">
-                    Download your data
-                  </p>
-
-                  <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
-                    Get a copy of your orders, profile, and account activity.
-                  </p>
-
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      axios
-                        .post(
-                          `${API_URL}/api/user/data-export`,
-                          {},
-                          {
-                            headers:
-                              authHeaders(),
-                          }
-                        )
-                        .then(() =>
-                          alert(
-                            'Your data export has been emailed to you.'
-                          )
-                        )
-                        .catch(() =>
-                          alert(
-                            'Could not start data export. Please try again.'
-                          )
-                        )
-                    }
-                    className="text-sm font-semibold text-purple-600 hover:underline dark:text-purple-400"
-                  >
-                    Request data export
-                  </button>
-
+                <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                  <Toggle
+                    label="Share Shopping Activity"
+                    description="Allow personalized product recommendations based on browsing history."
+                    checked={privacy.shareActivity}
+                    onChange={() => togglePrivacy('shareActivity')}
+                  />
+                  <Toggle
+                    label="Personalized Ads"
+                    description="Tailor advertising based on products you view."
+                    checked={privacy.personalizedAds}
+                    onChange={() => togglePrivacy('personalizedAds')}
+                  />
                 </div>
-
               </SectionCard>
             )}
 
-
-            {/* =================================================
-                DANGER ZONE
-            ================================================= */}
-
+            {/* DANGER ZONE */}
             {activeTab === 'danger' && (
               <SectionCard
-                title="Danger zone"
-                description="These actions are difficult or impossible to undo."
+                title="Danger Zone"
+                description="Irreversible actions regarding your account."
               >
-
                 <div className="space-y-4">
-
-                  {/* Logout */}
-                  <div className="flex items-center justify-between border-b border-gray-100 py-4 dark:border-gray-700">
-
+                  <div className="flex items-center justify-between rounded-lg border border-gray-200 p-4 dark:border-gray-700">
                     <div>
-
-                      <p className="text-sm font-semibold text-black dark:text-white">
+                      <h4 className="text-sm font-bold text-black dark:text-white">
                         Log out of all devices
+                      </h4>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Revoke all active active sessions across browsers and phones.
                       </p>
-
-                      <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                        Ends every active session, including this one.
-                      </p>
-
                     </div>
-
-
                     <button
                       type="button"
-                      onClick={
-                        handleLogoutAllDevices
-                      }
-                      className="shrink-0 rounded-lg bg-gray-200 px-4 py-2 text-sm font-bold text-gray-800 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+                      onClick={handleLogoutAllDevices}
+                      className="rounded-lg bg-gray-200 px-4 py-2 text-xs font-bold text-gray-800 transition-colors hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
                     >
-                      Log out everywhere
+                      Log Out All
                     </button>
-
                   </div>
 
-
-                  {/* Delete Account */}
-                  <div className="flex items-center justify-between py-4">
-
+                  <div className="flex items-center justify-between rounded-lg border border-red-200 bg-red-50/50 p-4 dark:border-red-900/40 dark:bg-red-950/20">
                     <div>
-
-                      <p className="text-sm font-semibold text-red-600 dark:text-red-400">
+                      <h4 className="text-sm font-bold text-red-600 dark:text-red-400">
                         Delete account
+                      </h4>
+                      <p className="text-xs text-red-500 dark:text-red-400/80">
+                        Permanently delete your profile, orders, and wallet records.
                       </p>
-
-                      <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-                        Permanently deletes your account and order history.
-                      </p>
-
                     </div>
-
-
                     <button
                       type="button"
-                      onClick={
-                        handleDeleteAccount
-                      }
-                      className="shrink-0 rounded-lg bg-red-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-red-700"
+                      onClick={handleDeleteAccount}
+                      className="rounded-lg bg-red-600 px-4 py-2 text-xs font-bold text-white transition-colors hover:bg-red-700"
                     >
-                      Delete account
+                      Delete Account
                     </button>
-
                   </div>
-
                 </div>
-
               </SectionCard>
             )}
-
           </div>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default Profile;
