@@ -29,7 +29,7 @@ const PaystackCallback = () => {
         const token = localStorage.getItem("token");
 
         // Backend Endpoint to verify Paystack Transaction
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/verify/${reference}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/wallet/verify/${reference}`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
