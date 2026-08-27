@@ -25,6 +25,7 @@ import {
   RefreshCw,
   Sparkles,
   ChevronRight,
+  WalletCards,
 } from "lucide-react";
 
 const AdminDashboard = () => {
@@ -115,6 +116,20 @@ const AdminDashboard = () => {
       icon: Banknote,
       accent: "from-emerald-500/10 to-teal-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-900/30",
       link: "/admin/orders",
+    },
+    {
+      // The API must calculate this from successful wallet credit/deposit
+      // transactions only; it must not be derived from wallet balances.
+      label: "Wallet Deposits",
+      value:
+        stats?.total_wallet_deposits == null
+          ? "—"
+          : `₦${Number(stats.total_wallet_deposits).toLocaleString("en-NG", {
+              minimumFractionDigits: 2,
+            })}`,
+      icon: WalletCards,
+      accent: "from-fuchsia-500/10 to-pink-500/10 text-fuchsia-600 dark:text-fuchsia-400 border-fuchsia-200/50 dark:border-fuchsia-900/30",
+      link: "/admin",
     },
     {
       label: "Total Products",
