@@ -3,7 +3,7 @@ import { FaCartArrowDown, FaEye, FaHeart } from 'react-icons/fa'
 import { FaBurger } from 'react-icons/fa6'
 import { useEffect, useState } from 'react';
 import { useCart } from './CartContext';
-import { usdToNairaDisplay } from "../Utilities/currency";
+import { formatNaira } from "../Utilities/currency";
 import { useWishlist } from '../Utilities/WishlistContext';
 
 function Specialoffers({id, productName, productImage, oldPrice, newPrice, onQuickView, }) {
@@ -81,10 +81,10 @@ function Specialoffers({id, productName, productImage, oldPrice, newPrice, onQui
 
                         <div className='flex items-center gap-1.5 sm:gap-3'>
                             <span className='text-xs sm:text-lg font-bold text-purple-600 dark:text-purple-400'>
-                                {usdToNairaDisplay(newPrice)}
+                                {formatNaira(newPrice)}
                             </span> 
                             <span className='text-[10px] sm:text-sm line-through text-zinc-400 font-light'>
-                                {usdToNairaDisplay(oldPrice)}
+                                {formatNaira(oldPrice)}
                             </span> 
                         </div>
                     </div>

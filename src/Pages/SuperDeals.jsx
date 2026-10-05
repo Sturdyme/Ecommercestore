@@ -1,25 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useCart } from '../Component/CartContext';
-import { usdToNairaDisplay } from "../Utilities/currency";
+import { formatNaira } from "../Utilities/currency";
 import { FiHeart } from 'react-icons/fi';
 import { useWishlist } from '../Utilities/WishlistContext';
 import { Link } from 'react-router-dom'
+import { getProductImage } from "../Utilities/productImage";
 
 const SuperDeals = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [visibleCount, setVisibleCount] = useState(12);
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, wishlist } = useWishlist();
 
   useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then(res => res.json())
-      .then(data => setProducts(data));
+    fetch(`${import.meta.env.VITE_API_URL}/api/products`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to load products");
+        return response.json();
+      })
+      .then((data) => setProducts(Array.isArray(data) ? data : data.data ?? []))
+      .catch((requestError) => {
+        console.error("Error fetching super deal products:", requestError);
+        setError("Could not load products.");
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  if (!products.length) {
+  if (loading) {
     return <p className='text-black dark:text-white'>Loading...</p>;
+  }
+
+  if (error) {
+    return <p className='text-red-500'>{error}</p>;
+  }
+
+  if (!products.length) {
+    return <p className='text-black dark:text-white'>No products found.</p>;
   }
  
   const visibleProducts = products.slice(0, visibleCount);
@@ -36,8 +55,8 @@ const SuperDeals = () => {
       {/* Image */}
       <Link to={`/products/${p.id}`} className="bg-gray-100 dark:bg-gray-800 p-4 flex items-center justify-center h-44">
         <img
-          src={p.image}
-          alt={p.title}
+          src={getProductImage(p)}
+          alt={p.title || p.name}
           className="h-full object-contain group-hover:scale-105 transition-transform duration-300"
         />
       </Link>
@@ -46,8 +65,8 @@ const SuperDeals = () => {
       <div className="p-4 space-y-2">
         
         {/* Title */}
-        <Link to={`/product/${p.id}`} className="text-sm font-semibold line-clamp-2 leading-tight">
-          {p.title}
+        <Link to={`/products/${p.id}`} className="text-sm font-semibold line-clamp-2 leading-tight">
+          {p.title || p.name}
         </Link>
 
         {/* Description */}
@@ -58,7 +77,7 @@ const SuperDeals = () => {
         {/* Price + Category */}
         <div className="flex justify-between items-center pt-1">
           <p className="text-base font-bold text-green-600">
-            {usdToNairaDisplay(p.price)}
+            {formatNaira(p.price)}
           </p>
           <span className="text-[10px] bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded-full capitalize">
             {p.category}
@@ -70,7 +89,7 @@ const SuperDeals = () => {
 
   {/* ADD TO CART */}
   <button
-    onClick={() => addToCart(p)}
+    onClick={() => addToCart({ ...p, image: getProductImage(p) })}
     className="flex-1 bg-purple-600 text-white text-sm py-2.5 rounded-xl font-semibold 
                hover:bg-purple-700 active:scale-95 transition-all duration-200 shadow-sm"
   >

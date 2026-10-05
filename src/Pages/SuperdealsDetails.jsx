@@ -5,6 +5,7 @@ import { FiHeart } from 'react-icons/fi';
 import { useCart } from '../Component/CartContext';
 import { useWishlist } from '../Utilities/WishlistContext';
 import { usdToNairaDisplay } from "../Utilities/currency";
+import { getProductImage } from "../Utilities/productImage";
 
 const SuperdealsDetails = () => {
   const { id } = useParams();
@@ -17,16 +18,19 @@ const SuperdealsDetails = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`https://fakestoreapi.com/products/${id}`)
-      .then((res) => res.json())
+    fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to load product details");
+        return response.json();
+      })
       .then((data) => {
-        setProduct(data);
-        setLoading(false);
+        setProduct(data.data ?? data);
       })
       .catch((err) => {
         console.error("Error fetching superdeal spec:", err);
-        setLoading(false);
-      });
+        setProduct(null);
+      })
+      .finally(() => setLoading(false));
   }, [id]);
 
   if (loading) {
@@ -52,7 +56,8 @@ const SuperdealsDetails = () => {
   }
 
   // Ensure images are formatted as an array even if the API provides a single string
-  const imagesArray = Array.isArray(product.image) ? product.image : [product.image];
+  const productImages = product.images || product.image_url || product.image;
+  const imagesArray = Array.isArray(productImages) ? productImages : [productImages];
   const isWishlisted = wishlist.some(item => item.id === product.id);
 
   const prevSlide = () => {
@@ -90,8 +95,8 @@ const SuperdealsDetails = () => {
                 {imagesArray.map((img, index) => (
                   <div key={index} className="w-full h-full shrink-0 flex items-center justify-center p-6">
                     <img 
-                      src={img} 
-                      alt={`${product.title} view ${index + 1}`} 
+                      src={getProductImage({ image: img })}
+                      alt={`${product.title || product.name} view ${index + 1}`}
                       className="w-full h-full object-contain max-h-[380px]"
                     />
                   </div>
@@ -133,7 +138,7 @@ const SuperdealsDetails = () => {
                   {product.category}
                 </span>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mt-2 leading-tight">
-                  {product.title}
+                  {product.title || product.name}
                 </h1>
               </div>
 
@@ -164,7 +169,7 @@ const SuperdealsDetails = () => {
               
               {/* ADD TO CART */}
               <button
-                onClick={() => addToCart(product)}
+                onClick={() => addToCart({ ...product, image: getProductImage(product) })}
                 className="flex-1 bg-purple-600 text-white font-semibold py-3.5 rounded-xl shadow-lg hover:bg-purple-700 active:scale-95 transition flex items-center justify-center gap-2"
               >
                 <FaShoppingCart />

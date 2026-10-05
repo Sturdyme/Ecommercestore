@@ -3,20 +3,39 @@ import { useEffect, useState } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useCart } from '../Component/CartContext';
 import { usdToNairaDisplay } from "../Utilities/currency";
+import { getProductImage } from "../Utilities/productImage";
 
 const HomeAppliances = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
    const [visibleCount, setVisibleCount] = useState(12);
    const { addToCart } = useCart();
  
    useEffect(() => {
-     fetch("https://fakestoreapi.com/products")
-       .then(res => res.json())
-       .then(data => setProducts(data));
+     fetch(`${import.meta.env.VITE_API_URL}/api/products`)
+       .then((response) => {
+         if (!response.ok) throw new Error("Failed to load products");
+         return response.json();
+       })
+       .then((data) => setProducts(Array.isArray(data) ? data : data.data ?? []))
+       .catch((requestError) => {
+         console.error("Error fetching home appliance products:", requestError);
+         setError("Could not load products.");
+       })
+       .finally(() => setLoading(false));
    }, []);
  
-   if (!products.length) {
+   if (loading) {
      return <p className='text-black dark:text-white'>Loading...</p>;
+   }
+
+   if (error) {
+     return <p className='text-red-500'>{error}</p>;
+   }
+
+   if (!products.length) {
+     return <p className='text-black dark:text-white'>No products found.</p>;
    }
   
    const visibleProducts = products.slice(0, visibleCount);
@@ -33,8 +52,8 @@ const HomeAppliances = () => {
        {/* Image */}
        <div className="bg-gray-100 dark:bg-gray-800 p-4 flex items-center justify-center h-44">
          <img
-           src={p.image}
-           alt={p.title}
+           src={getProductImage(p)}
+           alt={p.title || p.name}
            className="h-full object-contain group-hover:scale-105 transition-transform duration-300"
          />
        </div>
@@ -44,7 +63,7 @@ const HomeAppliances = () => {
          
          {/* Title */}
          <h3 className="text-sm font-semibold line-clamp-2 leading-tight">
-           {p.title}
+           {p.title || p.name}
          </h3>
  
          {/* Description */}
@@ -64,7 +83,7 @@ const HomeAppliances = () => {
  
          {/* Button */}
          <button 
-           onClick={() => addToCart(p)}
+           onClick={() => addToCart({ ...p, image: getProductImage(p) })}
            className="w-full mt-3 bg-purple-500 text-white dark:bg-white dark:text-black text-sm py-2 rounded-lg font-medium hover:opacity-90 transition">
            Add to Cart
          </button>

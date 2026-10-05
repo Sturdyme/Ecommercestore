@@ -1,27 +1,7 @@
-import { useState } from "react";
-import mug from "../assets/specialOfferImages/mug.png"
-import chair from "../assets/specialOfferImages/chair.png"
 import { useCart } from "../Component/CartContext";
-import { usdToNairaDisplay } from "../Utilities/currency";
+import { formatNaira } from "../Utilities/currency";
 import { Link } from "react-router-dom";
 import { getProductImage } from "../Utilities/productImage";
-
-const initialCart = [
-  {
-    id: 1,
-    name: "Imported Chair",
-    price: 120,
-    quantity: 1,
-    image: chair,
-  },
-  {
-    id: 2,
-    name: "Smart Cutlery Set",
-    price: 180,
-    quantity: 2,
-    image: mug,
-  },
-];
 
 export default function Cart() {
  const { cart, updateQuantity, removeItem} = useCart();
@@ -56,7 +36,7 @@ export default function Cart() {
                 />
                 <div>
                   <h2 className="font-medium text-sm sm:text-base text-black dark:text-white line-clamp-1">{item.name || item.name}</h2>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">{usdToNairaDisplay(item.price)}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">{formatNaira(item.price)}</p>
                 </div>
               </div>
 
@@ -76,7 +56,7 @@ export default function Cart() {
                 </div>
 
                 <p className="min-w-[60px] sm:w-20 text-right font-semibold text-sm sm:text-base text-black dark:text-white">
-                  {usdToNairaDisplay(item.price * item.quantity)}
+                  {formatNaira(item.price * item.quantity)}
                 </p>
 
                 <button
@@ -97,15 +77,15 @@ export default function Cart() {
               <h2 className="text-xl font-bold mb-6 text-black dark:text-white">Order Summary</h2>
             <div className="flex justify-between mb-2">
               <span className="text-black dark:text-white">Subtotal</span>
-              <span className="text-black dark:text-white">{usdToNairaDisplay(subtotal)}</span>
+              <span className="text-black dark:text-white">{formatNaira(subtotal)}</span>
             </div>
             <div className="flex justify-between mb-2">
               <span className="text-black dark:text-white">Shipping</span>
-              <span className="text-black dark:text-white">{usdToNairaDisplay(shipping)}</span>
+              <span className="text-black dark:text-white">{formatNaira(shipping)}</span>
             </div>
             <div className="flex justify-between text-lg font-semibold mt-4">
               <span className="text-black dark:text-white">Total</span>
-              <span className="text-black dark:text-white">{usdToNairaDisplay(total)}</span>
+              <span className="text-black dark:text-white">{formatNaira(total)}</span>
             </div>
            <Link to="/order-review"> 
             <button

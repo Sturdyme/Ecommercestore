@@ -418,6 +418,19 @@ const Navbar = () => {
                           <p className="px-4 pt-2 text-[10px] font-extrabold uppercase tracking-wider text-purple-500">
                             Admin Control
                           </p>
+
+
+                           <button
+                          onClick={() => {
+                            navigate("/admin");
+                            setProfileDropdownOpen(false);
+                          }}
+                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                        >
+                          <LayoutDashboard className="w-4 h-4 text-gray-400" /> Admin Dashboard
+                        </button>
+
+                        
                           <button
                             onClick={() => {
                               navigate("/admin/products/new");
@@ -484,15 +497,7 @@ const Navbar = () => {
                           <Settings className="w-4 h-4 text-gray-400" /> Account Settings
                         </button>
 
-                        <button
-                          onClick={() => {
-                            navigate("/admin");
-                            setProfileDropdownOpen(false);
-                          }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                        >
-                          <LayoutDashboard className="w-4 h-4 text-gray-400" /> Admin Dashboard
-                        </button>
+                       
 
                         <button
                           onClick={handleLogout}

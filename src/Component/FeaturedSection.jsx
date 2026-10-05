@@ -1,65 +1,63 @@
-import React, { useState } from 'react'
-import { FeaturedCards, extraItems } from './FeaturedData'
-import FeaturedCard from './FeaturedCard'
-import { BiDownArrow } from 'react-icons/bi'
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
+import FeaturedCard from "./FeaturedCard";
+import { useCart } from "./CartContext";
+import { useDeals } from "../hooks/useDeals";
+
+const INITIAL_COUNT = 8;
 
 const FeaturedSection = () => {
-    const [isExpanded, setIsExpanded] = useState(false)
+  const { products, loading, error } = useDeals();
+  const { addToCart } = useCart();
+
+  const preview = products.slice(0, INITIAL_COUNT);
+
   return (
-    <section>
-    <div className='mt-4 mb-4 flex items-center justify-center flex-wrap gap-4'>
-      {
-        FeaturedCards.map((card) => (
-          <Link to={`/featured/${card.id}`} key={card.id} className="hover:scale-105 transition-transform duration-200">
-            <FeaturedCard
-              title={card.title}
-              image={card.image}
-              price={card.price}
-            />
+    <section  className=" id max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-black text-gray-900 dark:text-white">
+          Featured Products
+        </h2>
+        <Link
+          to="/deals"
+          state={{ from: "featuredsection"}}
+          className="text-sm font-semibold text-purple-600 dark:text-purple-400 hover:underline"
+        >
+          View all →
+        </Link>
+      </div>
+
+      {loading && <p className="text-sm text-gray-500 dark:text-gray-400">Loading...</p>}
+      {error && <p className="text-sm text-red-500">{error}</p>}
+      {!loading && !error && products.length === 0 && (
+        <p className="text-sm text-gray-500 dark:text-gray-400">No featured products yet.</p>
+      )}
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 justify-items-center">
+        {preview.map((product) => (
+          <FeaturedCard
+            key={product.id}
+            id={product.id}
+            image={product.image_url}
+            title={product.name}
+            price={product.price}
+            onAddToCart={() => addToCart(product)}
+          />
+        ))}
+      </div>
+
+      {products.length > INITIAL_COUNT && (
+        <div className="flex justify-center mt-8">
+          <Link
+            to="/deals"
+            state={{ from: "featuredsection"}}
+            className="px-5 py-2.5 rounded-full bg-purple-600 text-white text-sm font-bold hover:bg-purple-700 transition-colors"
+          >
+            See more ({products.length - INITIAL_COUNT} more)
           </Link>
-        ))
-      }
-    </div>
-
-    {
-        isExpanded && (
-            <div className='mt-4 mb-4 flex items-center justify-center flex-wrap gap-4'>
-              {extraItems.map((item) => (
-                <Link to={`/featured/${item.id}`} key={item.id} className="hover:scale-105 transition-transform duration-200">
-                  <FeaturedCard
-                    title={item.title}
-                    image={item.image}
-                    price={item.price}
-                  />
-                </Link>
-              ))}
-            </div>
-        )
-    }
-
-
-     
-     {
-     
-          
-    
-        <button onClick={() => setIsExpanded(prev => !prev)}
-        className='mt-6 mx-auto mb-4 flex items-center gap-1 text-black dark:text-white hover:text-purple-800 transition'
-        > 
-        {isExpanded ? 'See less' : 'See more'}
-        <span className= 'mt-[4px]'>  <BiDownArrow 
-         size={18}
-    className={`transition-transform duration-300 ${
-      isExpanded ? 'rotate-180' : ''
-    }`}
-        /> </span>
-        
-        </button>
-     }
-    
+        </div>
+      )}
     </section>
-  )
-}
+  );
+};
 
-export default FeaturedSection
+export default FeaturedSection;

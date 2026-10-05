@@ -83,8 +83,8 @@ const Categories = () => {
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* DESKTOP NAVIGATION BAR */}
-          <div className="hidden md:flex items-center justify-between py-2.5 text-xs lg:text-sm font-medium text-white">
-            <ul className="flex items-center gap-2 lg:gap-6 whitespace-nowrap">
+          <div className="hidden md:flex items-center justify-center py-2.5 text-xs lg:text-sm font-medium text-white">
+            <ul className="flex px-8 justify-center items-center gap-2 lg:gap-6 whitespace-nowrap">
               {/* All Categories Dropdown Button */}
               <li className="relative" ref={dropdownRef}>
                 <button
@@ -177,12 +177,6 @@ const Categories = () => {
                 >
                   Super Deals
                 </Link>
-              </li>
-
-              <li>
-                <span className="hover:text-purple-200 cursor-pointer transition-colors py-1.5 px-2 rounded-md">
-                  Yuna's Business
-                </span>
               </li>
 
               <li

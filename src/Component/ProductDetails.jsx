@@ -5,6 +5,7 @@ import { FaArrowLeft, FaShoppingCart, FaChevronLeft, FaChevronRight } from "reac
 import { usdToNairaDisplay } from "../Utilities/currency";
 import { useCart } from "./CartContext";
 import { getProductImage } from "../Utilities/productImage";
+import { formatNaira } from "../Utilities/currency";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -12,41 +13,42 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
   
   // 💡 Track the current image index for the slider animation
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    const fetchSingleProduct = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
-        setProduct(response.data);
-        setError(null);
-      } catch (err) {
-        console.error("Error fetching single product:", err);
-        setError("Failed to fetch product details.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSingleProduct();
-  }, [id]);
+useEffect(() => {
+  let cancelled = false;
+  setCurrentIndex(0);
+  setQuantity(1);
 
-  // Slider Navigation Logic
-  const prevSlide = () => {
-    const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? productImages.length - 1 : currentIndex - 1;
-    setCurrentIndex(newIndex);
+  const fetchSingleProduct = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
+      if (cancelled) return;
+      setProduct(response.data);
+      setError(null);
+    } catch (err) {
+      if (cancelled) return;
+      console.error("Error fetching single product:", err);
+      setError(
+        err.response?.status === 404
+          ? "Product not found."
+          : "Failed to fetch product details."
+      );
+    } finally {
+      if (!cancelled) setLoading(false);
+    }
   };
 
-  const nextSlide = () => {
-    const isLastSlide = currentIndex === productImages.length - 1;
-    const newIndex = isLastSlide ? 0 : currentIndex + 1;
-    setCurrentIndex(newIndex);
-  };
+  fetchSingleProduct();
+  return () => { cancelled = true; };
+}, [id]);
 
-  if (loading) return <div className="text-center py-20 dark:text-white">Loading details...</div>;
+
+   if (loading) return <div className="text-center py-20 dark:text-white">Loading details...</div>;
   if (error || !product) return <div className="text-center py-20 text-red-500">{error}</div>;
 
   // Safety check to ensure we always fall back onto an array structure
@@ -54,6 +56,13 @@ const ProductDetails = () => {
     ? product.images
     : [product.image_url || product.image || product.thumbnail]
   ).map((image) => getProductImage({ image }));
+
+  // Slider navigation
+  const prevSlide = () =>
+    setCurrentIndex((i) => (i === 0 ? productImages.length - 1 : i - 1));
+
+  const nextSlide = () =>
+    setCurrentIndex((i) => (i === productImages.length - 1 ? 0 : i + 1));
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black py-8 px-4 sm:px-6 lg:px-8">
@@ -92,21 +101,25 @@ const ProductDetails = () => {
               {/* Dynamic Overlay Arrow Navigation Controls (Only shown if more than 1 image) */}
               {productImages.length > 1 && (
                 <>
-                  {/* Left Arrow Trigger */}
-                  <button 
-                    onClick={prevSlide}
-                    className="absolute top-1/2 left-4 -translate-y-1/2 bg-white/80 dark:bg-gray-900/80 backdrop-blur text-gray-800 dark:text-white p-3 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity active:scale-90 duration-300 z-10"
-                  >
-                    <FaChevronLeft className="text-sm" />
-                  </button>
+                 {/* Left Arrow */}
+<button
+  type="button"
+  aria-label="Previous image"
+  onClick={prevSlide}
+  className="absolute top-1/2 left-4 -translate-y-1/2 bg-white/80 dark:bg-gray-900/80 backdrop-blur text-gray-800 dark:text-white p-3 rounded-full shadow-md opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity active:scale-90 duration-300 z-10"
+>
+  <FaChevronLeft className="text-sm" />
+</button>
 
-                  {/* Right Arrow Trigger */}
-                  <button 
-                    onClick={nextSlide}
-                    className="absolute top-1/2 right-4 -translate-y-1/2 bg-white/80 dark:bg-gray-900/80 backdrop-blur text-gray-800 dark:text-white p-3 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity active:scale-90 duration-300 z-10"
-                  >
-                    <FaChevronRight className="text-sm" />
-                  </button>
+{/* Right Arrow */}
+<button
+  type="button"
+  aria-label="Next image"
+  onClick={nextSlide}
+  className="absolute top-1/2 right-4 -translate-y-1/2 bg-white/80 dark:bg-gray-900/80 backdrop-blur text-gray-800 dark:text-white p-3 rounded-full shadow-md opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity active:scale-90 duration-300 z-10"
+>
+  <FaChevronRight className="text-sm" />
+</button>
 
                   {/* Floating Indicator Dots */}
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10">
@@ -156,9 +169,11 @@ const ProductDetails = () => {
 
               <div className="border-t border-b border-gray-100 dark:border-gray-800 py-3 flex items-center justify-between">
                 <p className="text-2xl sm:text-3xl font-black text-purple-600 dark:text-purple-400">
-                  {usdToNairaDisplay(product.price)}
+                  {formatNaira(product.price)}
                 </p>
-                <p className="text-xs font-bold text-green-600">Stock: {product.stock} left</p>
+                <p className={`text-xs font-bold ${Number(product.stock) > 0 ? "text-green-600" : "text-red-500"}`}>
+              {Number(product.stock) > 0 ? `${product.stock} in stock` : "Out of stock"}
+            </p>
               </div>
 
               <div>
@@ -169,12 +184,35 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            <button
-              onClick={() => addToCart({ ...product, image: productImages[0] })}
-              className="w-full bg-gray-900 dark:bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition transform active:scale-95"
-            >
-              Add Item to Cart
-            </button>
+            <div className="flex items-center justify-between">
+  <span className="text-xs uppercase tracking-wider font-bold text-gray-400">Quantity</span>
+  <div className="flex items-center rounded-xl border dark:border-gray-700 dark:text-white">
+    <button
+      type="button"
+      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+      className="px-3.5 py-2 font-bold"
+    >
+      −
+    </button>
+    <span className="min-w-[2rem] text-center text-sm font-bold">{quantity}</span>
+    <button
+      type="button"
+      onClick={() => setQuantity((q) => Math.min(Number(product.stock), q + 1))}
+      className="px-3.5 py-2 font-bold"
+    >
+      +
+    </button>
+  </div>
+</div>
+
+           <button
+  disabled={Number(product.stock) < 1}
+  onClick={() => addToCart({ ...product, image: productImages[0] }, quantity)}
+  className="w-full bg-gray-900 dark:bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+>
+  <FaShoppingCart />
+  {Number(product.stock) < 1 ? "Out of Stock" : "Add Item to Cart"}
+</button>
           </div>
 
         </div>

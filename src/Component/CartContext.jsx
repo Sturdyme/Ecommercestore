@@ -20,18 +20,31 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
     }, [cart]);
 
-    const addToCart = (product) => {
-        setCart((prevCart) => {
-            const existingItem = prevCart.find((item) => item.id === product.id);
+    const addToCart = (product, quantity = 1) => {
+    const qty = Math.max(1, Number(quantity) || 1);
 
-            if (existingItem) {
-                return prevCart.map((item) =>
-                item.id === product.id ? {...item, quantity: item.quantity + 1} : item );
-            }
-            return [...prevCart, { ...product, quantity: 1} ];
-        });
-        toast.success(`${product.title || product.name} added to cart!`);
+    // Normalise so API products and older static items share one shape
+    const cartItem = {
+        ...product,
+        title: product.title ?? product.name,
+        image: product.image ?? product.image_url,
     };
+
+    setCart((prevCart) => {
+        const existingItem = prevCart.find((item) => item.id === product.id);
+
+        if (existingItem) {
+            return prevCart.map((item) =>
+                item.id === product.id
+                    ? { ...item, quantity: item.quantity + qty }
+                    : item
+            );
+        }
+        return [...prevCart, { ...cartItem, quantity: qty }];
+    });
+
+    toast.success(`${cartItem.title} added to cart!`);
+};
 
 
     const updateQuantity = (id, qty) => {

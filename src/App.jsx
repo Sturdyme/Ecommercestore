@@ -47,6 +47,9 @@ import ManageOrders from './Pages/ManageOrders';
 import ManageUsers from './Pages/ManageUsers';
 import AdminDashboard from './Pages/AdminDashboard';
 import PinGate from './routes/PinGate';
+import Deals from './Component/Deals';
+import ScrollToHash from './Component/ScrollToHash';
+
 
 
 function App() {
@@ -75,6 +78,7 @@ function App() {
       <CartProvider> 
         <Toaster position='top-right' reverseOrder={false} />
     <BrowserRouter>
+    <ScrollToHash /> 
     <ScrollToTop />
     <Navbar/>
     <Categories/>
@@ -151,8 +155,7 @@ function App() {
       <Route path='/privacy-policy' element={<PrivacyPolicy />} />
       <Route path='/about' element={<About />} />
       <Route path="/prize-wheel" element={<PrizeWheel />}/>
-      
-      
+      <Route path="/deals" element={<Deals />} />
     </Routes>
     </main>
     <Footer/>

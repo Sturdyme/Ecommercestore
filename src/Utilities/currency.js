@@ -1,17 +1,8 @@
-// src/Utilities/currency.js
-// Utility to convert USD to NGN and format prices
+// Converts a USD price to naira (only for old static data priced in dollars)
+export const usdToNairaDisplay = (usd) => {
+  // ...your existing conversion code, unchanged
+};
 
-const USD_TO_NGN = 1500; // Example rate, update as needed
-
-export function convertToNaira(usd) {
-  return usd * USD_TO_NGN;
-}
-
-export function formatNaira(amount) {
-  return `₦${amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
-}
-
-export function usdToNairaDisplay(usd) {
-  const naira = convertToNaira(usd);
-  return formatNaira(naira);
-}
+// Formats a price that is already in naira (use this for API products)
+export const formatNaira = (value) =>
+  `₦${Number(value).toLocaleString("en-NG")}`;

@@ -71,14 +71,17 @@ const Home = () => {
         <Products />
         <Shopping />
         <SpecialOfferSection/> 
-        <ExplorePage/> 
-        <PromoSection/>
+        {/* <ExplorePage/> 
+        <PromoSection/> */}
         <FeaturedProducts/>
-        <FeaturedSection/>
+        <section id="featuredsection">
+          <FeaturedSection/> 
+          </section>
+        
         
         {/* Dashboard Banner for Logged-in Users */}
         {isLoggedIn && (
-          <section className="bg-gradient-to-r from-purple-600 to-purple-800 dark:from-purple-900 dark:to-purple-950 py-12 md:py-16">
+          <section className="bg-gradient-to-r from-purple-600 to-purple-800 dark:from-purple-900 dark:to-purple-950 py-12 md:py-16 mt-8">
             <div className="max-w-6xl mx-auto px-4 md:px-8">
               <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex-1">

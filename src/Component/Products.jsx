@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { usdToNairaDisplay } from "../Utilities/currency";
+import { formatNaira } from "../Utilities/currency";
 import axios from "axios";
 import AOS from "aos";
 import { useCart } from "./CartContext";
@@ -106,7 +106,7 @@ const Products = () => {
 
                 <div className="mt-2 flex items-center justify-between">
                   <p className="font-black text-purple-600 text-sm sm:text-base">
-                    {usdToNairaDisplay(p.price)}
+                    {formatNaira(p.price)}
                   </p>
                   <p className="text-[10px] text-gray-400 italic">
                     {p.stock} units left

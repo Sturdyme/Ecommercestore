@@ -1,14 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { FaArrowLeft, FaShoppingCart } from 'react-icons/fa';
 import { useCart } from '../Component/CartContext';
-import { usdToNairaDisplay } from "../Utilities/currency";
+import { formatNaira } from "../Utilities/currency";
 import { FeaturedCards, extraItems } from '../Component/FeaturedData';
 
 const FeaturedDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const [item, setItem] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+
+  useEffect(() => {
+  const fetchProduct = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/products/${id}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to load featured product");
+      }
+
+      const data = await response.json();
+
+      setItem(data.data ?? data);
+    } catch (err) {
+      console.error("Error loading featured product:", err);
+      setError("Could not load featured product.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProduct();
+}, [id]);
+
 
   const handleBack = () => {
     if (window.history.state && window.history.state.idx > 0) {
@@ -19,11 +49,6 @@ const FeaturedDetails = () => {
     navigate('/featured');
   };
 
-  // Combine both local arrays to search through everything at once
-  const allFeaturedItems = [...FeaturedCards, ...extraItems];
-
-  // Look for the exact item matching the URL path ID
-  const item = allFeaturedItems.find(p => String(p.id) === String(id));
 
   if (!item) {
     return (
@@ -53,7 +78,7 @@ const FeaturedDetails = () => {
             onClick={handleBack}
             className="inline-flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 font-medium group transition"
           >
-            <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> Back to Discover
+            <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" /> Back
           </button>
         </div>
 
@@ -63,7 +88,7 @@ const FeaturedDetails = () => {
           {/* LEFT side image box */}
           <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl aspect-square flex items-center justify-center border dark:border-gray-700 p-6">
             <img 
-              src={item.image} 
+              src={item.image_url || item.image || item.thumbnail || extraItems[0].image} 
               alt={item.title} 
               className="w-full h-full object-contain max-h-[350px] hover:scale-105 transition-transform duration-300"
             />
@@ -83,7 +108,7 @@ const FeaturedDetails = () => {
 
               <div className="border-t border-b border-gray-200 dark:border-gray-700 py-3">
                 <p className="text-2xl font-black text-purple-600 dark:text-purple-400">
-                  {usdToNairaDisplay(item.price || 0)}
+                  {formatNaira(item.price || 0)}
                 </p>
               </div>
 
@@ -101,12 +126,12 @@ const FeaturedDetails = () => {
                 id: item.id,
                 title: item.title,
                 price: item.price || 0,
-                image: item.image,
+                image: item.image_url || item.image || item.thumbnail || extraItems[0].image,
                 quantity: 1
               })}
               className="w-full bg-gray-900 dark:bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition transform active:scale-95 shadow-md"
             >
-              <FaShoppingCart /> Add Department Deal to Cart
+              <FaShoppingCart /> Add to Cart
             </button>
           </div>
 

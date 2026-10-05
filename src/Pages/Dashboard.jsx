@@ -5,7 +5,7 @@ import {
   FiGrid, FiCreditCard, FiArrowRight, FiMenu, FiX 
 } from 'react-icons/fi';
 import { useCart } from '../Component/CartContext';
-import { usdToNairaDisplay } from '../Utilities/currency';
+import { formatNaira } from "../Utilities/currency";
 import product1 from '../assets/specialOfferImages/cam.png';
 import product2 from '../assets/specialOfferImages/bicycle.png';
 import bgImage from '../assets/specialOfferImages/shoppingcart.png';
@@ -154,7 +154,7 @@ const Dashboard = () => {
           {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-10">
             <StatCard title="Cart Items" value={totalItems.toString()} icon={<FiShoppingBag className="text-blue-500" />} />
-            <StatCard title="Cart Total" value={usdToNairaDisplay(total)} icon={<FiCreditCard className="text-green-500" />} />
+            <StatCard title="Cart Total" value={formatNaira(total)} icon={<FiCreditCard className="text-green-500" />} />
             <StatCard title="Wishlist Items" value={wishlist.length.toString()} icon={<FiHeart className="text-pink-500" />} />
           </div>
 
@@ -237,7 +237,7 @@ const ProductCard = ({ product, onAdd, onWishlist, wishlisted }) => (
     </div>
     <div className="p-4">
       <h4 className="font-bold text-base mb-1 truncate">{product.name}</h4>
-      <p className="text-purple-600 font-bold text-sm">{usdToNairaDisplay(product.price)}</p>
+      <p className="text-purple-600 font-bold text-sm">{formatNaira(product.price)}</p>
       <div className="mt-4 flex gap-3">
         <button
           onClick={onAdd}

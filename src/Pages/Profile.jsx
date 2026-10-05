@@ -37,8 +37,8 @@ const TABS = [
     icon: FaLock,
   },
   {
-    id: 'addresses',
-    label: 'Addresses',
+    id: 'address',
+    label: 'Address',
     icon: FaMapMarkerAlt,
   },
   {

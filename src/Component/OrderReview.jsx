@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaTruck, FaStore, FaMapMarkerAlt, FaArrowRight } from "react-icons/fa";
-import { convertToNaira } from "../Utilities/currency";
+import { formatNaira } from "../Utilities/currency";
 import { useCart } from "./CartContext";
 
 const PICKUP_LOCATION = {
@@ -10,20 +10,12 @@ const PICKUP_LOCATION = {
   hours: "Mon–Sat, 9am–6pm",
 };
 
-const formatNaira = (amount) => {
-  const parts = amount
-    .toFixed(2)
-    .toString()
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    .split(".");
-  return `₦${parts[0]}.${parts[1]}`;
-};
 
 /**
  * Order review / summary page.
  * Shows the cart, lets the user choose Pickup vs Delivery, then calls
  * onContinue(fulfillmentMethod) so the parent can route to Checkout with
- * that choice — Checkout uses it to decide whether to apply shipping.
+ * that choice — Checkout uses it to decide whether to apply shipping
  */
 const OrderReview = () => {
   const navigate = useNavigate();
@@ -42,11 +34,16 @@ const OrderReview = () => {
   const userAddress = storedUser.address || null;
 
   const subtotal = cartItems.reduce(
-    (acc, item) => acc + convertToNaira(Number(item.price)) * item.quantity,
+    (acc, item) => acc + Number(item.price) * item.quantity,
     0
   );
 
-  const shipping = fulfillmentMethod === "delivery" ? subtotal * 0.15 : 0;
+  // Updated calculation with ₦4,000 minimum floor:
+const MIN_SHIPPING = 4000;
+const shipping =
+  fulfillmentMethod === "delivery"
+    ? Math.max(MIN_SHIPPING, subtotal * 0.15)
+    : 0;
   const total = subtotal + shipping;
 
   const hasAddress =
@@ -68,7 +65,7 @@ const OrderReview = () => {
             <p className="text-sm text-gray-500 dark:text-gray-400">Your cart is empty.</p>
           )}
           {cartItems.map((item, index) => {
-            const linePrice = convertToNaira(Number(item.price)) * item.quantity;
+            const linePrice = Number(item.price) * Number(item.quantity);
             return (
               <div
                 key={item.id ?? index}

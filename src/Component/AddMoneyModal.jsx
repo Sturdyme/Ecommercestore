@@ -20,7 +20,7 @@ const AddMoneyModal = () => {
   const [fetching, setFetching] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const quickAmounts = [1000, 2000, 5000, 10000, 20000];
+  const quickAmounts = [2000, 5000, 10000, 20000, 50000];
 
   // Fetch Current Wallet Info & History
   const fetchWalletData = async () => {
