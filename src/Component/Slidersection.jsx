@@ -73,27 +73,8 @@ const SliderSection = ({ sliders = [] }) => {
   return (
    <section className="w-full relative z-10 py-8 bg-slate-50 dark:bg-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        {/* Trust badges */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white dark:bg-slate-800 dark:text-white p-6 rounded-2xl shadow-sm border border-slate-100">
-          {features.map((feature, idx) => {
-            const Icon = feature.icon;
-            return (
-              <div key={idx} className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
-                  <Icon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-black dark:text-white text-sm md:text-base">
-                    {feature.title}
-                  </h4>
-                  <p className="text-xs md:text-sm text-slate-500">{feature.desc}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
 
-        {/* Slider */}
+ {/* Slider */}
         {count > 0 && (
           <div
             className="relative h-[260px] sm:h-[380px] md:h-[440px] rounded-2xl overflow-hidden shadow-md border border-slate-100 bg-slate-200 dark:bg-slate-800 select-none"
@@ -166,6 +147,28 @@ const SliderSection = ({ sliders = [] }) => {
             )}
           </div>
         )}
+
+        {/* Trust badges */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-white dark:bg-slate-800 dark:text-white p-6 rounded-2xl shadow-sm border border-slate-100">
+          {features.map((feature, idx) => {
+            const Icon = feature.icon;
+            return (
+              <div key={idx} className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
+                  <Icon className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-black dark:text-white text-sm md:text-base">
+                    {feature.title}
+                  </h4>
+                  <p className="text-xs md:text-sm text-slate-500">{feature.desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+       
       </div>
     </section>
   );
