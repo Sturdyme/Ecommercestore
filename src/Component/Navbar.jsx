@@ -703,6 +703,7 @@ const Navbar = () => {
                           <p className="text-[10px] font-black uppercase tracking-widest text-purple-500 mb-2 px-2">
                             Admin Area
                           </p>
+                           <AnimatedMobileLink to="/admin" label="Admin Dashboard" setOpen={setOpen} />
                           <AnimatedMobileLink to="/admin/products/new" label="Add New Product" setOpen={setOpen} />
                           <AnimatedMobileLink to="/admin/products" label="Manage Products" setOpen={setOpen} />
                           <AnimatedMobileLink to="/admin/users" label="Manage Users" setOpen={setOpen} />
