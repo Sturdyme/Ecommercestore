@@ -193,10 +193,7 @@ const Categories = () => {
                 Hair Extensions & Wigs
               </li>
 
-              <li className="flex items-center gap-1 cursor-pointer hover:text-purple-200 transition-colors py-1.5 px-2 rounded-md">
-                <span>More</span>
-                <IoIosArrowDown className="text-xs" />
-              </li>
+              
             </ul>
           </div>
 

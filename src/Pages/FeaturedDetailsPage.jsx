@@ -125,6 +125,8 @@ const FeaturedDetails = () => {
               onClick={() => addToCart({
                 id: item.id,
                 title: item.title,
+                description: item.description,
+                stock: item.stock || 1,
                 price: item.price || 0,
                 image: item.image_url || item.image || item.thumbnail || extraItems[0].image,
                 quantity: 1

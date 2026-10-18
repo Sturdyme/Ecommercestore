@@ -159,7 +159,7 @@ const About = () => {
   {/* TEXT CONTENT */}
   <div className="p-6 text-center">
     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-      Yossy Vogue (Founder & Owner)
+      Yuna Vogue (Founder & Owner)
     </h3>
 
     <p className="text-sm text-gray-500 dark:text-gray-300 mt-2">

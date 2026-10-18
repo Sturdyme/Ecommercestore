@@ -947,7 +947,7 @@ const Profile = () => {
             )}
 
             {/* ADDRESSES */}
-            {activeTab === 'addresses' && (
+            {activeTab === 'address' && (
               <SectionCard
                 title="Shipping address"
                 description="Used to prefill checkout and estimate delivery."

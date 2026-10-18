@@ -8,15 +8,15 @@ const Slideprops = () => {
     {
         image: slider1,
         alt: "Slider 1",
-        title: "Welcome to Yuna collective, the leading B2B ecommerce platform for global trade",
-        subtitle: "Discover the latest trends in fashion",
+        title: "Shop from the best",
+        subtitle: "Discover the latest trends ",
         button: "Shop Now",
     },
 
      {
         image: slider2,
         alt: "Slider 1",
-        title: "Empower your supply chain through Yuna collective, source high-performance home appliances and smart living solutions",
+        title: "Buy Safely",
         subtitle: "Get the best deals on top brands",
         button: "Shop Now",
     },
@@ -24,7 +24,7 @@ const Slideprops = () => {
      {
         image: slider3,
         alt: "Slider 1",
-        title: "Scale your business with Yuna collective, and gain a competitive edge with bulk access to cutting-edge electronics and next-generation digital accessories.",
+        title: "Enjoy 70% Off",
         subtitle: "Home appliances at your fingertips",
         button: "Shop Now",
     }

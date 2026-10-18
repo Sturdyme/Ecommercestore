@@ -94,6 +94,7 @@ const Checkout = ({ cartItems: cartItemsProp, fulfillmentMethod: fulfillmentMeth
   const handlePayment = async () => {
     setLoading(true);
 
+    
     try {
       if (cartItems.length === 0) {
         alert("Your cart is empty. Please add products before checking out.");
