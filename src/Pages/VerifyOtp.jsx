@@ -24,6 +24,7 @@ const VerifyOtp = () => {
   
   // 💡 FIXED STATE NAME: Changed to match your handleSubmit catch logic perfectly
   const [errors, setErrors] = useState({}); 
+  const [info, setInfo] = useState("");
   
   const inputRefs = useRef([]);
 
@@ -60,16 +61,24 @@ const VerifyOtp = () => {
   };
 
   const handleResendOtp = async () => {
-    if (cooldown > 0) return;
-    try {
-      setLoading(true);
-      // await api.post("/otp/resend", { email });
-      setCooldown(60);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+  if (cooldown > 0) return;
+   try {
+    setLoading(true);
+    setErrors({});
+    setInfo("");
+    await api.post("/otp/resend", { email });
+    setOtp(new Array(6).fill(""));
+    inputRefs.current[0]?.focus();
+    setCooldown(60);
+    setInfo("A new code has been sent to your email.");
+   } catch (error) {
+    setErrors({
+      general:
+      error.response?.data?.message || "Could not resend the code. Please try again later.",
+    });
+   } finally {
+    setLoading(false);
+   }
   };
 
   const handleSubmit = async (e) => {
@@ -200,6 +209,10 @@ const VerifyOtp = () => {
             </p>
           )}
 
+          {info && (
+       <p className="mt-4 text-sm text-green-600 text-center font-medium">{info}</p>
+       )}
+
           {/* Cooldown & Resend Footer */}
           <div className="mt-6 border-t border-slate-100 pt-6 text-center text-sm">
             {cooldown > 0 ? (
@@ -210,6 +223,7 @@ const VerifyOtp = () => {
               <p className="text-slate-600">
                 Didn't get the code?{" "}
                 <button
+                type="button"
                   onClick={handleResendOtp}
                   disabled={loading}
                   className="font-semibold text-blue-600 hover:text-blue-700 focus:outline-none transition-colors"
