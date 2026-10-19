@@ -11,8 +11,7 @@ import Chat from './Component/Chat'
 import ContactUs from './Pages/ContactUs'
 import Footer from './Component/Footer'
 import SuperDeals from './Pages/SuperDeals'
-import toast, { Toaster } from 'react-hot-toast'
-import { useEffect } from 'react'
+import { Toaster } from 'react-hot-toast'
 import HomeAppliances from './Pages/HomeAppliances'
 import Categories from './Component/Categories'
 import SiteMap from './Pages/SiteMap'
@@ -53,25 +52,6 @@ import ScrollToHash from './Component/ScrollToHash';
 
 
 function App() {
- useEffect(() => {
-  toast("🚧 This site is under construction", {
-    duration: 8000,
-    position: "top-right",
-    style: {
-      background: "#7e22ce",
-      color: "#fff",
-      fontWeight: "bold",
-      // RESPONSIVE SETTINGS BELOW:
-      fontSize: window.innerWidth < 640 ? "12px" : "14px", 
-      width: "auto",
-      maxWidth: "350px", // Limits width on desktop
-      margin: "0 10px",   // Adds a little space on mobile
-    },
-    icon: "⚠️",
-  });
-}, []);
-
-
   return (
 
     <div>

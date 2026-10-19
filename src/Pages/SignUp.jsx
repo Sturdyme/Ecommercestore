@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { BsEye, BsEyeSlash } from 'react-icons/bs';
 import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import api from '../api';
 
 const SignUp = () => {
@@ -83,7 +84,7 @@ const SignUp = () => {
       console.log("TOKEN SAVED:", localStorage.getItem("token"));
       console.log("USER SAVED:", localStorage.getItem("user"));
 
-      alert("Signup successful 🎉 Please verify your email");
+      toast.success("Signup successful 🎉 Please verify your email");
 
       // Redirect smoothly to verification page with authorization fully intact
       navigate("/verify-otp", { state: { email: formData.email } });

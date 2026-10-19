@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom"; // Added useNavigate
+import toast from "react-hot-toast";
 import api from "../api"; // Assuming your axios instance is here
 
 const Login = () => {
@@ -55,7 +56,7 @@ const Login = () => {
     window.dispatchEvent(new CustomEvent('userLogin', { detail: userData }));
 
     // 5. Success notification & Redirect
-    alert("Login successful 🎉");
+    toast.success("Login successful 🎉");
     
     // Redirects to dashboard. Your ProtectedRoute/Dashboard useEffect will now 
     // catch the "is_verified" key perfectly and know whether to show the screen or kick to OTP.
