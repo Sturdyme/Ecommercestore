@@ -10,12 +10,16 @@ const ScrollToHash = () => {
     const element = document.querySelector(hash);
 
     if (element) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
+        if (window.location.hash !== hash) return;
+
         element.scrollIntoView({
           behavior: "smooth",
           block: "start",
         });
       }, 100);
+
+      return () => clearTimeout(timeoutId);
     }
   }, [hash]);
 
