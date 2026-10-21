@@ -97,6 +97,7 @@ const Checkout = ({ cartItems: cartItemsProp, fulfillmentMethod: fulfillmentMeth
         .map((item) => item.id ?? item.product_id)
         .filter((id) => id !== null && id !== undefined)
     );
+    window.dispatchEvent(new Event("walletUpdated"));
 
     // No external redirect needed — payment is instant, go straight to a success view
     navigate("/payment-success", {

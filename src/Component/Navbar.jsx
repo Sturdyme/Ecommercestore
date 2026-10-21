@@ -79,7 +79,8 @@ const Navbar = () => {
   const fetchWalletBalance = async () => {
     try {
       const { data } = await api.get("/wallet");
-      setWalletBalance(data.balance ?? 0);
+      const balance = Number(data.wallet?.balance ?? data.balance ?? 0);
+      setWalletBalance(Number.isFinite(balance) ? balance : 0);
     } catch (err) {
       console.error("Failed to fetch wallet balance", err);
     }
