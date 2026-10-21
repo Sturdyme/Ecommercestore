@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { createContext } from "react";
 import toast from "react-hot-toast";
 
@@ -61,8 +61,15 @@ export const CartProvider = ({ children }) => {
         }
     };
 
+    const removeItems = useCallback((ids) => {
+        const removedIds = new Set(ids.map((id) => String(id)));
+        setCart((prevCart) =>
+            prevCart.filter((item) => !removedIds.has(String(item.id ?? item.product_id)))
+        );
+    }, []);
+
     return (
-        <CartContext.Provider value={{ cart, addToCart, updateQuantity, removeItem }}>
+        <CartContext.Provider value={{ cart, addToCart, updateQuantity, removeItem, removeItems }}>
             {children}
         </CartContext.Provider>
     )

@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -17,13 +17,12 @@ import {
   ShieldCheck,
   Package,
   Boxes,
-  Sparkles,
-  Sun,
-  Moon,
 } from "lucide-react";
+import { FaYoast } from "react-icons/fa";
 import ThemeToggle from "./ThemeToggle";
 import { useCart } from "./CartContext";
-import { FaYoast } from "react-icons/fa";
+import { useAuth } from "./AuthContext";
+import api from "../api";
 
 const PRODUCT_CATEGORIES = [
   "Clothing",
@@ -43,6 +42,13 @@ const PRODUCT_CATEGORIES = [
   "Hair Extensions & Wigs",
 ];
 
+const ADMIN_LINKS = [
+  { to: "/admin/products/new", label: "Add New Product", Icon: Plus },
+  { to: "/admin/products", label: "Manage Products", Icon: Boxes },
+  { to: "/admin/users", label: "Manage Users", Icon: ShieldCheck },
+  { to: "/admin/orders", label: "Manage Orders", Icon: Package },
+];
+
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -53,62 +59,40 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
-  const [walletBalance, setWalletBalance] = useState(0.00);
+  const [walletBalance, setWalletBalance] = useState(0);
 
   const navigate = useNavigate();
-  const location = useLocation();
   const { cart } = useCart();
   const searchRef = useRef(null);
   const profileDropdownRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const [user, setUser] = useState(() => {
-    try {
-      const stored = localStorage.getItem("user");
-      if (stored && stored !== "undefined") {
-        const parsed = JSON.parse(stored);
-        if (parsed?.email) {
-          const savedProfilePic = localStorage.getItem(`profilePic_${parsed.email}`);
-          if (savedProfilePic) parsed.profilePic = savedProfilePic;
-        }
-        return parsed;
-      }
-    } catch (err) {
-      console.error("Failed to parse stored user", err);
-    }
-    return null;
-  });
+  // Auth state comes ONLY from the context, which confirms it with the backend.
+  // Until that check finishes, nothing personal is rendered.
+  const { user, status, isAuthenticated: isLoggedIn, logout, updateUser } = useAuth();
+  const isChecking = status === "loading";
 
-  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem("token")));
-  const profilePic = user?.profilePic;
+  const profilePic = isLoggedIn ? user?.profilePic : null;
   const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
-  // Fetch Wallet Balance
+  // Fetch wallet balance (only ever called for a verified, logged-in user)
   const fetchWalletBalance = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/wallet`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setWalletBalance(data.balance ?? 0.00);
-      }
+      const { data } = await api.get("/wallet");
+      setWalletBalance(data.balance ?? 0);
     } catch (err) {
       console.error("Failed to fetch wallet balance", err);
     }
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
-      fetchWalletBalance();
+    if (!isLoggedIn) {
+      setWalletBalance(0);
+      setProfileDropdownOpen(false);
+      return;
     }
 
+    fetchWalletBalance();
     const handleWalletUpdate = () => fetchWalletBalance();
     window.addEventListener("walletUpdated", handleWalletUpdate);
     return () => window.removeEventListener("walletUpdated", handleWalletUpdate);
@@ -125,13 +109,15 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", controlNavbar);
   }, [lastScrollY]);
 
-  // Handle body overflow for mobile drawer
+  // Lock body scroll while the mobile drawer is open
   useEffect(() => {
-    if (open) document.body.style.overflow = "hidden";
-    else document.body.style.overflow = "unset";
+    document.body.style.overflow = open ? "hidden" : "unset";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [open]);
 
-  // Close profile dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
@@ -145,38 +131,7 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Sync user state on login event
-  useEffect(() => {
-    const handleUserLogin = (event) => {
-      let userData = null;
-      if (event?.detail) {
-        userData = event.detail;
-      } else {
-        try {
-          const stored = localStorage.getItem("user");
-          if (stored && stored !== "undefined") {
-            userData = JSON.parse(stored);
-          }
-        } catch (err) {
-          console.error("Failed to parse stored user on userLogin", err);
-        }
-      }
-
-      if (userData?.email) {
-        const savedProfilePic = localStorage.getItem(`profilePic_${userData.email}`);
-        if (savedProfilePic) {
-          userData.profilePic = savedProfilePic;
-        }
-      }
-      setUser(userData);
-      setIsLoggedIn(Boolean(userData));
-    };
-
-    window.addEventListener("userLogin", handleUserLogin);
-    return () => window.removeEventListener("userLogin", handleUserLogin);
-  }, []);
-
-  // Search debounce API
+  // Search debounce
   useEffect(() => {
     if (!searchQuery.trim()) {
       setSearchResults([]);
@@ -202,17 +157,18 @@ const Navbar = () => {
 
   const handleProfileImageUpload = (e) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !user) return;
 
     setUploading(true);
     const reader = new FileReader();
     reader.onloadend = () => {
-      const updatedUser = { ...user, profilePic: reader.result };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
-      if (user?.email) {
+      try {
         localStorage.setItem(`profilePic_${user.email}`, reader.result);
+        localStorage.setItem("user", JSON.stringify({ ...user, profilePic: reader.result }));
+      } catch (err) {
+        console.error("Could not store profile photo", err);
       }
-      setUser(updatedUser);
+      updateUser({ profilePic: reader.result });
       setUploading(false);
       setProfileDropdownOpen(false);
     };
@@ -223,16 +179,23 @@ const Navbar = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("admin_pin_verified");
-    setUser(null);
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    // Revoke the token on the server FIRST, while it is still in localStorage.
+    try {
+      await api.post("/logout", null, { skipAuthRedirect: true });
+    } catch (err) {
+      // Token already invalid or network issue: still clear the local session.
+    }
+
+    logout();
     setOpen(false);
     setProfileDropdownOpen(false);
-    window.dispatchEvent(new Event("userLogout"));
     navigate("/login");
+  };
+
+  const goTo = (path) => {
+    navigate(path);
+    setProfileDropdownOpen(false);
   };
 
   const handleMobileCategoryClick = (category) => {
@@ -352,7 +315,9 @@ const Navbar = () => {
 
           {/* Desktop User Account Trigger */}
           <div className="hidden lg:block relative" ref={profileDropdownRef}>
-            {isLoggedIn ? (
+            {isChecking ? (
+              <div className="w-10 h-10 rounded-2xl bg-gray-100 dark:bg-gray-800 animate-pulse" />
+            ) : isLoggedIn ? (
               <>
                 <button
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
@@ -419,64 +384,29 @@ const Navbar = () => {
                             Admin Control
                           </p>
 
+                          <button
+                            onClick={() => goTo("/admin")}
+                            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                          >
+                            <LayoutDashboard className="w-4 h-4 text-gray-400" /> Admin Dashboard
+                          </button>
 
-                           <button
-                          onClick={() => {
-                            navigate("/admin");
-                            setProfileDropdownOpen(false);
-                          }}
-                          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                        >
-                          <LayoutDashboard className="w-4 h-4 text-gray-400" /> Admin Dashboard
-                        </button>
-
-                        
-                          <button
-                            onClick={() => {
-                              navigate("/admin/products/new");
-                              setProfileDropdownOpen(false);
-                            }}
-                            className="w-full flex items-center gap-2.5 px-4 py-2 text-left text-xs font-bold text-purple-700 dark:text-purple-300 hover:bg-purple-100/50 dark:hover:bg-purple-900/40 transition-colors"
-                          >
-                            <Plus className="w-3.5 h-3.5" /> Add New Product
-                          </button>
-                          <button
-                            onClick={() => {
-                              navigate("/admin/products");
-                              setProfileDropdownOpen(false);
-                            }}
-                            className="w-full flex items-center gap-2.5 px-4 py-2 text-left text-xs font-bold text-purple-700 dark:text-purple-300 hover:bg-purple-100/50 dark:hover:bg-purple-900/40 transition-colors"
-                          >
-                            <Boxes className="w-3.5 h-3.5" /> Manage Products
-                          </button>
-                          <button
-                            onClick={() => {
-                              navigate("/admin/users");
-                              setProfileDropdownOpen(false);
-                            }}
-                            className="w-full flex items-center gap-2.5 px-4 py-2 text-left text-xs font-bold text-purple-700 dark:text-purple-300 hover:bg-purple-100/50 dark:hover:bg-purple-900/40 transition-colors"
-                          >
-                            <ShieldCheck className="w-3.5 h-3.5" /> Manage Users
-                          </button>
-                          <button
-                            onClick={() => {
-                              navigate("/admin/orders");
-                              setProfileDropdownOpen(false);
-                            }}
-                            className="w-full flex items-center gap-2.5 px-4 py-2 text-left text-xs font-bold text-purple-700 dark:text-purple-300 hover:bg-purple-100/50 dark:hover:bg-purple-900/40 transition-colors"
-                          >
-                            <Package className="w-3.5 h-3.5" /> Manage Orders
-                          </button>
+                          {ADMIN_LINKS.map(({ to, label, Icon }) => (
+                            <button
+                              key={to}
+                              onClick={() => goTo(to)}
+                              className="w-full flex items-center gap-2.5 px-4 py-2 text-left text-xs font-bold text-purple-700 dark:text-purple-300 hover:bg-purple-100/50 dark:hover:bg-purple-900/40 transition-colors"
+                            >
+                              <Icon className="w-3.5 h-3.5" /> {label}
+                            </button>
+                          ))}
                         </div>
                       )}
 
                       {/* Customer Quick Links */}
                       <div className="py-1">
                         <button
-                          onClick={() => {
-                            navigate("/wallet");
-                            setProfileDropdownOpen(false);
-                          }}
+                          onClick={() => goTo("/wallet")}
                           className="w-full flex items-center justify-between px-4 py-2.5 text-left text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                         >
                           <span className="flex items-center gap-2.5">
@@ -488,16 +418,11 @@ const Navbar = () => {
                         </button>
 
                         <button
-                          onClick={() => {
-                            navigate("/profile");
-                            setProfileDropdownOpen(false);
-                          }}
+                          onClick={() => goTo("/profile")}
                           className="w-full flex items-center gap-2.5 px-4 py-2.5 text-left text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                         >
                           <Settings className="w-4 h-4 text-gray-400" /> Account Settings
                         </button>
-
-                       
 
                         <button
                           onClick={handleLogout}
@@ -561,7 +486,15 @@ const Navbar = () => {
 
               {/* Drawer User Banner */}
               <div className="p-6 pt-16 bg-gradient-to-br from-purple-600 to-indigo-700 text-white rounded-b-[32px] relative overflow-hidden">
-                {isLoggedIn ? (
+                {isChecking ? (
+                  <div className="flex items-center gap-4 relative z-10 animate-pulse">
+                    <div className="w-16 h-16 rounded-2xl bg-white/20" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-2/3 rounded bg-white/20" />
+                      <div className="h-3 w-1/2 rounded bg-white/10" />
+                    </div>
+                  </div>
+                ) : isLoggedIn ? (
                   <div className="flex items-center gap-4 relative z-10">
                     <label className="cursor-pointer relative group flex-shrink-0">
                       <div className="w-16 h-16 rounded-2xl bg-white/10 border-2 border-white/30 overflow-hidden flex items-center justify-center">
@@ -703,11 +636,10 @@ const Navbar = () => {
                           <p className="text-[10px] font-black uppercase tracking-widest text-purple-500 mb-2 px-2">
                             Admin Area
                           </p>
-                           <AnimatedMobileLink to="/admin" label="Admin Dashboard" setOpen={setOpen} />
-                          <AnimatedMobileLink to="/admin/products/new" label="Add New Product" setOpen={setOpen} />
-                          <AnimatedMobileLink to="/admin/products" label="Manage Products" setOpen={setOpen} />
-                          <AnimatedMobileLink to="/admin/users" label="Manage Users" setOpen={setOpen} />
-                          <AnimatedMobileLink to="/admin/orders" label="Manage Orders" setOpen={setOpen} />
+                          <AnimatedMobileLink to="/admin" label="Admin Dashboard" setOpen={setOpen} />
+                          {ADMIN_LINKS.map(({ to, label }) => (
+                            <AnimatedMobileLink key={to} to={to} label={label} setOpen={setOpen} />
+                          ))}
                         </div>
                       )}
                     </div>

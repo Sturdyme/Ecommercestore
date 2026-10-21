@@ -3,10 +3,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FaCreditCard, FaLock, FaWallet, FaCheckCircle } from "react-icons/fa";
 import api from "../api";
 import { formatNaira as formatCurrency } from "../Utilities/currency";
+import { useCart } from "./CartContext";
 
 const Checkout = ({ cartItems: cartItemsProp, fulfillmentMethod: fulfillmentMethodProp }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { removeItems } = useCart();
   const cartItems = location.state?.cartItems ?? cartItemsProp ?? [];
   const fulfillmentMethod = location.state?.fulfillmentMethod ?? fulfillmentMethodProp ?? "delivery";
 
@@ -46,6 +48,7 @@ const Checkout = ({ cartItems: cartItemsProp, fulfillmentMethod: fulfillmentMeth
 
   const handlePaystackPayment = async () => {
     const amountToSend = Math.round(calculatedTotal);
+    sessionStorage.removeItem("pendingCheckoutProductIds");
 
     const response = await api.post(
       "/pay",
@@ -64,6 +67,10 @@ const Checkout = ({ cartItems: cartItemsProp, fulfillmentMethod: fulfillmentMeth
 
     const { authorization_url } = response.data;
     if (authorization_url) {
+      const productIds = cartItems
+        .map((item) => item.id ?? item.product_id)
+        .filter((id) => id !== null && id !== undefined);
+      sessionStorage.setItem("pendingCheckoutProductIds", JSON.stringify(productIds));
       window.location.href = authorization_url;
     }
   };
@@ -83,6 +90,12 @@ const Checkout = ({ cartItems: cartItemsProp, fulfillmentMethod: fulfillmentMeth
       {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       }
+    );
+
+    removeItems(
+      cartItems
+        .map((item) => item.id ?? item.product_id)
+        .filter((id) => id !== null && id !== undefined)
     );
 
     // No external redirect needed — payment is instant, go straight to a success view

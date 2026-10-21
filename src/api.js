@@ -1,4 +1,3 @@
-
 import axios from "axios";
 
 const BASE_URL = (
@@ -7,17 +6,14 @@ const BASE_URL = (
 
 const api = axios.create({
   baseURL: `${BASE_URL}/api`,
-  withCredentials: true,
+  withCredentials: false,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
   },
 });
 
-
-/* 
-   REQUEST INTERCEPTOR
-*/
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -28,21 +24,31 @@ api.interceptors.request.use(
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-/* 
-   RESPONSE INTERCEPTOR
- */
+// Response interceptor
+const clearSession = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("is_verified");
+  sessionStorage.removeItem("admin_pin_verified");
+};
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+    const url = error.config?.url || "";
+    const isAuthCall = ["/login", "/register", "/otp"].some((p) =>
+      url.startsWith(p)
+    );
 
+    if (
+      error.response?.status === 401 &&
+      !isAuthCall &&
+      !error.config?.skipAuthRedirect
+    ) {
+      clearSession();
       window.location.href = "/login";
     }
 

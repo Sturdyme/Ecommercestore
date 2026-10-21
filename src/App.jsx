@@ -48,6 +48,7 @@ import AdminDashboard from './Pages/AdminDashboard';
 import PinGate from './routes/PinGate';
 import Deals from './Component/Deals';
 import ScrollToHash from './Component/ScrollToHash';
+import { AuthProvider } from './Component/AuthContext';
 
 
 
@@ -55,6 +56,7 @@ function App() {
   return (
 
     <div>
+      <AuthProvider> 
       <CartProvider> 
         <Toaster position='top-right' reverseOrder={false} />
     <BrowserRouter>
@@ -141,6 +143,7 @@ function App() {
     <Footer/>
      </BrowserRouter>
      </CartProvider>
+     </AuthProvider>
      
     </div>
   )

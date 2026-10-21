@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams, useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
+import { useCart } from './CartContext';
 
 const PaymentSuccess = () => {
     const [searchParams] = useSearchParams();
     const location = useLocation();
+    const { removeItems } = useCart();
     
     // Extract Paystack reference from URL or wallet data from Router state
     const reference = searchParams.get('reference');
@@ -26,8 +28,23 @@ const PaymentSuccess = () => {
         if (reference) {
             axios.get(`${import.meta.env.VITE_API_URL}/api/payments/verify/${reference}`)
                 .then(response => {
-                    if (response.data.status === 'success') {
+                    if (response.data.status === 'success' || response.data.status === true) {
                         setStatus('success');
+                        const pendingProductIds = sessionStorage.getItem('pendingCheckoutProductIds');
+                        if (pendingProductIds) {
+                            try {
+                                const productIds = JSON.parse(pendingProductIds);
+                                if (Array.isArray(productIds)) {
+                                    removeItems(productIds);
+                                } else {
+                                    console.error('Pending checkout product IDs are invalid.');
+                                }
+                            } catch (error) {
+                                console.error('Failed to read pending checkout product IDs:', error);
+                            } finally {
+                                sessionStorage.removeItem('pendingCheckoutProductIds');
+                            }
+                        }
                     } else {
                         setStatus('failed');
                     }
@@ -38,7 +55,7 @@ const PaymentSuccess = () => {
             setStatus('no_reference');
             setLoading(false);
         }
-    }, [reference, method, order]);
+    }, [reference, method, order, removeItems]);
 
     if (loading) {
         return (
